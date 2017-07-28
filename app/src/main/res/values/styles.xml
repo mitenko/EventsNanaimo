@@ -1,0 +1,45 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/primaryText</item>
+        <item name="android:textColorSecondary">@color/secondaryText</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/primaryText</item>
+    </style>
+
+    <style name="ToolbarTitle">
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Tabbar">
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="TabButton">
+        <item name="android:padding">10dp</item>
+        <item name="android:tint">@color/secondaryText</item>
+    </style>
+
+    <style name="CategoryIcon">
+        <item name="android:layout_height">@dimen/category_icon_size</item>
+        <item name="android:layout_width">@dimen/category_icon_size</item>
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
+
+    <style name="ProgressBar" parent="Material.Drawable.CircularProgress">
+        <item name="cpd_strokeColor">@color/colorPrimary</item>
+        <item name="cpd_strokeSize">3dp</item>
+        <item name="cpd_padding">6dp</item>
+        <item name="cpd_rotateDuration">1500</item>
+        <item name="cpd_inAnimDuration">@integer/map_progress_animation_duration</item>
+        <item name="cpd_outAnimDuration">@integer/map_progress_animation_duration</item>
+    </style>
+</resources>

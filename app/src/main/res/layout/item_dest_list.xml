@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dest_card_list_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimary">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/dest_card_thumbnail"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:padding="3dp"
+            app:roundedCornerRadius="3dp"
+            app:roundingBorderWidth="3dp"
+            app:placeholderImage="@drawable/ic_placeholder"
+            app:placeholderImageScaleType="fitCenter"
+            app:overlayImage="@color/overlay_tint"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dest_card_list_textbox_height"
+            android:layout_alignParentBottom="true"
+            android:paddingLeft="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/dest_card_title"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="3"
+                android:textSize="20sp"
+                android:textColor="@color/accentText"
+                android:fontFamily="sans-serif-black"/>
+
+            <TextView
+                android:id="@+id/dest_card_short_desc"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="4"
+                android:textColor="@color/accentText"/>
+
+            <TextView
+                android:id="@+id/dest_card_activities"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/accentText"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

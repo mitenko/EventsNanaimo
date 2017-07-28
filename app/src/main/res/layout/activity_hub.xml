@@ -1,0 +1,118 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/toolbar_title"
+                style="@style/ToolbarTitle"/>
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/category_picker">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/on_the_town"
+                        android:src="@drawable/ic_on_the_town"
+                        style="@style/CategoryIcon"/>
+
+                    <ImageView
+                        android:id="@+id/food"
+                        android:src="@drawable/ic_food"
+                        style="@style/CategoryIcon"/>
+
+                    <ImageView
+                        android:id="@+id/shopping"
+                        android:src="@drawable/ic_shopping"
+                        style="@style/CategoryIcon"/>
+
+                    <ImageView
+                        android:id="@+id/sight_seeing"
+                        android:src="@drawable/ic_sight_seeing"
+                        style="@style/CategoryIcon"/>
+
+                    <ImageView
+                        android:id="@+id/service"
+                        android:src="@drawable/ic_service"
+                        style="@style/CategoryIcon"/>
+
+                    <ImageView
+                        android:id="@+id/adventure"
+                        android:src="@drawable/ic_adventure"
+                        style="@style/CategoryIcon"/>
+
+                    <ImageView
+                        android:id="@+id/accomodation"
+                        android:src="@drawable/ic_accomodation"
+                        style="@style/CategoryIcon"/>
+
+                    <ImageView
+                        android:id="@+id/lifestyle"
+                        android:src="@drawable/ic_lifestyle"
+                        style="@style/CategoryIcon"/>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:layout_above="@+id/tabbar"
+        android:id="@+id/fragment_container">
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@id/tabbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        style="@style/Tabbar">
+
+        <View android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/explore_button"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_sight_seeing"
+            style="@style/TabButton"/>
+
+        <ImageView
+            android:id="@+id/event_button"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_calendar"
+            style="@style/TabButton"/>
+
+        <View android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

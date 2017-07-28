@@ -1,0 +1,20 @@
+<resources>
+    <!-- Application Strngs-->
+    <string name="app_name">Events Nanaimo</string>
+
+    <!-- Toolbar Titles -->
+    <string name="dest_map_toolbar_title">EXPLORE</string>
+    <string name="event_toolbar_title">EVENTS</string>
+
+    <!-- Permissions Request -->
+    <string name="location_rationale">Events Nanaimo would like to know your current location.</string>
+
+    <!-- Buttons -->
+    <string name="btn_okay">Okay</string>
+    <string name="btn_deny">Deny</string>
+    <string name="btn_search_within_bounds">Search this Area</string>
+
+    <!-- Errors -->
+    <string name="no_location_available_error">Unable to Access Location</string>
+
+</resources>

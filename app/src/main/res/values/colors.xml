@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fafafa</color>
+    <color name="colorPrimaryDark">#bdbdbd</color>
+    <color name="colorAccent">#4CAF50</color>
+    <color name="primaryText">#000000</color>
+    <color name="secondaryText">#424242</color>
+    <color name="accentText">#FFFFFF</color>
+
+    <color name="default_fragment_background">@color/colorPrimary</color>
+    <color name="progress_bar_background">#99000000</color>
+    <color name="overlay_tint">#88000000</color>
+</resources>
