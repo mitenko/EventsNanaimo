@@ -43,7 +43,7 @@ public class DestListPresenter extends RootPresenter<DestListView, DestListState
     public void onDestinationResultEvent(DestinationResultEvent event) {
         DestListState newState = ImmutableDestListState.builder()
                 .from(curState)
-                .destinations(event.getDestinations())
+                .destinations(event.getSearch().filteredResults())
                 .build();
         render(newState);
     }

@@ -15,6 +15,8 @@ import ca.mitenko.evn.event.UpdateMapRequestEvent;
 import ca.mitenko.evn.interactor.DestMapInteractor;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.Search;
+import ca.mitenko.evn.model.search.DestSearch;
+import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.DestMapState;
 import ca.mitenko.evn.state.ImmutableDestMapState;
@@ -58,13 +60,13 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
             /**
              * Set destinations if we have them and the map just became ready
              */
-            if (curState.mapReady() && !prevState.mapReady() && curState.destinations() != null) {
-                view.setDestinations(curState.destinations());
+            if (curState.mapReady() && !prevState.mapReady() && curState.search().hasResults()) {
+                view.setDestinations(curState.search().filteredResults());
             }
 
-            if (curState.destinations() != null
-                    && !curState.destinations().equals(prevState.destinations())) {
-                view.setDestinations(curState.destinations());
+            if (curState.search().hasResults()
+                    && !curState.search().filteredResults().equals(prevState.search().filteredResults())) {
+                view.setDestinations(curState.search().filteredResults());
             }
 
             if (curState.mapBounds() != null &&
@@ -85,7 +87,7 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
              * are out of sync with the current map bounds
              */
             if (curState.mapBounds() != null) {
-                LatLngBounds searchBounds = curState.search().getSearchBounds();
+                LatLngBounds searchBounds = curState.search().bounds();
                 LatLngBounds mapBounds = curState.mapBounds();
                 if (!searchBounds.contains(mapBounds.northeast) ||
                         !searchBounds.contains(mapBounds.southwest)) {
@@ -148,17 +150,9 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
         /**
          * Force a new search if destinations == null
          */
-        if (curState.destinations() == null) {
-            Search newSearch = new Search(event.getLatLngBounds(),
-                    curState.search().getCategories(),
-                    curState.search().getActivities());
-
-            newStateBuilder
-                    .search(newSearch)
-                    .loadingResults(true);
-
+        if (!curState.search().hasResults()) {
             // Hit the API for the destinations within these bounds
-            interactor.getDestinations(newSearch);
+            interactor.getDestinations(curState.search());
         }
         render(newStateBuilder.build());
     }
@@ -182,9 +176,10 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
      */
     @Subscribe
     public void onUpdateMapClick(UpdateMapRequestEvent event) {
-        Search newSearch = new Search(curState.mapBounds(),
-                curState.search().getCategories(),
-                curState.search().getActivities());
+        DestSearch newSearch = ImmutableDestSearch.builder()
+                .from(curState.search())
+                .bounds(curState.mapBounds())
+                .build();
 
         DestMapState newState = ImmutableDestMapState.builder()
                 .from(curState)
@@ -207,7 +202,7 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
         DestMapState newState = ImmutableDestMapState.builder()
                 .from(curState)
                 .loadingResults(false)
-                .destinations(event.getDestinations())
+                .search(event.getSearch())
                 .build();
         render(newState);
     }

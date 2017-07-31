@@ -1,6 +1,7 @@
 package ca.mitenko.evn.event
 
 import ca.mitenko.evn.model.*
+import ca.mitenko.evn.model.search.*;
 import com.google.android.gms.maps.model.LatLngBounds
 import java.util.ArrayList
 
@@ -36,5 +37,5 @@ data class MapReadyEvent(val ready: Boolean = true)
  * API Events
  */
 data class CategoryResultEvent(val categoryResult: ArrayList<Category>)
-data class DestinationResultEvent(val search: Search, val destinations: ArrayList<Destination>)
+data class DestinationResultEvent(val search: DestSearch)
 data class EventResultEvent(val events: ArrayList<Event>)

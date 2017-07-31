@@ -81,51 +81,6 @@ public class HubState extends RootState {
     }
 
     /**
-     * Dest Map Fragment showing
-     * @return
-     */
-    @Value.Default
-    public boolean showDestDetail() {
-        return false;
-    }
-
-    /**
-     * Dest Map Fragment showing
-     * @return
-     */
-    @Value.Default
-    public boolean showDestMap() {
-        return false;
-    }
-
-    /**
-     * Dest List Fragment showing
-     * @return
-     */
-    @Value.Default
-    public boolean showDestList() {
-        return false;
-    }
-
-    /**
-     * Event List Fragment showing
-     * @return
-     */
-    @Value.Default
-    public boolean showEventList() {
-        return false;
-    }
-
-    /**
-     * Detail Fragment showing
-     * @return
-     */
-    @Value.Default
-    public boolean showDetail() {
-        return false;
-    }
-
-    /**
      * The state is shutting down
      * @return
      */
@@ -136,25 +91,18 @@ public class HubState extends RootState {
 
     /**
      * Parcel factory to allow parcelling immutables
-     * @param showDestMap
-     * @param showDestList
-     * @param showEventList
-     * @param showDetail
      * @return
      */
     @ParcelFactory
-    public static HubState build(boolean showDestMap,
-                     boolean showDestList, boolean showEventList, boolean showDetail,
-                     boolean showDestDetail, Destination selectedDest,
-                     boolean hasEvents) {
+    public static HubState build(Destination selectedDest,
+                     boolean hasEvents, ArrayList<Category> categories, FragmentType currentFragment,
+                                 ArrayList<FragmentType> fragmentStack) {
         return ImmutableHubState.builder()
-                .showDestMap(showDestMap)
-                .showDestList(showDestList)
-                .showEventList(showEventList)
-                .showDetail(showDetail)
                 .hasEvents(hasEvents)
-                .showDestDetail(showDestDetail)
                 .selectedDest(selectedDest)
+                .categories(categories)
+                .currentFragment(currentFragment)
+                .fragmentStack(fragmentStack)
                 .build();
     }
 }

@@ -10,6 +10,8 @@ import java.io.IOException;
 import ca.mitenko.evn.event.DestinationResultEvent;
 import ca.mitenko.evn.model.ImmutableDestinationResult;
 import ca.mitenko.evn.model.Search;
+import ca.mitenko.evn.model.search.DestSearch;
+import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.network.EventsNanaimoService;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.HttpException;
@@ -53,13 +55,18 @@ public class DestMapInteractor {
     /**
      * Fetch the markers for
      */
-    public void getDestinations(Search search) {
-        LatLng ne = search.getSearchBounds().northeast;
-        LatLng sw = search.getSearchBounds().southwest;
+    public void getDestinations(DestSearch search) {
+        LatLng ne = search.bounds().northeast;
+        LatLng sw = search.bounds().southwest;
         evnService.getDestinations(
                 ne.latitude, ne.longitude, sw.latitude, sw.longitude)
-                .map(destinations ->
-                        new DestinationResultEvent(search, destinations.destinations()))
+                .map(destinations -> {
+                    DestSearch searchWithResults = ImmutableDestSearch.builder()
+                            .from(search)
+                            .results(destinations.destinations())
+                            .build();
+                    return new DestinationResultEvent(searchWithResults);
+                })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getDestSubscriber());

@@ -1,5 +1,6 @@
 package ca.mitenko.evn.state;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.Search;
+import ca.mitenko.evn.model.search.DestSearch;
+import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.state.common.RootState;
 
 /**
@@ -32,10 +35,10 @@ public class DestMapState extends RootState {
     /**
      * Map loaded state flag
      */
-    @Nullable
+    @NonNull
     @Value.Default
-    public Search search() {
-        return new Search();
+    public DestSearch search() {
+        return ImmutableDestSearch.builder().build();
     }
 
     /**
@@ -66,15 +69,6 @@ public class DestMapState extends RootState {
      */
     @Nullable
     @Value.Default
-    public ArrayList<Destination> destinations() {
-        return null;
-    }
-
-    /**
-     * Destinations loaded state flag
-     */
-    @Nullable
-    @Value.Default
     public Destination selectedItem() {
         return null;
     }
@@ -83,11 +77,10 @@ public class DestMapState extends RootState {
      * Parcel factory to allow parcelling immutables
      */
     @ParcelFactory
-    public static DestMapState build(boolean mapReady, ArrayList<Destination> destinations,
-                                     LatLngBounds mapBounds, Destination selectedItem) {
+    public static DestMapState build(boolean mapReady, LatLngBounds mapBounds,
+                                     Destination selectedItem) {
         return ImmutableDestMapState.builder()
                 .mapReady(mapReady)
-                .destinations(destinations)
                 .mapBounds(mapBounds)
                 .selectedItem(selectedItem)
                 .build();

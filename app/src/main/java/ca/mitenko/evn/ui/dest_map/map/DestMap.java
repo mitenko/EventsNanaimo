@@ -149,7 +149,7 @@ public class DestMap extends MapView
      */
     public void setMapBounds(LatLngBounds mapBounds) {
         clusterMovement = true;
-        map.animateCamera(CameraUpdateFactory.newLatLngBounds(mapBounds, 16));
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(mapBounds, 0));
     }
 
     /**
