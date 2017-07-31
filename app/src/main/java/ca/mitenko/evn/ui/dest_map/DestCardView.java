@@ -12,6 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ca.mitenko.evn.R;
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.ui.common.PriceView;
 
 /**
  * Created by mitenko on 2017-04-29.
@@ -31,10 +32,16 @@ public class DestCardView extends CardView {
     TextView title;
 
     /**
-     * the short description text
+     * the description text
      */
-    @BindView(R.id.dest_card_short_desc)
-    TextView shortDesc;
+    @BindView(R.id.dest_card_desc)
+    TextView desc;
+
+    /**
+     * the price
+     */
+    @BindView(R.id.dest_card_price)
+    PriceView priceView;
 
     /**
      * Constructor
@@ -68,7 +75,8 @@ public class DestCardView extends CardView {
     public void bind(Destination destination) {
         thumbnail.setImageURI(destination.detail().thumbURL());
         title.setText(destination.detail().name());
-        shortDesc.setText(destination.detail().shortDesc());
+        desc.setText(destination.detail().longDesc());
+        priceView.setCost(destination.detail().cost());
     }
 
     /**

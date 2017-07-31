@@ -3,6 +3,8 @@ package ca.mitenko.evn.presenter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
+
 import ca.mitenko.evn.event.CategoryResultEvent;
 import ca.mitenko.evn.event.DestItemClickEvent;
 import ca.mitenko.evn.event.EventResultEvent;
@@ -13,8 +15,14 @@ import ca.mitenko.evn.interactor.CategoryInteractor;
 import ca.mitenko.evn.interactor.EventListInteractor;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.HubState;
+import ca.mitenko.evn.state.HubState.*;
 import ca.mitenko.evn.state.ImmutableHubState;
 import ca.mitenko.evn.ui.hub.HubView;
+
+import static ca.mitenko.evn.state.HubState.FragmentType.DEST_DETAIL;
+import static ca.mitenko.evn.state.HubState.FragmentType.DEST_LIST;
+import static ca.mitenko.evn.state.HubState.FragmentType.DEST_MAP;
+import static ca.mitenko.evn.state.HubState.FragmentType.EVENT_LIST;
 
 /**
  * Created by mitenko on 2017-04-23.
@@ -57,28 +65,28 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
     @Override
     public void renderState(HubView view, HubState curState, HubState prevState) {
         if (view != null) {
-            // Dest Map Fragment
-            if (curState.showDestMap()
-                    && curState.showDestMap() != prevState.showDestMap()) {
-                view.showDestMap();
+            if (curState.currentFragment() != null &&
+                    !curState.currentFragment().equals(prevState.currentFragment())) {
+                FragmentType currentFragment = curState.currentFragment();
+                switch(currentFragment) {
+                    case DEST_MAP:
+                        view.showDestMap();
+                        break;
+                    case DEST_LIST:
+                        view.showDestList();
+                        break;
+                    case EVENT_LIST:
+                        view.showEventList();
+                        break;
+                    case DEST_DETAIL:
+                        view.showDestDetail(curState.selectedDest());
+                        break;
+                }
             }
 
-            // Dest List Fragment
-            if (curState.showDestList()
-                    && curState.showDestList() != prevState.showDestList()) {
-                view.showDestList();
-            }
-
-            // Dest List Fragment
-            if (curState.showEventList()
-                    && curState.showEventList() != prevState.showEventList()) {
-                view.showEventList();
-            }
-
-            // Dest Detail Fragment
-            if (curState.showDestDetail()
-                    && curState.showDestDetail() != prevState.showDestDetail()) {
-                view.showDestDetail(curState.selectedDest());
+            // Shutdown
+            if (curState.shutdown()) {
+                view.shutdown();
             }
         }
     }
@@ -90,8 +98,13 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
      */
     @Subscribe
     public void onListButtonEvent(ViewListEvent event) {
+        if (curState.currentFragment() == DEST_LIST) {
+            return;
+        }
         HubState newState = ImmutableHubState.builder()
-                .showDestList(true)
+                .from(curState)
+                .currentFragment(DEST_LIST)
+                .fragmentStack(setFragmentStack(DEST_LIST))
                 .build();
         render(newState);
     }
@@ -103,8 +116,13 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
      */
     @Subscribe
     public void onMapButtonEvent(ViewMapEvent event) {
+        if (curState.currentFragment() == DEST_MAP) {
+            return;
+        }
         HubState newState = ImmutableHubState.builder()
-                .showDestMap(true)
+                .from(curState)
+                .currentFragment(DEST_MAP)
+                .fragmentStack(setFragmentStack(DEST_MAP))
                 .build();
         render(newState);
     }
@@ -116,8 +134,31 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
      */
     @Subscribe
     public void onEventButtonEvent(ViewEventEvent event) {
+        if (curState.currentFragment() == EVENT_LIST) {
+            return;
+        }
         HubState newState = ImmutableHubState.builder()
-                .showEventList(true)
+                .from(curState)
+                .currentFragment(EVENT_LIST)
+                .fragmentStack(setFragmentStack(EVENT_LIST))
+                .build();
+        render(newState);
+    }
+
+    /**
+     * When a destination item has been clicked
+     * @param event
+     */
+    @Subscribe
+    public void onDestItemClickEvent(DestItemClickEvent event) {
+        if (curState.currentFragment() == DEST_DETAIL) {
+            return;
+        }
+        HubState newState = ImmutableHubState.builder()
+                .from(curState)
+                .currentFragment(DEST_DETAIL)
+                .selectedDest(event.getDestination())
+                .fragmentStack(setFragmentStack(DEST_DETAIL))
                 .build();
         render(newState);
     }
@@ -136,27 +177,50 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
     }
 
     /**
-     * When a destination item has been clicked
-     * @param event
-     */
-    @Subscribe
-    public void onDestItemClickEvent(DestItemClickEvent event) {
-        HubState newState = ImmutableHubState.builder()
-                .showDestDetail(true)
-                .selectedDest(event.getDestination())
-                .build();
-        render(newState);
-    }
-
-    /**
      * When the categories have been loaded
      * @param event
      */
     @Subscribe(sticky = true)
     public void onCategoryResultEvent(CategoryResultEvent event) {
         HubState newState = ImmutableHubState.builder()
+                .from(curState)
                 .categories(event.getCategoryResult())
                 .build();
         render(newState);
+    }
+
+    /**
+     * Called when the back button is pressed
+     */
+    public void onBackPressed() {
+        ArrayList<FragmentType> fragmentStack = curState.fragmentStack();
+        HubState newState;
+        if (fragmentStack.isEmpty()) {
+            newState = ImmutableHubState.builder()
+                    .from(curState)
+                    .shutdown(true)
+                    .build();
+        } else {
+            FragmentType poppedFragment = fragmentStack.remove(fragmentStack.size()-1);
+            newState = ImmutableHubState.builder()
+                    .from(curState)
+                    .currentFragment(poppedFragment)
+                    .fragmentStack(fragmentStack)
+                    .build();
+        }
+        render(newState);
+    }
+
+    /**
+     * Sets the fragment stack
+     * @return
+     */
+    public ArrayList<FragmentType> setFragmentStack(FragmentType newCurrentFragment) {
+        ArrayList<FragmentType> fragmentStack = new ArrayList<>();
+        if (newCurrentFragment != DEST_MAP && curState.currentFragment() != null) {
+            fragmentStack = curState.fragmentStack();
+            fragmentStack.add(curState.currentFragment());
+        }
+        return fragmentStack;
     }
 }

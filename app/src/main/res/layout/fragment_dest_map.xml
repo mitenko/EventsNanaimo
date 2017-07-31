@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/map_container"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/map_container"
     android:layout_alignParentTop="true"
     android:layout_alignParentStart="true"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    android:animateLayoutChanges="true">
 
     <ca.mitenko.evn.ui.dest_map.map.DestMap
         android:id="@+id/mapview"
@@ -53,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
 
         android:gravity="center_horizontal"
         android:visibility="invisible"
@@ -63,15 +66,15 @@
 
         android:padding="4dp"
         android:textSize="16sp"
-        android:textColor="@color/primaryText"
+        android:textColor="@color/accentText"
         android:background="@drawable/button_background"
 
         android:text="@string/btn_search_within_bounds" />
 
     <ca.mitenko.evn.ui.dest_map.DestCardView
         android:id="@+id/dest_card_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_margin="7dp"
         android:visibility="gone"
@@ -84,18 +87,15 @@
         android:id="@+id/list_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+        android:layout_marginRight="8dp"
         android:src="@drawable/ic_list"
         android:tint="@color/accentText"
-        android:layout_margin="16dp"
-
-        app:useCompatPadding="true"
         app:backgroundTint="@color/colorAccent"
         app:fabSize="normal"
         app:layout_anchorGravity="top|right|end"
-        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/dest_card_view"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/dest_card_view" />
+        app:useCompatPadding="true" />
 
 </android.support.constraint.ConstraintLayout>

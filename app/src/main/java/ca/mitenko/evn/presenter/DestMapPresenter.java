@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import ca.mitenko.evn.event.DestinationResultEvent;
 import ca.mitenko.evn.event.MapBoundsEvent;
+import ca.mitenko.evn.event.MapClusterClickEvent;
 import ca.mitenko.evn.event.MapItemClickEvent;
 import ca.mitenko.evn.event.MapReadyEvent;
 import ca.mitenko.evn.event.UpdateMapRequestEvent;
@@ -54,9 +55,21 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                 return;
             }
 
+            /**
+             * Set destinations if we have them and the map just became ready
+             */
+            if (curState.mapReady() && !prevState.mapReady() && curState.destinations() != null) {
+                view.setDestinations(curState.destinations());
+            }
+
             if (curState.destinations() != null
                     && !curState.destinations().equals(prevState.destinations())) {
                 view.setDestinations(curState.destinations());
+            }
+
+            if (curState.mapBounds() != null &&
+                    !curState.mapBounds().equals(prevState.mapBounds())) {
+                view.setMapBounds(curState.mapBounds());
             }
 
             if (curState.recluster()) {
@@ -71,11 +84,15 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
              * Show the update button if the search results bounds
              * are out of sync with the current map bounds
              */
-            if (curState.mapBounds() != null
-                    && !curState.mapBounds().equals(curState.search().getSearchBounds())) {
-                view.showUpdateButton();
-            } else {
-                view.hideUpdateButton();
+            if (curState.mapBounds() != null) {
+                LatLngBounds searchBounds = curState.search().getSearchBounds();
+                LatLngBounds mapBounds = curState.mapBounds();
+                if (!searchBounds.contains(mapBounds.northeast) ||
+                        !searchBounds.contains(mapBounds.southwest)) {
+                    view.showUpdateButton();
+                } else {
+                    view.hideUpdateButton();
+                }
             }
 
             if (curState.loadingResults()) {
@@ -116,9 +133,21 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
         ImmutableDestMapState.Builder newStateBuilder =
                 ImmutableDestMapState.builder()
                         .from(curState)
-                        .mapBounds(event.getLatLngBounds())
                         .recluster(true);
 
+        /**
+         * Set the state bounds if the event bounds are outside
+         */
+        if (curState.mapBounds() == null ||
+                !(curState.mapBounds().contains(event.getLatLngBounds().northeast)
+                        && curState.mapBounds().contains(event.getLatLngBounds().southwest))) {
+            newStateBuilder
+                .mapBounds(event.getLatLngBounds());
+        }
+
+        /**
+         * Force a new search if destinations == null
+         */
         if (curState.destinations() == null) {
             Search newSearch = new Search(event.getLatLngBounds(),
                     curState.search().getCategories(),
@@ -134,6 +163,23 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
         render(newStateBuilder.build());
     }
 
+    /**
+     * Called when a map cluster is clicked
+     * @param event
+     */
+    @Subscribe
+    public void onMapClusterClickEvent(MapClusterClickEvent event) {
+        ImmutableDestMapState newState = ImmutableDestMapState.builder()
+                    .from(curState)
+                    .mapBounds(event.getClusterBounds())
+                    .build();
+        render(newState);
+    }
+
+    /**
+     * Called when the Search this Area is clicked
+     * @param event
+     */
     @Subscribe
     public void onUpdateMapClick(UpdateMapRequestEvent event) {
         Search newSearch = new Search(curState.mapBounds(),

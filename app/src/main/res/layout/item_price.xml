@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/price_view"
+    android:layout_width="@dimen/price_width"
+    android:layout_height="wrap_content"
+
+    android:text="$$$$"
+    android:textColor="@color/white"
+    android:background="@drawable/price_background" />

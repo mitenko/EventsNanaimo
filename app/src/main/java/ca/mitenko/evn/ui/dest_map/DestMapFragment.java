@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.rey.material.widget.ProgressView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -193,7 +194,11 @@ public class DestMapFragment extends RootFragment
      * @param destination
      */
     public void setSelectedItem(Destination destination) {
-        this.selectedDestination = destination;
+        if (destination != null && destination.equals(this.selectedDestination)) {
+            this.selectedDestination = null;
+        } else {
+            this.selectedDestination = destination;
+        }
         TransitionManager.beginDelayedTransition(mapContainer);
         if (destination != null) {
             selectedDestView.bind(destination);
@@ -201,6 +206,14 @@ public class DestMapFragment extends RootFragment
         } else {
             selectedDestView.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * Sets the map boundaries
+     * @param mapBounds
+     */
+    public void setMapBounds(LatLngBounds mapBounds) {
+        destMap.setMapBounds(mapBounds);
     }
 
     /**

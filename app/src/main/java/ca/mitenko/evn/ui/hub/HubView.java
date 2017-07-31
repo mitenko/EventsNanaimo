@@ -27,4 +27,9 @@ public interface HubView extends RootView {
      * Display the Event List
      */
     void showDestDetail(Destination selectedDest);
+
+    /**
+     * Shutdown the app
+     */
+    void shutdown();
 }

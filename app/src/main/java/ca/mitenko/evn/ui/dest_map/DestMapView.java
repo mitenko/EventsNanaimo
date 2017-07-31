@@ -3,6 +3,8 @@ package ca.mitenko.evn.ui.dest_map;
 
 import android.view.View;
 
+import com.google.android.gms.maps.model.LatLngBounds;
+
 import java.util.ArrayList;
 
 import ca.mitenko.evn.model.Destination;
@@ -24,6 +26,12 @@ public interface DestMapView extends RootView {
      * @param destination
      */
     void setSelectedItem(Destination destination);
+
+    /**
+     * Sets the map boundaries
+     * @param mapBounds
+     */
+    void setMapBounds(LatLngBounds mapBounds);
 
     /**
      * Shows the Progress Bar

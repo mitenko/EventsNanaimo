@@ -1,5 +1,6 @@
 package ca.mitenko.evn.state;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.immutables.value.Value;
@@ -19,6 +20,16 @@ import ca.mitenko.evn.state.common.RootState;
 @Parcel(value = Parcel.Serialization.VALUE, implementations = ImmutableHubState.class)
 @Value.Immutable
 public class HubState extends RootState {
+    /**
+     * Set of possible fragments that can currently be displayed
+     */
+    public enum FragmentType {
+        DEST_MAP,
+        DEST_LIST,
+        DEST_DETAIL,
+        EVENT_LIST
+    }
+
     /**
      * State Identifying Tag
      */
@@ -49,6 +60,24 @@ public class HubState extends RootState {
     @Value.Default
     public Destination selectedDest() {
         return null;
+    }
+
+    /**
+     * The current fragment
+     */
+    @Nullable
+    @Value.Default
+    public FragmentType currentFragment() {
+        return null;
+    }
+
+    /**
+     * The fragment back stack
+     */
+    @NonNull
+    @Value.Default
+    public ArrayList<FragmentType> fragmentStack() {
+        return new ArrayList<>();
     }
 
     /**
@@ -93,6 +122,15 @@ public class HubState extends RootState {
      */
     @Value.Default
     public boolean showDetail() {
+        return false;
+    }
+
+    /**
+     * The state is shutting down
+     * @return
+     */
+    @Value.Default
+    public boolean shutdown() {
         return false;
     }
 

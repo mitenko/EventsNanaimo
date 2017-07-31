@@ -11,6 +11,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -19,9 +20,11 @@ import java.util.ArrayList;
 
 import ca.mitenko.evn.R;
 import ca.mitenko.evn.event.MapBoundsEvent;
+import ca.mitenko.evn.event.MapClusterClickEvent;
 import ca.mitenko.evn.event.MapItemClickEvent;
 import ca.mitenko.evn.event.MapReadyEvent;
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.util.MapUtil;
 
 /**
  * Created by mitenko on 2017-04-22.
@@ -30,7 +33,7 @@ import ca.mitenko.evn.model.Destination;
 public class DestMap extends MapView
         implements OnMapReadyCallback, GoogleMap.OnMapLoadedCallback,
         GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveStartedListener,
-        ClusterManager.OnClusterItemClickListener<Destination>{
+        ClusterManager.OnClusterItemClickListener<Destination>, ClusterManager.OnClusterClickListener {
 
     /**
      * The Cluster Manager
@@ -46,6 +49,11 @@ public class DestMap extends MapView
      * The Event Bus
      */
     private EventBus bus;
+
+    /**
+     * Flag indicating this movement is program generated
+     */
+    private Boolean clusterMovement = false;
 
     /**
      * Constructor
@@ -110,6 +118,7 @@ public class DestMap extends MapView
         map.setOnMarkerClickListener(clusterManager);
 
         clusterManager.setOnClusterItemClickListener(this);
+        clusterManager.setOnClusterClickListener(this);
 
         // Move to a default position
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(
@@ -135,6 +144,15 @@ public class DestMap extends MapView
     }
 
     /**
+     * Sets the map's boundaries
+     * @param mapBounds
+     */
+    public void setMapBounds(LatLngBounds mapBounds) {
+        clusterMovement = true;
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(mapBounds, 16));
+    }
+
+    /**
      * Called so the map can recluster
      */
     public void recluster() {
@@ -150,7 +168,9 @@ public class DestMap extends MapView
      * or when the reason for camera motion has changed.
      */
     public void onCameraMoveStarted(int reason) {
-        bus.post(new MapItemClickEvent(null));
+        if (!clusterMovement) {
+            bus.post(new MapItemClickEvent(null));
+        }
     }
 
     /**
@@ -159,8 +179,13 @@ public class DestMap extends MapView
      * animations and the user has stopped interacting with the map.
      */
     public void onCameraIdle() {
-        LatLngBounds newMapBounds = map.getProjection().getVisibleRegion().latLngBounds;
-        bus.post(new MapBoundsEvent(newMapBounds));
+        if (!clusterMovement) {
+            LatLngBounds newMapBounds = map.getProjection().getVisibleRegion().latLngBounds;
+            bus.post(new MapBoundsEvent(newMapBounds));
+        } else {
+            recluster();
+            clusterMovement = false;
+        }
     }
 
     /**
@@ -174,6 +199,16 @@ public class DestMap extends MapView
      */
     public boolean onClusterItemClick(Destination destination) {
         bus.post(new MapItemClickEvent(destination));
+        return true;
+    }
+
+    /**
+     * On Cluster Click
+     */
+    public boolean onClusterClick(Cluster cluster) {
+        LatLngBounds clusterBounds =
+                MapUtil.getClusterBounds(cluster);
+        bus.post(new MapClusterClickEvent(clusterBounds));
         return true;
     }
 

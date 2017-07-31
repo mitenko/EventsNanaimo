@@ -35,7 +35,7 @@ public class DestViewHolder extends RecyclerView.ViewHolder {
     /**
      * the short description text
      */
-    @BindView(R.id.dest_card_short_desc)
+    @BindView(R.id.dest_card_desc)
     TextView shortDesc;
 
     /**

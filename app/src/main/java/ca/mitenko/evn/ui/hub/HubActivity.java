@@ -21,6 +21,8 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -194,7 +196,9 @@ public class HubActivity extends AppCompatActivity
         if (savedInstanceState != null && savedInstanceState.containsKey(HubState.TAG)) {
             hubState = Parcels.unwrap(savedInstanceState.getParcelable(HubState.TAG));
         } else {
-            hubState = ImmutableHubState.builder().showDestMap(true).build();
+            hubState = ImmutableHubState.builder()
+                    .currentFragment(HubState.FragmentType.DEST_MAP)
+                    .build();
         }
 
         EventListInteractor eventInteractor =
@@ -226,6 +230,22 @@ public class HubActivity extends AppCompatActivity
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBackPressed() {
+        hubPresenter.onBackPressed();
+    }
+
+    /**
+     * Shutdown
+     */
+    @Override
+    public void shutdown() {
+        this.finish();
+    }
+
+    /**
      * Presenter Callbacks
      */
     /**
@@ -252,7 +272,7 @@ public class HubActivity extends AppCompatActivity
             transaction.hide(destDetailFragment);
         }
 
-        transaction.commitAllowingStateLoss();
+        transaction.commit();
         fragmentManager.executePendingTransactions();
     }
 
@@ -273,7 +293,8 @@ public class HubActivity extends AppCompatActivity
 
         transaction.show(destListFragment)
                 .hide(destMapFragment)
-                .hide(eventListFragment);
+                .hide(eventListFragment)
+                .addToBackStack(null);
 
         if (destDetailFragment != null) {
             transaction.hide(destDetailFragment);
@@ -299,14 +320,15 @@ public class HubActivity extends AppCompatActivity
         }
 
         transaction.show(eventListFragment)
-                .hide(destMapFragment)
-                .hide(destListFragment);
+            .hide(destMapFragment)
+            .hide(destListFragment)
+            .addToBackStack(null);
 
         if (destDetailFragment != null) {
             transaction.hide(destDetailFragment);
         }
 
-        transaction.commitAllowingStateLoss();
+        transaction.commit();
         fragmentManager.executePendingTransactions();
     }
 
@@ -328,7 +350,8 @@ public class HubActivity extends AppCompatActivity
                 .hide(eventListFragment)
                 .hide(destMapFragment)
                 .hide(destListFragment)
-                .commitAllowingStateLoss();
+                .addToBackStack(null)
+                .commit();
         fragmentManager.executePendingTransactions();
     }
 
@@ -370,7 +393,6 @@ public class HubActivity extends AppCompatActivity
                 params.height = actionBarHeight;
                 toolbar.setLayoutParams(params);
             }
-
         }
     }
 

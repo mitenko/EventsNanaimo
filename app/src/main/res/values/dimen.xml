@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="dest_card_single_height">100dp</dimen>
+    <dimen name="dest_card_thumb_size">84dp</dimen>
     <dimen name="dest_card_text_height">20dp</dimen>
 
     <dimen name="dest_card_list_height">280dp</dimen>
@@ -8,5 +9,8 @@
     <dimen name="category_icon_size">40dp</dimen>
 
     <dimen name="progress_spinner_small">40dp</dimen>
+
+    <dimen name="map_dest_card_height">200dp</dimen>
+    <dimen name="price_width">40dp</dimen>
 
 </resources>

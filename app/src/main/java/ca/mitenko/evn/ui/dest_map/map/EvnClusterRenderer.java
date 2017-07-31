@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 import ca.mitenko.evn.R;
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.util.BitmapUtil;
 
 import static ca.mitenko.evn.CategoryConstants.ACCOMODATION;
 import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
@@ -43,16 +44,6 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
     private final static float ICON_INSET_FACTOR = 0.8f;
 
     /**
-     * Context
-     */
-    private Context context;
-
-    /**
-     * Icon for markers / items
-     */
-    private Bitmap markerBackground;
-
-    /**
      * Category Icons
      */
     private Bitmap onTheTown;
@@ -74,18 +65,16 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
      */
     public EvnClusterRenderer(Context context, GoogleMap map, ClusterManager clusterManager) {
         super(context, map, clusterManager);
-        this.context = context;
 
         // Load Markers
-        markerBackground = BitmapFactory.decodeResource(context.getResources(), R.drawable.marker_bg);
-        onTheTown = BitmapFactory.decodeResource(context.getResources(), R.drawable.bm_on_the_town);
-        food = BitmapFactory.decodeResource(context.getResources(), R.drawable.bm_food);
-        shopping = BitmapFactory.decodeResource(context.getResources(), R.drawable.bm_shopping);
-        sightSeeing = BitmapFactory.decodeResource(context.getResources(), R.drawable.bm_sight_seeing);
-        service = BitmapFactory.decodeResource(context.getResources(), R.drawable.bm_service);
-        adventure = BitmapFactory.decodeResource(context.getResources(), R.drawable.bm_adventure);
-        accomodation = BitmapFactory.decodeResource(context.getResources(), R.drawable.bm_accomodation);
-        lifestyle = BitmapFactory.decodeResource(context.getResources(), R.drawable.bm_lifestyle);
+        onTheTown = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_on_the_town);
+        food = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_food);
+        shopping = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_shopping);
+        sightSeeing = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_sight_seeing);
+        service = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_service);
+        adventure = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_adventure);
+        accomodation = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_accomodation);
+        lifestyle = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_lifestyle);
 
         // Build the map
         catIconMap = new HashMap<>();
@@ -108,35 +97,9 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
     protected void onBeforeClusterItemRendered(Destination destination,
                                                MarkerOptions markerOptions) {
         // Set-up and inits
-        Bitmap marker = markerBackground.copy(markerBackground.getConfig(), true);
         Bitmap destIcon = catIconMap.get(destination.detail().activities().get(0).category());
-        int bgWidth = marker.getWidth();
-        int bgHeight = marker.getHeight();
 
-        int icLeft = (int) (bgWidth - (bgWidth * ICON_INSET_FACTOR)) / 2;
-        int icTop = (int)(bgHeight - (bgHeight * ICON_INSET_FACTOR)) / 2;
-        int icRight = icLeft + (int)(bgWidth * ICON_INSET_FACTOR);
-        int icBottom = icTop + (int)(bgHeight * ICON_INSET_FACTOR);
-
-        // Build a canvas and paint for drawing on the marker
-        Bitmap markerIcon = destIcon.copy(destIcon.getConfig(), true);
-        Canvas canvas = new Canvas(marker);
-
-        Rect dstRect = new Rect(icLeft, icTop, icRight, icBottom);
-        canvas.drawBitmap(markerIcon, null, dstRect, null);
-
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(marker));
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(destIcon));
         markerOptions.anchor(CENTER_ANCHOR, CENTER_ANCHOR);
     }
-
-    /**
-     * {@inheritDoc}
-     * @param cluster
-     * @param markerOptions
-     */
- /*   @Override
-    protected void onBeforeClusterRendered(Cluster<Destination> cluster,
-                                           MarkerOptions markerOptions) {
-
-    }*/
 }

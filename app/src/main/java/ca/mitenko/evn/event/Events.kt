@@ -29,6 +29,7 @@ data class UpdateMapRequestEvent(val showMap: Boolean = true)
  */
 data class MapBoundsEvent(val latLngBounds: LatLngBounds)
 data class MapItemClickEvent(val destination: Destination?)
+data class MapClusterClickEvent(val clusterBounds: LatLngBounds)
 data class MapReadyEvent(val ready: Boolean = true)
 
 /**

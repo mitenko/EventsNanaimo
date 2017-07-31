@@ -39,7 +39,7 @@
                 android:fontFamily="sans-serif-black"/>
 
             <TextView
-                android:id="@+id/dest_card_short_desc"
+                android:id="@+id/dest_card_desc"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
