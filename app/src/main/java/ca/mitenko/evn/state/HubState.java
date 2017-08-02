@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 import ca.mitenko.evn.model.Category;
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.model.search.DestSearch;
+import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.state.common.RootState;
 
 /**
@@ -42,6 +44,15 @@ public class HubState extends RootState {
     @Value.Default
     public boolean hasEvents() {
         return false;
+    }
+
+    /**
+     * Map loaded state flag
+     */
+    @NonNull
+    @Value.Default
+    public DestSearch search() {
+        return ImmutableDestSearch.builder().build();
     }
 
     /**

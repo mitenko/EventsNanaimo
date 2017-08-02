@@ -8,6 +8,7 @@ import android.graphics.Rect;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
@@ -97,7 +98,7 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
     protected void onBeforeClusterItemRendered(Destination destination,
                                                MarkerOptions markerOptions) {
         // Set-up and inits
-        Bitmap destIcon = catIconMap.get(destination.detail().activities().get(0).category());
+        Bitmap destIcon = catIconMap.get(destination.displayIcon());
 
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(destIcon));
         markerOptions.anchor(CENTER_ANCHOR, CENTER_ANCHOR);

@@ -17,4 +17,6 @@
     <!-- Errors -->
     <string name="no_location_available_error">Unable to Access Location</string>
 
+    <!-- Activities -->
+
 </resources>

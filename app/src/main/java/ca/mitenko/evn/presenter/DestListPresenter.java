@@ -3,7 +3,7 @@ package ca.mitenko.evn.presenter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import ca.mitenko.evn.event.DestinationResultEvent;
+import ca.mitenko.evn.event.SearchEvent;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.DestListState;
 import ca.mitenko.evn.state.ImmutableDestListState;
@@ -40,7 +40,7 @@ public class DestListPresenter extends RootPresenter<DestListView, DestListState
      * @param event
      */
     @Subscribe(sticky = true)
-    public void onDestinationResultEvent(DestinationResultEvent event) {
+    public void onSearchEvent(SearchEvent event) {
         DestListState newState = ImmutableDestListState.builder()
                 .from(curState)
                 .destinations(event.getSearch().filteredResults())

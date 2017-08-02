@@ -9,10 +9,7 @@ import org.immutables.value.Value;
 import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
 
-import java.util.ArrayList;
-
 import ca.mitenko.evn.model.Destination;
-import ca.mitenko.evn.model.Search;
 import ca.mitenko.evn.model.search.DestSearch;
 import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.state.common.RootState;
@@ -58,13 +55,6 @@ public class DestMapState extends RootState {
     }
 
     /**
-     * The Map Bounds
-     */
-    @Nullable
-    @Value.Default
-    public LatLngBounds mapBounds() { return null; }
-
-    /**
      * Destinations loaded state flag
      */
     @Nullable
@@ -77,11 +67,13 @@ public class DestMapState extends RootState {
      * Parcel factory to allow parcelling immutables
      */
     @ParcelFactory
-    public static DestMapState build(boolean mapReady, LatLngBounds mapBounds,
-                                     Destination selectedItem) {
+    public static DestMapState build(boolean mapReady, boolean recluster, boolean loadingResults,
+                                     DestSearch search, Destination selectedItem) {
         return ImmutableDestMapState.builder()
+                .loadingResults(loadingResults)
+                .recluster(recluster)
                 .mapReady(mapReady)
-                .mapBounds(mapBounds)
+                .search(search)
                 .selectedItem(selectedItem)
                 .build();
     }

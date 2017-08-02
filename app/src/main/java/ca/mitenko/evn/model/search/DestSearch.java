@@ -13,7 +13,11 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
+import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.model.ImmutableDestination;
+
+import static android.R.attr.filter;
 
 /**
  * Created by mitenko on 2017-07-30.
@@ -23,16 +27,54 @@ import ca.mitenko.evn.model.Destination;
 @Value.Immutable
 public class DestSearch {
     /**
-     * The map bounds to search by. Default is roughly nanaimo
+     * The search bounds. Default is roughly nanaimo
      * @return
      */
     @NonNull
     @Value.Default
-    public LatLngBounds bounds() {
+    public LatLngBounds searchBounds() {
         return new
                 LatLngBounds(
                 new LatLng(49.15938572687397,-123.9760036021471),
                 new LatLng(49.20606374369103,-123.91420517116785));
+    }
+
+    /**
+     * The map bounds. Default is roughly nanaimo
+     * @return
+     */
+    @Nullable
+    @Value.Default
+    public LatLngBounds mapBounds() {
+        return null;
+    }
+
+    /**
+     * The map bounds. Default is roughly nanaimo
+     * @return
+     */
+    @NonNull
+    @Value.Lazy
+    public LatLngBounds mapBoundsOrDefault() {
+        if (mapBounds() != null) {
+            return mapBounds();
+        }
+        return searchBounds();
+    }
+
+    /**
+     * Returns true / false if the map bounds are
+     * outside of the search bounds
+     * @return
+     */
+    @NonNull
+    @Value.Lazy
+    public boolean mapOutsideSearch() {
+        if (mapBounds() == null) {
+            return false;
+        }
+        return !searchBounds().contains(mapBounds().northeast)
+                || !searchBounds().contains(mapBounds().southwest);
     }
 
     /**
@@ -73,7 +115,48 @@ public class DestSearch {
         if (!hasResults()) {
             return new ArrayList<>();
         }
-        return results();
+
+        /**
+         * Filter first by the map bounds
+         */
+        ArrayList<Destination> mapFiltered = new ArrayList<>();
+        if (mapBounds() != null) {
+            for(Destination destination : results()) {
+                if (mapBounds().contains(destination.getPosition())) {
+                    mapFiltered.add(destination);
+                }
+            }
+        } else {
+            mapFiltered.addAll(results());
+        }
+
+        /**
+         * Second filter is by category and / or activity
+         */
+        if (filter().isEmpty()) {
+            return mapFiltered;
+        }
+
+        /**
+         * Otherwise apply the filter
+         */
+        ArrayList<Destination> filteredResults = new ArrayList<>();
+        for(Destination destination : mapFiltered) {
+            for (Activity activity : destination.detail().activities()) {
+                /**
+                 * Check category first
+                 */
+                if (filter().categories().contains(activity.category()) ||
+                        filter().activities().contains(activity.name())) {
+                    filteredResults.add(ImmutableDestination.builder()
+                        .from(destination)
+                        .displayIcon(activity.category())
+                        .build());
+                    break;
+                }
+            }
+        }
+        return filteredResults;
     }
 
     /**
@@ -81,10 +164,11 @@ public class DestSearch {
      * @return
      */
     @ParcelFactory
-    public static DestSearch build(Filter filter, LatLngBounds bounds,
+    public static DestSearch build(Filter filter, LatLngBounds searchBounds, LatLngBounds mapBounds,
                                    ArrayList<Destination> results) {
         return ImmutableDestSearch.builder()
-                .bounds(bounds)
+                .searchBounds(searchBounds)
+                .mapBounds(mapBounds)
                 .filter(filter)
                 .results(results)
                 .build();

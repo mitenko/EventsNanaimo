@@ -1,15 +1,12 @@
 package ca.mitenko.evn.interactor;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
-import ca.mitenko.evn.event.DestinationResultEvent;
-import ca.mitenko.evn.model.ImmutableDestinationResult;
-import ca.mitenko.evn.model.Search;
+import ca.mitenko.evn.event.SearchEvent;
 import ca.mitenko.evn.model.search.DestSearch;
 import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.network.EventsNanaimoService;
@@ -56,8 +53,8 @@ public class DestMapInteractor {
      * Fetch the markers for
      */
     public void getDestinations(DestSearch search) {
-        LatLng ne = search.bounds().northeast;
-        LatLng sw = search.bounds().southwest;
+        LatLng ne = search.searchBounds().northeast;
+        LatLng sw = search.searchBounds().southwest;
         evnService.getDestinations(
                 ne.latitude, ne.longitude, sw.latitude, sw.longitude)
                 .map(destinations -> {
@@ -65,7 +62,7 @@ public class DestMapInteractor {
                             .from(search)
                             .results(destinations.destinations())
                             .build();
-                    return new DestinationResultEvent(searchWithResults);
+                    return new SearchEvent(searchWithResults);
                 })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -76,8 +73,8 @@ public class DestMapInteractor {
      * Returns the Subscriber for the Destinations
      * @return
      */
-    public Subscriber<DestinationResultEvent> getDestSubscriber() {
-        return new Subscriber<DestinationResultEvent>() {
+    public Subscriber<SearchEvent> getDestSubscriber() {
+        return new Subscriber<SearchEvent>() {
             @Override
             public void onCompleted() {}
 
@@ -91,7 +88,7 @@ public class DestMapInteractor {
             }
 
             @Override
-            public void onNext(DestinationResultEvent event) {
+            public void onNext(SearchEvent event) {
                 bus.postSticky(event);
             }
         };

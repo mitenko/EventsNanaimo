@@ -21,15 +21,13 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ca.mitenko.evn.EvNApplication;
 import ca.mitenko.evn.R;
-import ca.mitenko.evn.event.FilterSearchEvent;
+import ca.mitenko.evn.event.FilterEvent;
 import ca.mitenko.evn.event.ViewEventEvent;
 import ca.mitenko.evn.event.ViewMapEvent;
 import ca.mitenko.evn.interactor.CategoryInteractor;
@@ -51,6 +49,15 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import retrofit2.Retrofit;
+
+import static ca.mitenko.evn.CategoryConstants.ACCOMODATION;
+import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
+import static ca.mitenko.evn.CategoryConstants.FOOD;
+import static ca.mitenko.evn.CategoryConstants.LIFESTYLE;
+import static ca.mitenko.evn.CategoryConstants.ON_THE_TOWN;
+import static ca.mitenko.evn.CategoryConstants.SERVICE;
+import static ca.mitenko.evn.CategoryConstants.SHOPPING;
+import static ca.mitenko.evn.CategoryConstants.SIGHT_SEEING;
 
 @RuntimePermissions
 public class HubActivity extends AppCompatActivity
@@ -92,10 +99,52 @@ public class HubActivity extends AppCompatActivity
     HorizontalScrollView categoryPicker;
 
     /**
-     * The destinations page nav button
+     * The on the town filter button
      */
     @BindView(R.id.on_the_town)
-    ImageView onTheTown;
+    ImageView onTheTownFilter;
+
+    /**
+     * The foodFilter filter button
+     */
+    @BindView(R.id.food)
+    ImageView foodFilter;
+
+    /**
+     * The shopping filter button
+     */
+    @BindView(R.id.shopping)
+    ImageView shoppingFilter;
+
+    /**
+     * The sight seeing filter button
+     */
+    @BindView(R.id.sight_seeing)
+    ImageView sightSeeingFilter;
+
+    /**
+     * The shopping filter button
+     */
+    @BindView(R.id.service)
+    ImageView serviceFilter;
+
+    /**
+     * The shopping filter button
+     */
+    @BindView(R.id.adventure)
+    ImageView adventureFilter;
+
+    /**
+     * The shopping filter button
+     */
+    @BindView(R.id.accomodation)
+    ImageView accomodationFilter;
+
+    /**
+     * The shopping filter button
+     */
+    @BindView(R.id.lifestyle)
+    ImageView lifestyleFilter;
 
     /**
      * Event bus
@@ -170,7 +219,15 @@ public class HubActivity extends AppCompatActivity
         // Init buttons
         exploreButton.setOnClickListener(this);
         eventButton.setOnClickListener(this);
-        onTheTown.setOnClickListener(this);
+        onTheTownFilter.setOnClickListener(this);
+        foodFilter.setOnClickListener(this);
+        shoppingFilter.setOnClickListener(this);
+        sightSeeingFilter.setOnClickListener(this);
+        exploreButton.setOnClickListener(this);
+        serviceFilter.setOnClickListener(this);
+        adventureFilter.setOnClickListener(this);
+        accomodationFilter.setOnClickListener(this);
+        lifestyleFilter.setOnClickListener(this);
 
         // Get fragment manager
         fragmentManager = getSupportFragmentManager();
@@ -223,8 +280,36 @@ public class HubActivity extends AppCompatActivity
             bus.post(new ViewEventEvent());
             return;
         }
-        if (view.equals(onTheTown)) {
-            bus.post(new FilterSearchEvent(FilterSearchEvent.SearchType.NIGHTLIFE));
+        if (view.equals(onTheTownFilter)) {
+            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, ON_THE_TOWN));
+            return;
+        }
+        if (view.equals(foodFilter)) {
+            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, FOOD));
+            return;
+        }
+        if (view.equals(shoppingFilter)) {
+            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, SHOPPING));
+            return;
+        }
+        if (view.equals(sightSeeingFilter)) {
+            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, SIGHT_SEEING));
+            return;
+        }
+        if (view.equals(serviceFilter)) {
+            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, SERVICE));
+            return;
+        }
+        if (view.equals(adventureFilter)) {
+            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, ADVENTURE));
+            return;
+        }
+        if (view.equals(accomodationFilter)) {
+            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, ACCOMODATION));
+            return;
+        }
+        if (view.equals(lifestyleFilter)) {
+            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, LIFESTYLE));
             return;
         }
     }
@@ -399,7 +484,6 @@ public class HubActivity extends AppCompatActivity
     /**
      * Permissions Callbacks
      */
-
     /**
      * Displays the rationale for requesting current location
      * @param request

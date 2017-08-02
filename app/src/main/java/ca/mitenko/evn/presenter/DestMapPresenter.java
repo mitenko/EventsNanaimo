@@ -1,20 +1,19 @@
 package ca.mitenko.evn.presenter;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import ca.mitenko.evn.event.DestinationResultEvent;
+import ca.mitenko.evn.event.FilterEvent;
 import ca.mitenko.evn.event.MapBoundsEvent;
 import ca.mitenko.evn.event.MapClusterClickEvent;
 import ca.mitenko.evn.event.MapItemClickEvent;
 import ca.mitenko.evn.event.MapReadyEvent;
+import ca.mitenko.evn.event.SearchEvent;
 import ca.mitenko.evn.event.UpdateMapRequestEvent;
 import ca.mitenko.evn.interactor.DestMapInteractor;
 import ca.mitenko.evn.model.Destination;
-import ca.mitenko.evn.model.Search;
 import ca.mitenko.evn.model.search.DestSearch;
 import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.presenter.common.RootPresenter;
@@ -69,9 +68,9 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                 view.setDestinations(curState.search().filteredResults());
             }
 
-            if (curState.mapBounds() != null &&
-                    !curState.mapBounds().equals(prevState.mapBounds())) {
-                view.setMapBounds(curState.mapBounds());
+            if (curState.search().mapBoundsOrDefault() != null &&
+                    !curState.search().mapBoundsOrDefault().equals(prevState.search().mapBoundsOrDefault())) {
+                view.setMapBounds(curState.search().mapBoundsOrDefault());
             }
 
             if (curState.recluster()) {
@@ -86,15 +85,10 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
              * Show the update button if the search results bounds
              * are out of sync with the current map bounds
              */
-            if (curState.mapBounds() != null) {
-                LatLngBounds searchBounds = curState.search().bounds();
-                LatLngBounds mapBounds = curState.mapBounds();
-                if (!searchBounds.contains(mapBounds.northeast) ||
-                        !searchBounds.contains(mapBounds.southwest)) {
-                    view.showUpdateButton();
-                } else {
-                    view.hideUpdateButton();
-                }
+            if (curState.search().mapOutsideSearch()) {
+                view.showUpdateButton();
+            } else {
+                view.hideUpdateButton();
             }
 
             if (curState.loadingResults()) {
@@ -132,20 +126,16 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
      */
     @Subscribe
     public void onMapBoundsEvent(MapBoundsEvent event) {
-        ImmutableDestMapState.Builder newStateBuilder =
-                ImmutableDestMapState.builder()
-                        .from(curState)
-                        .recluster(true);
+        ImmutableDestSearch newSearch = ImmutableDestSearch.builder()
+                    .from(curState.search())
+                    .mapBounds(event.getLatLngBounds())
+                    .build();
 
-        /**
-         * Set the state bounds if the event bounds are outside
-         */
-        if (curState.mapBounds() == null ||
-                !(curState.mapBounds().contains(event.getLatLngBounds().northeast)
-                        && curState.mapBounds().contains(event.getLatLngBounds().southwest))) {
-            newStateBuilder
-                .mapBounds(event.getLatLngBounds());
-        }
+        ImmutableDestMapState newState = ImmutableDestMapState.builder()
+                    .from(curState)
+                    .search(newSearch)
+                    .recluster(true)
+                    .build();
 
         /**
          * Force a new search if destinations == null
@@ -154,7 +144,10 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
             // Hit the API for the destinations within these bounds
             interactor.getDestinations(curState.search());
         }
-        render(newStateBuilder.build());
+        render(newState);
+
+        // Push out the new search
+        bus.postSticky(new SearchEvent(curState.search()));
     }
 
     /**
@@ -163,11 +156,20 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
      */
     @Subscribe
     public void onMapClusterClickEvent(MapClusterClickEvent event) {
+        ImmutableDestSearch newSearch = ImmutableDestSearch.builder()
+                .from(curState.search())
+                .mapBounds(event.getClusterBounds())
+                .build();
+
         ImmutableDestMapState newState = ImmutableDestMapState.builder()
                     .from(curState)
-                    .mapBounds(event.getClusterBounds())
+                    .search(newSearch)
                     .build();
+
         render(newState);
+
+        // Push out the new search
+        bus.postSticky(new SearchEvent(curState.search()));
     }
 
     /**
@@ -178,7 +180,7 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
     public void onUpdateMapClick(UpdateMapRequestEvent event) {
         DestSearch newSearch = ImmutableDestSearch.builder()
                 .from(curState.search())
-                .bounds(curState.mapBounds())
+                .searchBounds(curState.search().mapBoundsOrDefault())
                 .build();
 
         DestMapState newState = ImmutableDestMapState.builder()
@@ -190,15 +192,21 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
 
         // Hit the API for the destinations within these bounds
         interactor.getDestinations(newSearch);
-    }
 
+        // Push out the new search
+        bus.postSticky(new SearchEvent(curState.search()));
+    }
 
     /**
      * Called when a new set of destinations is known
      * @param event
      */
     @Subscribe(sticky = true)
-    public void onDestinationResultEvent(DestinationResultEvent event) {
+    public void onSearchEvent(SearchEvent event) {
+        if (event.getSearch().equals(curState.search())) {
+            return;
+        }
+
         DestMapState newState = ImmutableDestMapState.builder()
                 .from(curState)
                 .loadingResults(false)
@@ -222,6 +230,24 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
         DestMapState newState = ImmutableDestMapState.builder()
                 .from(curState)
                 .selectedItem(selectedDest)
+                .build();
+        render(newState);
+    }
+
+    /**
+     * Called when a filtering event has occurred
+     * @param event
+     */
+    @Subscribe
+    public void onFilterEvent(FilterEvent event) {
+        DestSearch newSearch = ImmutableDestSearch.builder()
+                .from(curState.search())
+                .filter(curState.search().filter().withFilterEvent(event))
+                .build();
+
+        DestMapState newState = ImmutableDestMapState.builder()
+                .from(curState)
+                .search(newSearch)
                 .build();
         render(newState);
     }

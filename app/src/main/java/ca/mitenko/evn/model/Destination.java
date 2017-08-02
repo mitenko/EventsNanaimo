@@ -41,6 +41,12 @@ public abstract class Destination implements ClusterItem {
     public abstract Address address();
 
     /**
+     * Category of the icon to display
+     */
+    @NonNull
+    public abstract String displayIcon();
+
+    /**
      * Destination Detail
      */
     @NonNull

@@ -14,9 +14,10 @@ data class DefaultEvent(val isDefault: Boolean = true)
 /**
  * Button Events
  */
-data class FilterSearchEvent (val searchType: SearchType) {
-    enum class SearchType {
-        NIGHTLIFE
+data class FilterEvent(val type: Type, val value: String) {
+    enum class Type {
+        ACTIVITY,
+        CATEGORY
     }
 }
 data class DestItemClickEvent(val destination: Destination)
@@ -37,5 +38,5 @@ data class MapReadyEvent(val ready: Boolean = true)
  * API Events
  */
 data class CategoryResultEvent(val categoryResult: ArrayList<Category>)
-data class DestinationResultEvent(val search: DestSearch)
 data class EventResultEvent(val events: ArrayList<Event>)
+data class SearchEvent(val search: DestSearch)
