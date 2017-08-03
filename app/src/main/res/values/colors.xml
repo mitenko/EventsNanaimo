@@ -14,4 +14,13 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="appGreen">#92bd3e</color>
+
+    <color name="onTheTown">#d41c56</color>
+    <color name="food">#0d73bb</color>
+    <color name="shopping">#ee3533</color>
+    <color name="sightSeeing">#0bbbbb</color>
+    <color name="service">#f6891f</color>
+    <color name="adventure">#92bd3e</color>
+    <color name="accommodation">#7356a4</color>
+    <color name="lifestyle">#f6be1d</color>
 </resources>

@@ -3,6 +3,7 @@ package ca.mitenko.evn.ui.hub;
 import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -102,49 +103,49 @@ public class HubActivity extends AppCompatActivity
      * The on the town filter button
      */
     @BindView(R.id.on_the_town)
-    ImageView onTheTownFilter;
+    FloatingActionButton onTheTownFilter;
 
     /**
      * The foodFilter filter button
      */
     @BindView(R.id.food)
-    ImageView foodFilter;
+    FloatingActionButton foodFilter;
 
     /**
      * The shopping filter button
      */
     @BindView(R.id.shopping)
-    ImageView shoppingFilter;
+    FloatingActionButton shoppingFilter;
 
     /**
      * The sight seeing filter button
      */
     @BindView(R.id.sight_seeing)
-    ImageView sightSeeingFilter;
+    FloatingActionButton sightSeeingFilter;
 
     /**
      * The shopping filter button
      */
     @BindView(R.id.service)
-    ImageView serviceFilter;
+    FloatingActionButton serviceFilter;
 
     /**
      * The shopping filter button
      */
     @BindView(R.id.adventure)
-    ImageView adventureFilter;
+    FloatingActionButton adventureFilter;
 
     /**
      * The shopping filter button
      */
     @BindView(R.id.accomodation)
-    ImageView accomodationFilter;
+    FloatingActionButton accomodationFilter;
 
     /**
      * The shopping filter button
      */
     @BindView(R.id.lifestyle)
-    ImageView lifestyleFilter;
+    FloatingActionButton lifestyleFilter;
 
     /**
      * Event bus

@@ -1,6 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bg="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -25,49 +27,65 @@
                 android:scrollbars="none"
                 android:id="@+id/category_picker">
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:orientation="horizontal">
 
-                    <ImageView
+                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/on_the_town"
-                        android:src="@drawable/ic_on_the_town"
+                        android:src="@drawable/ic_on_the_town_white"
+                        android:scaleType="center"
+                        bg:backgroundTint="@color/onTheTown"
                         style="@style/CategoryIcon"/>
 
-                    <ImageView
+                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/food"
-                        android:src="@drawable/ic_food"
+                        android:src="@drawable/ic_food_white"
+                        android:scaleType="center"
+                        bg:backgroundTint="@color/food"
                         style="@style/CategoryIcon"/>
 
-                    <ImageView
+                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/shopping"
-                        android:src="@drawable/ic_shopping"
+                        android:src="@drawable/ic_shopping_white"
+                        android:scaleType="center"
+                        bg:backgroundTint="@color/shopping"
                         style="@style/CategoryIcon"/>
 
-                    <ImageView
+                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/sight_seeing"
-                        android:src="@drawable/ic_sight_seeing"
+                        android:src="@drawable/ic_sight_seeing_white"
+                        android:scaleType="center"
+                        bg:backgroundTint="@color/sightSeeing"
                         style="@style/CategoryIcon"/>
 
-                    <ImageView
+                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/service"
-                        android:src="@drawable/ic_service"
+                        android:src="@drawable/ic_service_white"
+                        android:scaleType="center"
+                        bg:backgroundTint="@color/service"
                         style="@style/CategoryIcon"/>
 
-                    <ImageView
+                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/adventure"
-                        android:src="@drawable/ic_adventure"
+                        android:src="@drawable/ic_adventure_white"
+                        android:scaleType="center"
+                        bg:backgroundTint="@color/adventure"
                         style="@style/CategoryIcon"/>
 
-                    <ImageView
+                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/accomodation"
-                        android:src="@drawable/ic_accomodation"
+                        android:src="@drawable/ic_accomodation_white"
+                        android:scaleType="center"
+                        bg:backgroundTint="@color/accommodation"
                         style="@style/CategoryIcon"/>
 
-                    <ImageView
+                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/lifestyle"
-                        android:src="@drawable/ic_lifestyle"
+                        android:src="@drawable/ic_lifestyle_white"
+                        android:scaleType="center"
+                        bg:backgroundTint="@color/lifestyle"
                         style="@style/CategoryIcon"/>
 
                 </LinearLayout>
