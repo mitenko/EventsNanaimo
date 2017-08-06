@@ -8,11 +8,15 @@ import java.util.ArrayList;
 import ca.mitenko.evn.event.CategoryResultEvent;
 import ca.mitenko.evn.event.DestItemClickEvent;
 import ca.mitenko.evn.event.EventResultEvent;
+import ca.mitenko.evn.event.FilterEvent;
+import ca.mitenko.evn.event.SearchEvent;
 import ca.mitenko.evn.event.ViewEventEvent;
 import ca.mitenko.evn.event.ViewListEvent;
 import ca.mitenko.evn.event.ViewMapEvent;
 import ca.mitenko.evn.interactor.CategoryInteractor;
 import ca.mitenko.evn.interactor.EventListInteractor;
+import ca.mitenko.evn.model.search.DestSearch;
+import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.HubState;
 import ca.mitenko.evn.state.HubState.*;
@@ -82,6 +86,11 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
                         view.showDestDetail(curState.selectedDest());
                         break;
                 }
+            }
+
+            // Update the filter buttons
+            if (!curState.search().filter().equals(prevState.search().filter())) {
+                view.showFilter(curState.search().filter());
             }
 
             // Shutdown
@@ -187,6 +196,36 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
                 .categories(event.getCategoryResult())
                 .build();
         render(newState);
+    }
+
+    @Subscribe(sticky = true)
+    public void onSearchEvent(SearchEvent event) {
+        if (event.getSearch().equals(curState.search())) {
+            return;
+        }
+        HubState newState = ImmutableHubState.builder()
+                .from(curState)
+                .search(event.getSearch())
+                .build();
+        render(newState);
+
+    }
+
+    /**
+     * Called when one of the filter buttons is pressed
+     * @param event
+     */
+    public void onFilterEvent(FilterEvent event) {
+        DestSearch newSearch = ImmutableDestSearch.builder()
+                .from(curState.search())
+                .filter(curState.search().filter().withFilterEvent(event))
+                .build();
+        HubState newState = ImmutableHubState.builder()
+                .from(curState)
+                .search(newSearch)
+                .build();
+        render(newState);
+        bus.postSticky(new SearchEvent(newSearch));
     }
 
     /**

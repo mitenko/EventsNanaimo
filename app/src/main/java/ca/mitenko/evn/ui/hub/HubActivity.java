@@ -1,6 +1,7 @@
 package ca.mitenko.evn.ui.hub;
 
 import android.Manifest;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,10 +23,14 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ca.mitenko.evn.CategoryConstants;
 import ca.mitenko.evn.EvNApplication;
 import ca.mitenko.evn.R;
 import ca.mitenko.evn.event.FilterEvent;
@@ -34,6 +39,7 @@ import ca.mitenko.evn.event.ViewMapEvent;
 import ca.mitenko.evn.interactor.CategoryInteractor;
 import ca.mitenko.evn.interactor.EventListInteractor;
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.network.EventsNanaimoService;
 import ca.mitenko.evn.presenter.HubPresenter;
 import ca.mitenko.evn.state.HubState;
@@ -51,7 +57,7 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import retrofit2.Retrofit;
 
-import static ca.mitenko.evn.CategoryConstants.ACCOMODATION;
+import static ca.mitenko.evn.CategoryConstants.ACCOMMODATION;
 import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
 import static ca.mitenko.evn.CategoryConstants.FOOD;
 import static ca.mitenko.evn.CategoryConstants.LIFESTYLE;
@@ -148,6 +154,11 @@ public class HubActivity extends AppCompatActivity
     FloatingActionButton lifestyleFilter;
 
     /**
+     * Maps the categories to each button
+     */
+    private HashMap<String, FloatingActionButton> categoryButtonMap;
+
+    /**
      * Event bus
      */
     @Inject
@@ -201,6 +212,7 @@ public class HubActivity extends AppCompatActivity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hub);
         ButterKnife.bind(this);
@@ -220,15 +232,19 @@ public class HubActivity extends AppCompatActivity
         // Init buttons
         exploreButton.setOnClickListener(this);
         eventButton.setOnClickListener(this);
-        onTheTownFilter.setOnClickListener(this);
-        foodFilter.setOnClickListener(this);
-        shoppingFilter.setOnClickListener(this);
-        sightSeeingFilter.setOnClickListener(this);
-        exploreButton.setOnClickListener(this);
-        serviceFilter.setOnClickListener(this);
-        adventureFilter.setOnClickListener(this);
-        accomodationFilter.setOnClickListener(this);
-        lifestyleFilter.setOnClickListener(this);
+
+        categoryButtonMap = new HashMap<>();
+        categoryButtonMap.put(ON_THE_TOWN, onTheTownFilter);
+        categoryButtonMap.put(FOOD, foodFilter);
+        categoryButtonMap.put(SHOPPING, shoppingFilter);
+        categoryButtonMap.put(SIGHT_SEEING, sightSeeingFilter);
+        categoryButtonMap.put(SERVICE, serviceFilter);
+        categoryButtonMap.put(ADVENTURE, adventureFilter);
+        categoryButtonMap.put(ACCOMMODATION, accomodationFilter);
+        categoryButtonMap.put(LIFESTYLE, lifestyleFilter);
+        for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
+            mapEntry.getValue().setOnClickListener(this);
+        }
 
         // Get fragment manager
         fragmentManager = getSupportFragmentManager();
@@ -281,37 +297,11 @@ public class HubActivity extends AppCompatActivity
             bus.post(new ViewEventEvent());
             return;
         }
-        if (view.equals(onTheTownFilter)) {
-            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, ON_THE_TOWN));
-            return;
-        }
-        if (view.equals(foodFilter)) {
-            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, FOOD));
-            return;
-        }
-        if (view.equals(shoppingFilter)) {
-            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, SHOPPING));
-            return;
-        }
-        if (view.equals(sightSeeingFilter)) {
-            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, SIGHT_SEEING));
-            return;
-        }
-        if (view.equals(serviceFilter)) {
-            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, SERVICE));
-            return;
-        }
-        if (view.equals(adventureFilter)) {
-            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, ADVENTURE));
-            return;
-        }
-        if (view.equals(accomodationFilter)) {
-            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, ACCOMODATION));
-            return;
-        }
-        if (view.equals(lifestyleFilter)) {
-            bus.post(new FilterEvent(FilterEvent.Type.CATEGORY, LIFESTYLE));
-            return;
+
+        for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
+            if (mapEntry.getValue().equals(view)) {
+                hubPresenter.onFilterEvent(new FilterEvent(FilterEvent.Type.CATEGORY, mapEntry.getKey()));
+            }
         }
     }
 
@@ -478,6 +468,27 @@ public class HubActivity extends AppCompatActivity
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
                 params.height = actionBarHeight;
                 toolbar.setLayoutParams(params);
+            }
+        }
+    }
+
+    /**
+     * Applies the filter state to the filter buttons
+     */
+    public void showFilter(Filter filter) {
+        ColorStateList darkBackground = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.progress_bar_background));
+        for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
+            ColorStateList resetBackground = ColorStateList.valueOf(
+                    ContextCompat.getColor(this, CategoryConstants.categoryColorMap.get(mapEntry.getKey())));
+            if (filter.categories().isEmpty()) {
+                mapEntry.getValue().setBackgroundTintList(resetBackground);
+            } else {
+                if (filter.categories().contains(mapEntry.getKey())) {
+                    mapEntry.getValue().setBackgroundTintList(resetBackground);
+                } else {
+                    mapEntry.getValue().setBackgroundTintList(darkBackground);
+                }
             }
         }
     }

@@ -76,7 +76,7 @@
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/accomodation"
-                        android:src="@drawable/ic_accomodation_white"
+                        android:src="@drawable/ic_accommodation_white"
                         android:scaleType="center"
                         bg:backgroundTint="@color/accommodation"
                         style="@style/CategoryIcon"/>

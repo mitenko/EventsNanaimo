@@ -1,6 +1,7 @@
 package ca.mitenko.evn.ui.hub;
 
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.ui.common.RootView;
 
 /**
@@ -32,4 +33,9 @@ public interface HubView extends RootView {
      * Shutdown the app
      */
     void shutdown();
+
+    /**
+     * Applies the filter to the UI elements
+     */
+    void showFilter(Filter filter);
 }

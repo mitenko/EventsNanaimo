@@ -2,13 +2,9 @@ package ca.mitenko.evn.ui.dest_map.map;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
@@ -19,7 +15,7 @@ import ca.mitenko.evn.R;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.util.BitmapUtil;
 
-import static ca.mitenko.evn.CategoryConstants.ACCOMODATION;
+import static ca.mitenko.evn.CategoryConstants.ACCOMMODATION;
 import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
 import static ca.mitenko.evn.CategoryConstants.FOOD;
 import static ca.mitenko.evn.CategoryConstants.LIFESTYLE;
@@ -85,7 +81,7 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
         catIconMap.put(SIGHT_SEEING, sightSeeing);
         catIconMap.put(SERVICE, service);
         catIconMap.put(ADVENTURE, adventure);
-        catIconMap.put(ACCOMODATION, accomodation);
+        catIconMap.put(ACCOMMODATION, accomodation);
         catIconMap.put(LIFESTYLE, lifestyle);
     }
 
