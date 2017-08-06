@@ -206,6 +206,8 @@ public class HubActivity extends AppCompatActivity
      */
     private HubPresenter hubPresenter;
 
+    boolean toolbarShowing = true;
+
     /**
      * {@inheritDoc}
      * @param savedInstanceState
@@ -454,12 +456,20 @@ public class HubActivity extends AppCompatActivity
      */
     public void showCategoryPicker(boolean show) {
         if (show) {
+            if (toolbarShowing) {
+                return;
+            }
+            toolbarShowing = true;
             categoryPicker.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
             params.height = params.height + getResources().getDimensionPixelOffset(R.dimen.category_icon_size);
             toolbar.setLayoutParams(params);
         } else {
-            categoryPicker.setVisibility(View.INVISIBLE);
+            if (!toolbarShowing) {
+                return;
+            }
+            toolbarShowing = false;
+            categoryPicker.setVisibility(View.GONE);
             // Calculate Default ActionBar height
             TypedValue tv = new TypedValue();
             if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))

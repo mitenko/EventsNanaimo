@@ -1,96 +1,124 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:bg="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:animateLayoutChanges="true">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
-        <LinearLayout
+
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:paddingBottom="6dp">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.765"
+                app:layout_constraintStart_toEndOf="@+id/toolbar_title"
+                app:layout_constraintTop_toTopOf="@+id/toolbar_title"
+                app:srcCompat="@drawable/ic_tune_black" />
+
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/toolbar_title"
-                style="@style/ToolbarTitle"/>
+                style="@style/ToolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="TOOLBAR"
+                app:layout_constraintEnd_toEndOf="@+id/category_picker"
+                app:layout_constraintHorizontal_bias="0.49"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="0dp" />
+
             <HorizontalScrollView
+                android:id="@+id/category_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:scrollbars="none"
-                android:id="@+id/category_picker">
+                app:layout_constraintTop_toBottomOf="@+id/toolbar_title"
+                tools:layout_editor_absoluteX="0dp">
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="4dp"
                     android:orientation="horizontal">
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/on_the_town"
-                        android:src="@drawable/ic_on_the_town_white"
+                        style="@style/CategoryIcon"
                         android:scaleType="center"
-                        bg:backgroundTint="@color/onTheTown"
-                        style="@style/CategoryIcon"/>
+                        android:src="@drawable/ic_on_the_town_white"
+                        bg:backgroundTint="@color/onTheTown" />
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/food"
-                        android:src="@drawable/ic_food_white"
+                        style="@style/CategoryIcon"
                         android:scaleType="center"
-                        bg:backgroundTint="@color/food"
-                        style="@style/CategoryIcon"/>
+                        android:src="@drawable/ic_food_white"
+                        bg:backgroundTint="@color/food" />
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/shopping"
-                        android:src="@drawable/ic_shopping_white"
+                        style="@style/CategoryIcon"
                         android:scaleType="center"
-                        bg:backgroundTint="@color/shopping"
-                        style="@style/CategoryIcon"/>
+                        android:src="@drawable/ic_shopping_white"
+                        bg:backgroundTint="@color/shopping" />
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/sight_seeing"
-                        android:src="@drawable/ic_sight_seeing_white"
+                        style="@style/CategoryIcon"
                         android:scaleType="center"
-                        bg:backgroundTint="@color/sightSeeing"
-                        style="@style/CategoryIcon"/>
+                        android:src="@drawable/ic_sight_seeing_white"
+                        bg:backgroundTint="@color/sightSeeing" />
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/service"
-                        android:src="@drawable/ic_service_white"
+                        style="@style/CategoryIcon"
                         android:scaleType="center"
-                        bg:backgroundTint="@color/service"
-                        style="@style/CategoryIcon"/>
+                        android:src="@drawable/ic_service_white"
+                        bg:backgroundTint="@color/service" />
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/adventure"
-                        android:src="@drawable/ic_adventure_white"
+                        style="@style/CategoryIcon"
                         android:scaleType="center"
-                        bg:backgroundTint="@color/adventure"
-                        style="@style/CategoryIcon"/>
+                        android:src="@drawable/ic_adventure_white"
+                        bg:backgroundTint="@color/adventure" />
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/accomodation"
-                        android:src="@drawable/ic_accommodation_white"
+                        style="@style/CategoryIcon"
                         android:scaleType="center"
-                        bg:backgroundTint="@color/accommodation"
-                        style="@style/CategoryIcon"/>
+                        android:src="@drawable/ic_accommodation_white"
+                        bg:backgroundTint="@color/accommodation" />
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/lifestyle"
-                        android:src="@drawable/ic_lifestyle_white"
+                        style="@style/CategoryIcon"
                         android:scaleType="center"
-                        bg:backgroundTint="@color/lifestyle"
-                        style="@style/CategoryIcon"/>
+                        android:src="@drawable/ic_lifestyle_white"
+                        bg:backgroundTint="@color/lifestyle" />
 
                 </LinearLayout>
             </HorizontalScrollView>
-        </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.Toolbar>
 
@@ -118,7 +146,7 @@
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_sight_seeing"
+            android:src="@drawable/ic_near_me"
             style="@style/TabButton"/>
 
         <ImageView
