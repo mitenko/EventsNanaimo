@@ -3,10 +3,14 @@ package ca.mitenko.evn.presenter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import ca.mitenko.evn.event.FilterEvent;
 import ca.mitenko.evn.event.SearchEvent;
+import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.DestListState;
+import ca.mitenko.evn.state.DestMapState;
 import ca.mitenko.evn.state.ImmutableDestListState;
+import ca.mitenko.evn.state.ImmutableDestMapState;
 import ca.mitenko.evn.ui.dest_list.DestListView;
 
 /**
@@ -29,8 +33,8 @@ public class DestListPresenter extends RootPresenter<DestListView, DestListState
     @Override
     public void renderState(DestListView view, DestListState curState, DestListState prevState) {
         if (view != null) {
-            if (!curState.destinations().equals(prevState.destinations())) {
-                view.setDestinations(curState.destinations());
+            if (!curState.search().filteredResults().equals(prevState.search().filteredResults())) {
+                view.setDestinations(curState.search().filteredResults());
             }
         }
     }
@@ -41,9 +45,31 @@ public class DestListPresenter extends RootPresenter<DestListView, DestListState
      */
     @Subscribe(sticky = true)
     public void onSearchEvent(SearchEvent event) {
+        if (curState.search().equals(event.getSearch())) {
+            return;
+        }
         DestListState newState = ImmutableDestListState.builder()
                 .from(curState)
-                .destinations(event.getSearch().filteredResults())
+                .search(event.getSearch())
+                .build();
+        render(newState);
+    }
+
+    /**
+     * Called when the Filter as a whole has been updated
+     * @param event
+     */
+    @Subscribe(sticky = true)
+    public void onFilterEvent(FilterEvent event) {
+        if (event.getFilter().equals(curState.search().filter())) {
+            return;
+        }
+        DestListState newState = ImmutableDestListState.builder()
+                .from(curState)
+                .search(ImmutableDestSearch.builder()
+                        .from(curState.search())
+                        .filter(event.getFilter())
+                        .build())
                 .build();
         render(newState);
     }

@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    <!-- Make phone calls -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
     <application
         android:name=".EvNApplication"
         android:allowBackup="true"
@@ -19,13 +22,17 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyASFlFrUY2m055zls177YGZ41N2douQx2Q"/>
-
-        <activity android:name=".ui.hub.HubActivity">
+        <activity android:name=".ui.splash.SplashActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".ui.hub.HubActivity">
         </activity>
     </application>
 

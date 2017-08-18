@@ -3,16 +3,23 @@ package ca.mitenko.evn.state;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.immutables.value.Value;
 import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Category;
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.model.Event;
 import ca.mitenko.evn.model.search.DestSearch;
+import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.model.search.ImmutableDestSearch;
+import ca.mitenko.evn.model.search.ImmutableFilter;
 import ca.mitenko.evn.state.common.RootState;
 
 /**
@@ -29,7 +36,8 @@ public class HubState extends RootState {
         DEST_MAP,
         DEST_LIST,
         DEST_DETAIL,
-        EVENT_LIST
+        EVENT_LIST,
+        FILTER
     }
 
     /**
@@ -38,21 +46,30 @@ public class HubState extends RootState {
     public static final String TAG = "state.hub";
 
     /**
-     * Flag indicating the events have been loaded
-     * @return
+     * Events flag
      */
+    @Nullable
     @Value.Default
-    public boolean hasEvents() {
+    public ArrayList<Event> events() {
+        return null;
+    }
+
+    /**
+     * Events flag
+     */
+    @NonNull
+    @Value.Default
+    public boolean locationRequested() {
         return false;
     }
 
     /**
-     * Map loaded state flag
+     * The filter
      */
     @NonNull
     @Value.Default
-    public DestSearch search() {
-        return ImmutableDestSearch.builder().build();
+    public Filter filter() {
+        return ImmutableFilter.builder().build();
     }
 
     /**
@@ -60,7 +77,7 @@ public class HubState extends RootState {
      */
     @Nullable
     @Value.Default
-    public ArrayList<Category> categories() {
+    public HashMap<String, ArrayList<Activity>> categoryMap() {
         return null;
     }
 
@@ -105,15 +122,17 @@ public class HubState extends RootState {
      * @return
      */
     @ParcelFactory
-    public static HubState build(Destination selectedDest,
-                     boolean hasEvents, ArrayList<Category> categories, FragmentType currentFragment,
+    public static HubState build(Destination selectedDest, Filter filter, boolean locationRequested,
+                                 ArrayList<Event> events, HashMap<String, ArrayList<Activity>> categoryMap, FragmentType currentFragment,
                                  ArrayList<FragmentType> fragmentStack) {
         return ImmutableHubState.builder()
-                .hasEvents(hasEvents)
+                .events(events)
                 .selectedDest(selectedDest)
-                .categories(categories)
+                .categoryMap(categoryMap)
                 .currentFragment(currentFragment)
                 .fragmentStack(fragmentStack)
+                .filter(filter)
+                .locationRequested(locationRequested)
                 .build();
     }
 }

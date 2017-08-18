@@ -70,7 +70,7 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
         sightSeeing = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_sight_seeing);
         service = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_service);
         adventure = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_adventure);
-        accomodation = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_accomodation);
+        accomodation = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_accommodation);
         lifestyle = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_lifestyle);
 
         // Build the map

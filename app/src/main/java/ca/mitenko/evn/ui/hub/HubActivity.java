@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -33,8 +34,9 @@ import butterknife.ButterKnife;
 import ca.mitenko.evn.CategoryConstants;
 import ca.mitenko.evn.EvNApplication;
 import ca.mitenko.evn.R;
-import ca.mitenko.evn.event.FilterEvent;
+import ca.mitenko.evn.event.ModifyFilterEvent;
 import ca.mitenko.evn.event.ViewEventEvent;
+import ca.mitenko.evn.event.ViewFilterEvent;
 import ca.mitenko.evn.event.ViewMapEvent;
 import ca.mitenko.evn.interactor.CategoryInteractor;
 import ca.mitenko.evn.interactor.EventListInteractor;
@@ -49,6 +51,9 @@ import ca.mitenko.evn.ui.dest_detail.DestDetailFragmentBuilder;
 import ca.mitenko.evn.ui.dest_list.DestListFragment;
 import ca.mitenko.evn.ui.dest_map.DestMapFragment;
 import ca.mitenko.evn.ui.event_list.EventListFragment;
+import ca.mitenko.evn.ui.filter.FilterFragment;
+import ca.mitenko.evn.ui.filter.FilterFragmentBuilder;
+import ca.mitenko.evn.util.UserLocationUtil;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -98,6 +103,18 @@ public class HubActivity extends AppCompatActivity
      */
     @BindView(R.id.event_button)
     ImageView eventButton;
+
+    /**
+     * The destinations page nav button
+     */
+    @BindView(R.id.filter_button)
+    ImageView filterButton;
+
+    /**
+     * The done nav button
+     */
+    @BindView(R.id.done_button)
+    ImageView doneButton;
 
     /**
      * The destinations page nav button
@@ -202,11 +219,25 @@ public class HubActivity extends AppCompatActivity
     private DestDetailFragment destDetailFragment = null;
 
     /**
+     * The Event List fragment
+     */
+    private FilterFragment filterFragment;
+
+    /**
      * Hub presenter
      */
     private HubPresenter hubPresenter;
 
+    /**
+     * Flag indicating the toolbar is showing
+     */
     boolean toolbarShowing = true;
+
+
+    /**
+     * Util for requesting the user location
+     */
+    private UserLocationUtil userLocationUtil = null;
 
     /**
      * {@inheritDoc}
@@ -234,6 +265,8 @@ public class HubActivity extends AppCompatActivity
         // Init buttons
         exploreButton.setOnClickListener(this);
         eventButton.setOnClickListener(this);
+        filterButton.setOnClickListener(this);
+        doneButton.setOnClickListener(this);
 
         categoryButtonMap = new HashMap<>();
         categoryButtonMap.put(ON_THE_TOWN, onTheTownFilter);
@@ -267,6 +300,11 @@ public class HubActivity extends AppCompatActivity
             eventListFragment = new EventListFragment();
         }
 
+        filterFragment = (FilterFragment) fragmentManager.findFragmentByTag(FilterFragment.TAG);
+        if (filterFragment == null) {
+            filterFragment = new FilterFragment();
+        }
+
         // Attempt to load state
         HubState hubState;
         if (savedInstanceState != null && savedInstanceState.containsKey(HubState.TAG)) {
@@ -288,6 +326,20 @@ public class HubActivity extends AppCompatActivity
     }
 
     /**
+     * Override to use permissions request
+     * {@inheritDoc}
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        HubActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    /**
      * Button / Event Callbacks
      */
     public void onClick(View view) {
@@ -299,10 +351,20 @@ public class HubActivity extends AppCompatActivity
             bus.post(new ViewEventEvent());
             return;
         }
+        if (view.equals(filterButton)) {
+            bus.post(new ViewFilterEvent());
+            return;
+        }
+        if (view.equals(doneButton)) {
+            onBackPressed();
+            return;
+        }
 
         for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
             if (mapEntry.getValue().equals(view)) {
-                hubPresenter.onFilterEvent(new FilterEvent(FilterEvent.Type.CATEGORY, mapEntry.getKey()));
+                hubPresenter.onModifyFilterEvent(
+                        new ModifyFilterEvent(ModifyFilterEvent.Type.CATEGORY, mapEntry.getKey(),
+                                ModifyFilterEvent.Action.TOGGLE));
             }
         }
     }
@@ -320,6 +382,7 @@ public class HubActivity extends AppCompatActivity
      */
     @Override
     public void shutdown() {
+        userLocationUtil = null;
         this.finish();
     }
 
@@ -329,8 +392,23 @@ public class HubActivity extends AppCompatActivity
     /**
      * {@inheritDoc}
      */
-    @Override
+    public void getUserLocation() {
+        HubActivityPermissionsDispatcher.onLocationPermissionWithCheck(this);
+    }
+
+    /**
+     * Called once we've requests location permissions
+     */
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    public void onLocationPermission() {
+        userLocationUtil = new UserLocationUtil(this, bus);
+        userLocationUtil.getLocation();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void showDestMap() {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
@@ -344,13 +422,14 @@ public class HubActivity extends AppCompatActivity
 
         transaction.show(destMapFragment)
                 .hide(destListFragment)
-                .hide(eventListFragment);
+                .hide(eventListFragment)
+                .hide(filterFragment);
 
         if (destDetailFragment != null) {
             transaction.hide(destDetailFragment);
         }
 
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
         fragmentManager.executePendingTransactions();
     }
 
@@ -372,6 +451,7 @@ public class HubActivity extends AppCompatActivity
         transaction.show(destListFragment)
                 .hide(destMapFragment)
                 .hide(eventListFragment)
+                .hide(filterFragment)
                 .addToBackStack(null);
 
         if (destDetailFragment != null) {
@@ -400,6 +480,7 @@ public class HubActivity extends AppCompatActivity
         transaction.show(eventListFragment)
             .hide(destMapFragment)
             .hide(destListFragment)
+            .hide(filterFragment)
             .addToBackStack(null);
 
         if (destDetailFragment != null) {
@@ -428,8 +509,39 @@ public class HubActivity extends AppCompatActivity
                 .hide(eventListFragment)
                 .hide(destMapFragment)
                 .hide(destListFragment)
-                .addToBackStack(null)
-                .commit();
+                .hide(filterFragment)
+                .addToBackStack(null);
+
+        transaction.commit();
+
+        fragmentManager.executePendingTransactions();
+    }
+
+    /**
+     * Shows the Destination Detail Fragment
+     */
+    public void showFilterView() {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        filterFragment = new FilterFragmentBuilder().build();
+
+        transaction.add(R.id.fragment_container
+                , filterFragment
+                , filterFragment.TAG
+        );
+
+        transaction.show(filterFragment)
+                .hide(eventListFragment)
+                .hide(destMapFragment)
+                .hide(destListFragment)
+                .addToBackStack(null);
+
+        if (destDetailFragment != null) {
+            transaction.hide(destDetailFragment);
+        }
+
+        transaction.commit();
+
         fragmentManager.executePendingTransactions();
     }
 
@@ -483,9 +595,25 @@ public class HubActivity extends AppCompatActivity
     }
 
     /**
+     * Displays the 'Done' button
+     */
+    public void showDoneButton() {
+        doneButton.setVisibility(View.VISIBLE);
+        filterButton.setVisibility(View.GONE);
+    }
+
+    /**
+     * Displays the 'Filter' button
+     */
+    public void showFilterButton() {
+        doneButton.setVisibility(View.GONE);
+        filterButton.setVisibility(View.VISIBLE);
+    }
+
+    /**
      * Applies the filter state to the filter buttons
      */
-    public void showFilter(Filter filter) {
+    public void applyFilterToView(Filter filter) {
         ColorStateList darkBackground = ColorStateList.valueOf(
                 ContextCompat.getColor(this, R.color.progress_bar_background));
         for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
@@ -517,21 +645,5 @@ public class HubActivity extends AppCompatActivity
                 .setPositiveButton(R.string.btn_okay, (dialog, button) -> request.proceed())
                 .setNegativeButton(R.string.btn_deny, (dialog, button) -> request.cancel())
                 .show();
-    }
-
-    /**
-     * Called when the permissions are denied
-     */
-    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showDeniedForLocation() {
-        finish();
-    }
-
-    /**
-     * CAlled when the permissions are permanently denied
-     */
-    @OnNeverAskAgain(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showNeverAskForLocation() {
-        finish();
     }
 }

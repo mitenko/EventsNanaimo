@@ -1,5 +1,7 @@
 package ca.mitenko.evn.state;
 
+import android.support.annotation.Nullable;
+
 import org.immutables.value.Value;
 import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
@@ -20,10 +22,12 @@ public class EventListState extends RootState {
     /**
      * Destinations loaded state flag
      */
+    @Nullable
     @Value.Default
     public ArrayList<Event> events() {
-        return new ArrayList<>();
+        return null;
     }
+
     /**
      * Parcel factory to allow parcelling immutables
      */

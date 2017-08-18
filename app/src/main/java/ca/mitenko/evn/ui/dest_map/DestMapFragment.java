@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.rey.material.widget.ProgressView;
 
@@ -152,7 +153,14 @@ public class DestMapFragment extends RootFragment
         // Init presenter
         presenter = new DestMapPresenter(
                 this, ImmutableDestMapState.builder().build(), bus, interactor);
-        setToolbar();
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param userLocation
+     */
+    public void setUserLocation(LatLng userLocation){
+        destMap.setMapCenter(userLocation);
     }
 
     /**
@@ -164,6 +172,7 @@ public class DestMapFragment extends RootFragment
         super.onHiddenChanged(hidden);
         if (!hidden) {
             setToolbar();
+            hub.showFilterButton();
         }
     }
 
@@ -220,7 +229,9 @@ public class DestMapFragment extends RootFragment
      * Recluster
      */
     public void recluster() {
-        destMap.recluster();
+        if (destMap != null) {
+            destMap.recluster();
+        }
     }
 
     /**

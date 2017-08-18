@@ -37,5 +37,15 @@ public interface HubView extends RootView {
     /**
      * Applies the filter to the UI elements
      */
-    void showFilter(Filter filter);
+    void applyFilterToView(Filter filter);
+
+    /**
+     * Display the Filter Fragment
+     */
+    void showFilterView();
+
+    /**
+     * Requests the user location
+     */
+    void getUserLocation();
 }

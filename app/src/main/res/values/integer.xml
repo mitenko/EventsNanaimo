@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="map_progress_animation_duration">250</integer>
+    <integer name="cost_free">0</integer>
+    <integer name="cost_one">1</integer>
+    <integer name="cost_two">2</integer>
+    <integer name="cost_three">3</integer>
 </resources>

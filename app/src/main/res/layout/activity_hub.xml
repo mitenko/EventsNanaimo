@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bg="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bg="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true">
 
     <android.support.v7.widget.Toolbar
@@ -18,19 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="6dp">
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="2dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.765"
-                app:layout_constraintStart_toEndOf="@+id/toolbar_title"
-                app:layout_constraintTop_toTopOf="@+id/toolbar_title"
-                app:srcCompat="@drawable/ic_tune_black" />
 
             <TextView
                 android:id="@+id/toolbar_title"
@@ -49,14 +36,14 @@
                 android:id="@+id/category_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="0dp"
                 android:scrollbars="none"
                 app:layout_constraintTop_toBottomOf="@+id/toolbar_title"
                 tools:layout_editor_absoluteX="0dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="4dp"
                     android:orientation="horizontal">
 
@@ -123,43 +110,51 @@
     </android.support.v7.widget.Toolbar>
 
     <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
         android:layout_above="@+id/tabbar"
-        android:id="@+id/fragment_container">
-    </FrameLayout>
+        android:layout_below="@id/toolbar"></FrameLayout>
 
     <LinearLayout
         android:id="@id/tabbar"
+        style="@style/Tabbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:orientation="horizontal"
-        style="@style/Tabbar">
-
-        <View android:layout_height="match_parent"
-            android:layout_width="0dp"
-            android:layout_weight="1"/>
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/explore_button"
-            android:layout_height="match_parent"
+            style="@style/TabButton"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_near_me"
-            style="@style/TabButton"/>
+            android:src="@drawable/ic_near_me" />
 
         <ImageView
             android:id="@+id/event_button"
+            style="@style/TabButton"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_width="0dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_calendar"
-            style="@style/TabButton"/>
+            android:src="@drawable/ic_calendar" />
 
-        <View android:layout_height="match_parent"
+        <ImageView
+            android:id="@+id/filter_button"
+            style="@style/TabButton"
             android:layout_width="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_tune_black" />
+
+        <ImageView
+            android:id="@+id/done_button"
+            style="@style/TabButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:src="@drawable/ic_done" />
 
     </LinearLayout>
 

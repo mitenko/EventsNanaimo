@@ -1,7 +1,10 @@
 package ca.mitenko.evn.ui.dest_map.map;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -56,6 +59,11 @@ public class DestMap extends MapView
     private Boolean clusterMovement = false;
 
     /**
+     * Flag indicating this movement is program generated
+     */
+    private Boolean executeSearchOnIdle = false;
+
+    /**
      * Constructor
      * @param context
      */
@@ -108,6 +116,16 @@ public class DestMap extends MapView
         map = googleMap;
         map.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
 
+        map.getUiSettings().setMyLocationButtonEnabled(true);
+        map.getUiSettings().setRotateGesturesEnabled(false);
+
+        if ( ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+            map.setMyLocationEnabled(true);
+        } else {
+            executeSearchOnIdle = true;
+        }
+
         // Register some lifecycle and camera listeners
         map.setOnMapLoadedCallback(this);
         map.setOnCameraIdleListener(this);
@@ -153,6 +171,15 @@ public class DestMap extends MapView
     }
 
     /**
+     * Sets the map's center (user location)
+     * @param mapCenter
+     */
+    public void setMapCenter(LatLng mapCenter) {
+        executeSearchOnIdle = true;
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(mapCenter, 13));
+    }
+
+    /**
      * Called so the map can recluster
      */
     public void recluster() {
@@ -181,7 +208,8 @@ public class DestMap extends MapView
     public void onCameraIdle() {
         if (!clusterMovement) {
             LatLngBounds newMapBounds = map.getProjection().getVisibleRegion().latLngBounds;
-            bus.post(new MapBoundsEvent(newMapBounds));
+            bus.post(new MapBoundsEvent(newMapBounds, executeSearchOnIdle));
+            executeSearchOnIdle = false;
         } else {
             recluster();
             clusterMovement = false;

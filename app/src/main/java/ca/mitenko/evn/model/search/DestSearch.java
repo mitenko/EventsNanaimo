@@ -1,5 +1,7 @@
 package ca.mitenko.evn.model.search;
 
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -10,14 +12,15 @@ import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.annotation.Nullable;
 
 import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.ImmutableDestination;
-
-import static android.R.attr.filter;
+import ca.mitenko.evn.util.LocationUtil;
 
 /**
  * Created by mitenko on 2017-07-30.
@@ -26,6 +29,11 @@ import static android.R.attr.filter;
 @Parcel(value = Parcel.Serialization.VALUE, implementations = ImmutableDestSearch.class)
 @Value.Immutable
 public class DestSearch {
+    private static final LatLngBounds DEFAULT_BOUNDS = new
+            LatLngBounds(
+            new LatLng(49.15938572687397,-123.9760036021471),
+            new LatLng(49.20606374369103,-123.91420517116785));
+
     /**
      * The search bounds. Default is roughly nanaimo
      * @return
@@ -33,10 +41,7 @@ public class DestSearch {
     @NonNull
     @Value.Default
     public LatLngBounds searchBounds() {
-        return new
-                LatLngBounds(
-                new LatLng(49.15938572687397,-123.9760036021471),
-                new LatLng(49.20606374369103,-123.91420517116785));
+        return DEFAULT_BOUNDS;
     }
 
     /**
@@ -70,7 +75,7 @@ public class DestSearch {
     @NonNull
     @Value.Lazy
     public boolean mapOutsideSearch() {
-        if (mapBounds() == null) {
+        if (!hasResults() || mapBounds() == null) {
             return false;
         }
         return !searchBounds().contains(mapBounds().northeast)
@@ -142,12 +147,14 @@ public class DestSearch {
          */
         ArrayList<Destination> filteredResults = new ArrayList<>();
         for(Destination destination : mapFiltered) {
+            Integer destinationCost = destination.detail().cost();
             for (Activity activity : destination.detail().activities()) {
                 /**
-                 * Check category first
+                 * Filter by Activity / Cost / Category
                  */
-                if (filter().categories().contains(activity.category()) ||
-                        filter().activities().contains(activity.name())) {
+                if ((filter().categories().isEmpty() || filter().categories().contains(activity.category())) &&
+                        (filter().activities().isEmpty() || filter().activities().contains(activity.name())) &&
+                        (filter().cost().isEmpty() || filter().cost().contains(destinationCost))) {
                     filteredResults.add(ImmutableDestination.builder()
                         .from(destination)
                         .displayIcon(activity.category())
@@ -155,6 +162,22 @@ public class DestSearch {
                     break;
                 }
             }
+        }
+
+        /**
+         * Sort the list by nearest to farther is user location is known
+         */
+        if (filter().userLocation() != null) {
+            Location userLocation = LocationUtil.fromLatLng(filter().userLocation());
+
+            Collections.sort(filteredResults, new Comparator<Destination>() {
+                public int compare(Destination d1, Destination d2) {
+                    Location location1 = LocationUtil.fromDestination(d1);
+                    Location location2 = LocationUtil.fromDestination(d2);
+                    return Integer.signum(
+                            (int)location1.distanceTo(userLocation) - (int)location2.distanceTo(userLocation));
+                }
+            });
         }
         return filteredResults;
     }

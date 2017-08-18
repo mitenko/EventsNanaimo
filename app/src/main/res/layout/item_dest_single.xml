@@ -77,6 +77,8 @@
             android:paddingBottom="2dp"
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
+            android:minWidth="@dimen/price_width"
+            android:gravity="center"
 
             android:layout_marginRight="7dp"
             app:layout_constraintRight_toRightOf="parent"

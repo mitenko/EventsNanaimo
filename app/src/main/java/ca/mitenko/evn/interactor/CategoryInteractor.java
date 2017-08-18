@@ -76,7 +76,7 @@ public class CategoryInteractor {
 
             @Override
             public void onNext(ImmutableCategoryResult categoryResult) {
-                bus.postSticky(new CategoryResultEvent(categoryResult.categories()));
+                bus.postSticky(new CategoryResultEvent(categoryResult.categoryMap()));
             }
         };
 

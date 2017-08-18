@@ -9,14 +9,14 @@ import ca.mitenko.evn.event.CategoryResultEvent;
 import ca.mitenko.evn.event.DestItemClickEvent;
 import ca.mitenko.evn.event.EventResultEvent;
 import ca.mitenko.evn.event.FilterEvent;
-import ca.mitenko.evn.event.SearchEvent;
+import ca.mitenko.evn.event.ModifyFilterEvent;
 import ca.mitenko.evn.event.ViewEventEvent;
+import ca.mitenko.evn.event.ViewFilterEvent;
 import ca.mitenko.evn.event.ViewListEvent;
 import ca.mitenko.evn.event.ViewMapEvent;
 import ca.mitenko.evn.interactor.CategoryInteractor;
 import ca.mitenko.evn.interactor.EventListInteractor;
-import ca.mitenko.evn.model.search.DestSearch;
-import ca.mitenko.evn.model.search.ImmutableDestSearch;
+import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.HubState;
 import ca.mitenko.evn.state.HubState.*;
@@ -27,6 +27,7 @@ import static ca.mitenko.evn.state.HubState.FragmentType.DEST_DETAIL;
 import static ca.mitenko.evn.state.HubState.FragmentType.DEST_LIST;
 import static ca.mitenko.evn.state.HubState.FragmentType.DEST_MAP;
 import static ca.mitenko.evn.state.HubState.FragmentType.EVENT_LIST;
+import static ca.mitenko.evn.state.HubState.FragmentType.FILTER;
 
 /**
  * Created by mitenko on 2017-04-23.
@@ -55,10 +56,10 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
         super(view, ImmutableHubState.builder().build(), curState, bus);
         this.eventInteractor = eventInteractor;
         this.categoryInteractor = categoryInteractor;
-        if (!curState.hasEvents()) {
+        if (curState.events() == null) {
             eventInteractor.getEvents();
         }
-        if (curState.categories() == null) {
+        if (curState.categoryMap() == null) {
             categoryInteractor.getCategories();
         }
     }
@@ -85,17 +86,25 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
                     case DEST_DETAIL:
                         view.showDestDetail(curState.selectedDest());
                         break;
+                    case FILTER:
+                        view.showFilterView();
+                        break;
                 }
             }
 
             // Update the filter buttons
-            if (!curState.search().filter().equals(prevState.search().filter())) {
-                view.showFilter(curState.search().filter());
+            if (!curState.filter().equals(prevState.filter())) {
+                view.applyFilterToView(curState.filter());
             }
 
             // Shutdown
             if (curState.shutdown()) {
                 view.shutdown();
+            }
+
+            // Request the user location
+            if (!curState.locationRequested()) {
+                view.getUserLocation();
             }
         }
     }
@@ -132,6 +141,24 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
                 .from(curState)
                 .currentFragment(DEST_MAP)
                 .fragmentStack(setFragmentStack(DEST_MAP))
+                .build();
+        render(newState);
+    }
+
+    /**
+     * When the 'filter' button is clicked
+     *
+     * @param event
+     */
+    @Subscribe
+    public void onFilterButtonEvent(ViewFilterEvent event) {
+        if (curState.currentFragment() == FILTER) {
+            return;
+        }
+        HubState newState = ImmutableHubState.builder()
+                .from(curState)
+                .currentFragment(FILTER)
+                .fragmentStack(setFragmentStack(FILTER))
                 .build();
         render(newState);
     }
@@ -180,7 +207,7 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
     public void onEventResultEvent(EventResultEvent event) {
         HubState newState = ImmutableHubState.builder()
                 .from(curState)
-                .hasEvents(true)
+                .events(event.getEvents())
                 .build();
         curState = newState;
     }
@@ -193,39 +220,39 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
     public void onCategoryResultEvent(CategoryResultEvent event) {
         HubState newState = ImmutableHubState.builder()
                 .from(curState)
-                .categories(event.getCategoryResult())
+                .categoryMap(event.getCategoryResult())
                 .build();
         render(newState);
     }
 
+    /**
+     * Called when the Filter as a whole has been updated
+     * @param event
+     */
     @Subscribe(sticky = true)
-    public void onSearchEvent(SearchEvent event) {
-        if (event.getSearch().equals(curState.search())) {
+    public void onFilterEvent(FilterEvent event) {
+        if (event.getFilter().equals(curState.filter())) {
             return;
         }
         HubState newState = ImmutableHubState.builder()
                 .from(curState)
-                .search(event.getSearch())
+                .filter(event.getFilter())
                 .build();
         render(newState);
-
     }
 
     /**
      * Called when one of the filter buttons is pressed
      * @param event
      */
-    public void onFilterEvent(FilterEvent event) {
-        DestSearch newSearch = ImmutableDestSearch.builder()
-                .from(curState.search())
-                .filter(curState.search().filter().withFilterEvent(event))
-                .build();
+    public void onModifyFilterEvent(ModifyFilterEvent event) {
+        Filter newFilter = curState.filter().modify(event, curState.categoryMap());
         HubState newState = ImmutableHubState.builder()
                 .from(curState)
-                .search(newSearch)
+                .filter(newFilter)
                 .build();
         render(newState);
-        bus.postSticky(new SearchEvent(newSearch));
+        bus.postSticky(new FilterEvent(newFilter));
     }
 
     /**
@@ -261,5 +288,16 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
             fragmentStack.add(curState.currentFragment());
         }
         return fragmentStack;
+    }
+
+    /**
+     * Called after we've requested the user's location
+     */
+    public void onLocationRequested() {
+        HubState newState = ImmutableHubState.builder()
+                .from(curState)
+                .locationRequested(true)
+                .build();
+        render(newState);
     }
 }

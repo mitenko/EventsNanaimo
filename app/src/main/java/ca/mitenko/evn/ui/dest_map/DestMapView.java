@@ -3,6 +3,7 @@ package ca.mitenko.evn.ui.dest_map;
 
 import android.view.View;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
@@ -56,4 +57,9 @@ public interface DestMapView extends RootView {
      * Tells the map to recluster
      */
     void recluster();
+
+    /**
+     * Sets the user location
+     */
+    void setUserLocation(LatLng userLocation);
 }

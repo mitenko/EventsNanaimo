@@ -13,9 +13,15 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+
+import org.greenrobot.eventbus.EventBus;
 
 import ca.mitenko.evn.Manifest;
 import ca.mitenko.evn.R;
+import ca.mitenko.evn.event.UserLocationEvent;
+import ca.mitenko.evn.event.UserLocationEvent.Outcome;
+
 
 /**
  * Created by mitenko on 2017-04-22.
@@ -24,30 +30,6 @@ import ca.mitenko.evn.R;
 public class UserLocationUtil implements
         LocationListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-
-    /**
-     * Interface
-     * Define the interface that the callback class needs to implement
-     */
-    public interface LocationRequestCallback {
-        /**
-         * Called when the Google Permissions Request is denied
-         */
-        void accessLocationDenied();
-
-        /**
-         * Called when the location has been determined
-         * @param currentLocation
-         */
-        void onUserLocation(Location currentLocation);
-
-        /**
-         * Called when the CLR has failed
-         * @param msg
-         */
-        void onLocationRequestFailed(String msg);
-    }
-
     /**
      * Context object
      */
@@ -59,9 +41,9 @@ public class UserLocationUtil implements
     private GoogleApiClient googleApiClient;
 
     /**
-     * Google API Client
+     * Event bus
      */
-    private UserLocationUtil.LocationRequestCallback callback;
+    private EventBus bus;
 
     /**
      * Request timeout CONSTANT
@@ -79,10 +61,9 @@ public class UserLocationUtil implements
      * Initiates the location request
      * @param _context
      */
-    public UserLocationUtil(@NonNull Context _context,
-                            @NonNull UserLocationUtil.LocationRequestCallback callback) {
+    public UserLocationUtil(@NonNull Context _context, EventBus bus) {
         this.context = _context;
-        this.callback = callback;
+        this.bus = bus;
         googleApiClient = null;
     }
 
@@ -99,7 +80,7 @@ public class UserLocationUtil implements
      */
     public void getLocation() {
         if (!hasAccessLocationPermission()) {
-            callback.accessLocationDenied();
+            bus.postSticky(new UserLocationEvent(Outcome.DENIED, null));
             return;
         }
 
@@ -127,7 +108,8 @@ public class UserLocationUtil implements
 
                 // Call the listener
                 if (location != null) {
-                    callback.onUserLocation(location);
+                    LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    bus.postSticky(new UserLocationEvent(Outcome.SUCCESS, userLatLng));
                 } else {
                     // In the rare case that we receive a null location,
                     // ping the service until something comes up
@@ -135,10 +117,10 @@ public class UserLocationUtil implements
                             createLocationRequest(), this);
                 }
             } else {
-                callback.onLocationRequestFailed(context.getString(R.string.no_location_available_error));
+                bus.postSticky(new UserLocationEvent(Outcome.FAILED, null));
             }
         } catch (SecurityException e) {
-            callback.onLocationRequestFailed(context.getString(R.string.no_location_available_error));
+            bus.postSticky(new UserLocationEvent(Outcome.FAILED, null));
         }
     }
 
@@ -151,8 +133,8 @@ public class UserLocationUtil implements
         // Stop location updates
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 googleApiClient, this);
-
-        callback.onUserLocation(location);
+        LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        bus.postSticky(new UserLocationEvent(Outcome.SUCCESS, userLatLng));
     }
 
     /**
@@ -170,7 +152,7 @@ public class UserLocationUtil implements
      */
     @Override
     public void onConnectionFailed (ConnectionResult result){
-        callback.onLocationRequestFailed("Connection Failure: " + result.toString());
+        bus.postSticky(new UserLocationEvent(Outcome.FAILED, null));
     }
 
     /**

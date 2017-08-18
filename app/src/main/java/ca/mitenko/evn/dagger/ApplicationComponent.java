@@ -9,7 +9,9 @@ import ca.mitenko.evn.ui.dest_detail.DestDetailFragment;
 import ca.mitenko.evn.ui.dest_list.DestListFragment;
 import ca.mitenko.evn.ui.dest_map.DestMapFragment;
 import ca.mitenko.evn.ui.event_list.EventListFragment;
+import ca.mitenko.evn.ui.filter.FilterFragment;
 import ca.mitenko.evn.ui.hub.HubActivity;
+import ca.mitenko.evn.ui.splash.SplashActivity;
 import dagger.Component;
 
 /**
@@ -20,8 +22,11 @@ import dagger.Component;
 @Singleton
 public interface ApplicationComponent {
     void inject(HubActivity activity);
+    void inject(SplashActivity activity);
     void inject(DestMapFragment fragment);
     void inject(DestListFragment fragment);
     void inject(EventListFragment fragment);
     void inject(DestDetailFragment fragment);
+    void inject(FilterFragment fragment);
+
 }

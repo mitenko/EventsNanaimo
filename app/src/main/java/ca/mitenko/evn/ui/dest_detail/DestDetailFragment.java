@@ -1,9 +1,15 @@
 package ca.mitenko.evn.ui.dest_detail;
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -16,12 +22,15 @@ import org.greenrobot.eventbus.EventBus;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import ca.mitenko.evn.CategoryConstants;
 import ca.mitenko.evn.EvNApplication;
 import ca.mitenko.evn.R;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.presenter.DestDetailPresenter;
 import ca.mitenko.evn.state.ImmutableDestDetailState;
+import ca.mitenko.evn.ui.common.CategoryView;
 import ca.mitenko.evn.ui.common.RootFragment;
+import ca.mitenko.evn.util.MapUtil;
 
 /**
  * Created by mitenko on 2017-04-22.
@@ -52,6 +61,78 @@ public class DestDetailFragment extends RootFragment
      */
     @BindView(R.id.dest_desc)
     TextView destDescription;
+
+    /**
+     * the category
+     */
+    @BindView(R.id.dest_category_view)
+    CategoryView categoryView;
+
+    /**
+     * The Location / Address
+     */
+    @BindView(R.id.location_icon)
+    ImageView locationIcon;
+
+    /**
+     * The Location / Address
+     */
+    @BindView(R.id.location_desc)
+    TextView locationDescription;
+
+    /**
+     * The Destination Static Map
+     */
+    @BindView(R.id.map_image)
+    SimpleDraweeView mapImage;
+
+    /**
+     * The Static Map Icon
+     */
+    @BindView(R.id.category_icon)
+    ImageView categoryIcon;
+
+    /**
+     * The phone / Address
+     */
+    @BindView(R.id.phone_icon)
+    ImageView phoneIcon;
+
+    /**
+     * The phone / Address
+     */
+    @BindView(R.id.phone_desc)
+    TextView phoneDescription;
+
+    /**
+     * The link / Address
+     */
+    @BindView(R.id.link_icon)
+    ImageView linkIcon;
+
+    /**
+     * The link / Address
+     */
+    @BindView(R.id.link_desc)
+    TextView linkDescription;
+
+    /**
+     * The link Container
+     */
+    @BindView(R.id.link_container)
+    LinearLayout linkContainer;
+
+    /**
+     * The phone Container
+     */
+    @BindView(R.id.phone_container)
+    LinearLayout phoneContainer;
+
+    /**
+     * The location Container
+     */
+    @BindView(R.id.location_container)
+    LinearLayout locationContainer;
 
     /**
      * Event bus
@@ -96,6 +177,24 @@ public class DestDetailFragment extends RootFragment
         presenter = new DestDetailPresenter(
                 this, ImmutableDestDetailState.builder().destination(destination).build(), bus);
         setToolbar();
+        hub.showFilterButton();
+
+        linkContainer.setOnClickListener(view -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(destination.detail().website()));
+            startActivity(browserIntent);
+        });
+        phoneContainer.setOnClickListener(view -> {
+            NEEDS TO ASK FOR PERMISSION
+            Intent intent = new Intent(Intent.ACTION_CALL,
+                    Uri.parse("tel:" + destination.detail().phone()));
+            startActivity(intent);
+        });
+        locationContainer.setOnClickListener(view -> {
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                    Uri.parse("google.navigation:q=" + destination.address().toString()));
+            startActivity(intent);
+        });
     }
 
     /**
@@ -107,6 +206,7 @@ public class DestDetailFragment extends RootFragment
         super.onHiddenChanged(hidden);
         if (!hidden) {
             setToolbar();
+            hub.showDoneButton();
         }
     }
 
@@ -132,5 +232,29 @@ public class DestDetailFragment extends RootFragment
         destImage.setImageURI(dest.detail().imageURL());
         destTitle.setText(dest.detail().name());
         destDescription.setText(dest.detail().longDesc());
+        categoryView.setCategories(destination.detail().activities(), true);
+        locationDescription.setText(destination.address().toString());
+
+        // the map
+        mapImage.setImageURI(MapUtil.toStaticMapURL(dest));
+        Drawable icon = ContextCompat.getDrawable(getContext(),
+                CategoryConstants.categoryIconMap.get(dest.displayIcon()));
+        categoryIcon.setImageDrawable(icon);
+
+        // phone number
+        if (!dest.detail().phone().isEmpty()) {
+            phoneDescription.setText(dest.detail().phone());
+        } else {
+            phoneIcon.setVisibility(View.INVISIBLE);
+            phoneDescription.setVisibility(View.INVISIBLE);
+        }
+
+        // website
+        if (!dest.detail().website().isEmpty()) {
+            linkDescription.setText(dest.detail().website());
+        } else {
+            linkIcon.setVisibility(View.INVISIBLE);
+            linkDescription.setVisibility(View.INVISIBLE);
+        }
     }
 }

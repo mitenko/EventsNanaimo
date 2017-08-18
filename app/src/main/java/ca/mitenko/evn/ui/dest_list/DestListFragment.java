@@ -1,6 +1,7 @@
 package ca.mitenko.evn.ui.dest_list;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
@@ -54,6 +55,12 @@ public class DestListFragment extends RootFragment
      */
     @BindView(R.id.map_button)
     FloatingActionButton mapButton;
+
+    /**
+     * Message Showing the empty list
+     */
+    @BindView(R.id.empty_notice)
+    ConstraintLayout emptyListMessage;
 
     /**
      * Event bus
@@ -117,6 +124,7 @@ public class DestListFragment extends RootFragment
                 this, ImmutableDestListState.builder().build(), bus);
 
         setToolbar();
+        hub.showFilterButton();
     }
 
     /**
@@ -128,6 +136,7 @@ public class DestListFragment extends RootFragment
         super.onHiddenChanged(hidden);
         if (!hidden) {
             setToolbar();
+            hub.showFilterButton();
         }
     }
 
@@ -147,6 +156,12 @@ public class DestListFragment extends RootFragment
      */
     public void setDestinations(ArrayList<Destination> destinations) {
         adapter.setDestinationResult(destinations);
+        if (destinations.size() > 0) {
+            emptyListMessage.setVisibility(View.GONE);
+            recyclerView.scrollToPosition(0);
+        } else {
+            emptyListMessage.setVisibility(View.VISIBLE);
+        }
     }
 
     /**

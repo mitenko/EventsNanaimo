@@ -3,12 +3,17 @@ package ca.mitenko.evn.state;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.immutables.value.Value;
 import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.search.DestSearch;
 import ca.mitenko.evn.model.search.ImmutableDestSearch;
@@ -27,6 +32,15 @@ public class DestMapState extends RootState {
     @Value.Default
     public boolean loadingResults() {
         return false;
+    }
+
+    /**
+     * The user's location
+     */
+    @Nullable
+    @Value.Default
+    public LatLng userLocation() {
+        return null;
     }
 
     /**
@@ -64,17 +78,30 @@ public class DestMapState extends RootState {
     }
 
     /**
+     * The set of category data
+     */
+    @Nullable
+    @Value.Default
+    public HashMap<String, ArrayList<Activity>> categoryMap() {
+        return null;
+    }
+
+    /**
      * Parcel factory to allow parcelling immutables
      */
     @ParcelFactory
     public static DestMapState build(boolean mapReady, boolean recluster, boolean loadingResults,
-                                     DestSearch search, Destination selectedItem) {
+                                     DestSearch search, Destination selectedItem,
+                                     HashMap<String, ArrayList<Activity>> categoryMap,
+                                     LatLng userLocation) {
         return ImmutableDestMapState.builder()
                 .loadingResults(loadingResults)
                 .recluster(recluster)
                 .mapReady(mapReady)
                 .search(search)
                 .selectedItem(selectedItem)
+                .categoryMap(categoryMap)
+                .userLocation(userLocation)
                 .build();
     }
 }

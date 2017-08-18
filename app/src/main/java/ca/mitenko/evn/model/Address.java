@@ -44,6 +44,14 @@ public abstract class Address {
     public abstract String city();
 
     /**
+     * Converts the address into a string
+     * @return
+     */
+    public String toString() {
+        return lineOne() + " " + lineTwo() + ", " + city() + ", " + postalCode();
+    }
+
+    /**
      * Builds a parcelable immutable
      * @param id
      * @param lineOne

@@ -9,7 +9,7 @@
 
     <color name="default_fragment_background">@color/colorPrimary</color>
     <color name="progress_bar_background">#99000000</color>
-    <color name="overlay_tint">#88000000</color>
+    <color name="overlay_tint">#77000000</color>
 
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
@@ -23,4 +23,8 @@
     <color name="adventure">#92bd3e</color>
     <color name="accommodation">#7356a4</color>
     <color name="lifestyle">#f6be1d</color>
+
+    <color name="splashButtonText">#d1d1d7</color>
+    <color name="splashButtonBg">#91929d</color>
+    <color name="splashButtonBorder">#015b7f</color>
 </resources>

@@ -8,12 +8,15 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ca.mitenko.evn.R;
 import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.ui.common.CategoryView;
+import ca.mitenko.evn.ui.common.PriceView;
 
 /**
  * Created by mitenko on 2017-04-30.
@@ -45,6 +48,18 @@ public class DestViewHolder extends RecyclerView.ViewHolder {
     TextView activities;
 
     /**
+     * the price
+     */
+    @BindView(R.id.dest_card_price)
+    PriceView priceView;
+
+    /**
+     * the category
+     */
+    @BindView(R.id.dest_category_view)
+    CategoryView categoryView;
+
+    /**
      * Constructor
      * @param view
      */
@@ -60,15 +75,16 @@ public class DestViewHolder extends RecyclerView.ViewHolder {
     public void bind(Destination destination) {
         thumbnail.setImageURI(destination.detail().imageURL());
         title.setText(destination.detail().name().toUpperCase());
-        shortDesc.setText(destination.detail().shortDesc());
+        shortDesc.setText(destination.detail().longDesc());
+        priceView.setCost(destination.detail().cost());
+        categoryView.setCategories(destination.detail().activities(), false);
 
         ArrayList<Activity> destActivities = destination.detail().activities();
-        ArrayList<String> activityNames = new ArrayList<>();
+        HashSet<String> activityNames = new HashSet<>();
         for (Activity activity : destActivities) {
-            if (!activityNames.contains(activity.name())) {
-                activityNames.add(activity.name());
-            }
+            activityNames.add(activity.name());
         }
-        activities.setText(TextUtils.join(" ● ", activityNames));
+        String joinedActivites = TextUtils.join(" • ", activityNames);
+        activities.setText(joinedActivites);
     }
 }

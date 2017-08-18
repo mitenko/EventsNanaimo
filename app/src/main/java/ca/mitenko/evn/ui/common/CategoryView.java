@@ -1,62 +1,83 @@
 package ca.mitenko.evn.ui.common;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
+import ca.mitenko.evn.CategoryConstants;
 import ca.mitenko.evn.R;
+import ca.mitenko.evn.model.Activity;
+import ca.mitenko.evn.model.Category;
 
 /**
  * Created by mitenko on 2017-07-28.
  */
 
-public class PriceView extends AppCompatTextView {
-    private static HashMap<Integer,String> priceDisplayMap;
-    static {
-        priceDisplayMap = new HashMap<>();
-        priceDisplayMap.put(0, "FREE");
-        priceDisplayMap.put(1, "$");
-        priceDisplayMap.put(2, "$$");
-        priceDisplayMap.put(3, "$$$");
-        priceDisplayMap.put(4, "$$$$");
-    }
-
+public class CategoryView extends LinearLayoutCompat {
     /**
      * Constructor
      */
-    public PriceView(Context context) {
+    public CategoryView(Context context) {
         this(context, null);
     }
 
     /**
      * Constructor
      */
-    public PriceView(Context context, AttributeSet attrs) {
+    public CategoryView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
     /**
      * {@inheritDoc}
      */
-    public PriceView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CategoryView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.setTextColor(ContextCompat.getColor(context,R.color.white));
-        this.setBackground(ContextCompat.getDrawable(context,R.drawable.price_background));
+        this.setOrientation(HORIZONTAL);
+        this.setGravity(Gravity.RIGHT);
     }
 
     /**
      * Takes the Detail defined cost and maps it to a dsplayable value
      */
-    public void setCost(Integer cost) {
-        if (priceDisplayMap.containsKey(cost)) {
-            this.setText(priceDisplayMap.get(cost));
-            this.setVisibility(View.VISIBLE);
-        } else {
-            this.setVisibility(View.INVISIBLE);
+    public void setCategories(ArrayList<Activity> activities, boolean showText) {
+        this.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+
+        HashSet<String> categories = new HashSet<>();
+        for (Activity activity : activities) {
+            categories.add(activity.category());
+        }
+        for(String category : categories) {
+            inflater.inflate(
+                    R.layout.item_category_icon, this, true);
+            LinearLayout iconLayout = (LinearLayout)
+                    this.getChildAt(this.getChildCount()-1);
+
+            ImageView icon = (ImageView) iconLayout.findViewById(R.id.category_icon);
+            Drawable image = ContextCompat.getDrawable(getContext(),
+                    CategoryConstants.categoryIconMap.get(category));
+            icon.setImageDrawable(image);
+
+            if (showText) {
+                TextView textView = (TextView) iconLayout.findViewById(R.id.category_text);
+                String capitalizedCategory =
+                        category.substring(0,1).toUpperCase() + category.substring(1).toLowerCase();
+                textView.setText(capitalizedCategory);
+            }
         }
     }
 }

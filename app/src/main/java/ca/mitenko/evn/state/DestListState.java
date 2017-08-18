@@ -1,5 +1,7 @@
 package ca.mitenko.evn.state;
 
+import android.support.annotation.NonNull;
+
 import org.immutables.value.Value;
 import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
@@ -7,6 +9,8 @@ import org.parceler.ParcelFactory;
 import java.util.ArrayList;
 
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.model.search.DestSearch;
+import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.state.common.RootState;
 
 /**
@@ -20,17 +24,18 @@ public class DestListState extends RootState {
     /**
      * Destinations loaded state flag
      */
+    @NonNull
     @Value.Default
-    public ArrayList<Destination> destinations() {
-        return new ArrayList<>();
+    public DestSearch search() {
+        return ImmutableDestSearch.builder().build();
     }
     /**
      * Parcel factory to allow parcelling immutables
      */
     @ParcelFactory
-    public static DestListState build(ArrayList<Destination> destinations) {
+    public static DestListState build(DestSearch search) {
         return ImmutableDestListState.builder()
-                .destinations(destinations)
+                .search(search)
                 .build();
     }
 }

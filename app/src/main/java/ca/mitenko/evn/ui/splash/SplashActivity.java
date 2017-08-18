@@ -1,6 +1,7 @@
-package ca.mitenko.evn.ui.hub;
+package ca.mitenko.evn.ui.splash;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.rey.material.widget.ProgressView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
@@ -52,6 +55,8 @@ import ca.mitenko.evn.ui.dest_map.DestMapFragment;
 import ca.mitenko.evn.ui.event_list.EventListFragment;
 import ca.mitenko.evn.ui.filter.FilterFragment;
 import ca.mitenko.evn.ui.filter.FilterFragmentBuilder;
+import ca.mitenko.evn.ui.hub.HubActivity;
+import ca.mitenko.evn.ui.hub.HubView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -69,158 +74,13 @@ import static ca.mitenko.evn.CategoryConstants.SERVICE;
 import static ca.mitenko.evn.CategoryConstants.SHOPPING;
 import static ca.mitenko.evn.CategoryConstants.SIGHT_SEEING;
 
-@RuntimePermissions
-public class HubActivity extends AppCompatActivity
-        implements HubView, View.OnClickListener {
+public class SplashActivity extends AppCompatActivity
+    implements View.OnClickListener {
     /**
      * Hub Fragment container
      */
-    @BindView(R.id.fragment_container)
-    FrameLayout hubFragmentContainer;
-
-    /**
-     * The toolbar
-     */
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-    /**
-     * The toolbar
-     */
-    @BindView(R.id.toolbar_title)
-    TextView toolbarTitle;
-
-    /**
-     * The destinations page nav button
-     */
-    @BindView(R.id.explore_button)
-    ImageView exploreButton;
-
-    /**
-     * The destinations page nav button
-     */
-    @BindView(R.id.event_button)
-    ImageView eventButton;
-
-    /**
-     * The destinations page nav button
-     */
-    @BindView(R.id.filter_button)
-    ImageView filterButton;
-
-    /**
-     * The destinations page nav button
-     */
-    @BindView(R.id.category_picker)
-    HorizontalScrollView categoryPicker;
-
-    /**
-     * The on the town filter button
-     */
-    @BindView(R.id.on_the_town)
-    FloatingActionButton onTheTownFilter;
-
-    /**
-     * The foodFilter filter button
-     */
-    @BindView(R.id.food)
-    FloatingActionButton foodFilter;
-
-    /**
-     * The shopping filter button
-     */
-    @BindView(R.id.shopping)
-    FloatingActionButton shoppingFilter;
-
-    /**
-     * The sight seeing filter button
-     */
-    @BindView(R.id.sight_seeing)
-    FloatingActionButton sightSeeingFilter;
-
-    /**
-     * The shopping filter button
-     */
-    @BindView(R.id.service)
-    FloatingActionButton serviceFilter;
-
-    /**
-     * The shopping filter button
-     */
-    @BindView(R.id.adventure)
-    FloatingActionButton adventureFilter;
-
-    /**
-     * The shopping filter button
-     */
-    @BindView(R.id.accomodation)
-    FloatingActionButton accomodationFilter;
-
-    /**
-     * The shopping filter button
-     */
-    @BindView(R.id.lifestyle)
-    FloatingActionButton lifestyleFilter;
-
-    /**
-     * Maps the categories to each button
-     */
-    private HashMap<String, FloatingActionButton> categoryButtonMap;
-
-    /**
-     * Event bus
-     */
-    @Inject
-    EventBus bus;
-
-    /**
-     * Retrofit
-     */
-    @Inject
-    Retrofit retrofit;
-
-    /**
-     * The Service
-     */
-    @Inject
-    EventsNanaimoService evnService;
-
-    /**
-     * Fragment manager
-     */
-    private FragmentManager fragmentManager;
-
-    /**
-     * The Default / Destination Map fragment
-     */
-    private DestMapFragment destMapFragment;
-
-    /**
-     * The Destination List fragment
-     */
-    private DestListFragment destListFragment;
-
-    /**
-     * The Event List fragment
-     */
-    private EventListFragment eventListFragment;
-
-    /**
-     * The Event List fragment
-     */
-    private DestDetailFragment destDetailFragment = null;
-
-    /**
-     * The Event List fragment
-     */
-    private FilterFragment filterFragment;
-
-    /**
-     * Hub presenter
-     */
-    private HubPresenter hubPresenter;
-
-    boolean toolbarShowing = true;
+    @BindView(R.id.splash_btn)
+    TextView enterButton;
 
     /**
      * {@inheritDoc}
@@ -228,372 +88,20 @@ public class HubActivity extends AppCompatActivity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hub);
+        setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        ((EvNApplication) getApplication())
-                .getApplicationComponent().inject(this);
-
-        // Init Toolbar
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        }
-
-        // Init buttons
-        exploreButton.setOnClickListener(this);
-        eventButton.setOnClickListener(this);
-        filterButton.setOnClickListener(this);
-
-        categoryButtonMap = new HashMap<>();
-        categoryButtonMap.put(ON_THE_TOWN, onTheTownFilter);
-        categoryButtonMap.put(FOOD, foodFilter);
-        categoryButtonMap.put(SHOPPING, shoppingFilter);
-        categoryButtonMap.put(SIGHT_SEEING, sightSeeingFilter);
-        categoryButtonMap.put(SERVICE, serviceFilter);
-        categoryButtonMap.put(ADVENTURE, adventureFilter);
-        categoryButtonMap.put(ACCOMMODATION, accomodationFilter);
-        categoryButtonMap.put(LIFESTYLE, lifestyleFilter);
-        for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
-            mapEntry.getValue().setOnClickListener(this);
-        }
-
-        // Get fragment manager
-        fragmentManager = getSupportFragmentManager();
-
-        // Init fragments
-        destMapFragment = (DestMapFragment) fragmentManager.findFragmentByTag(DestMapFragment.TAG);
-        if (destMapFragment == null) {
-            destMapFragment = new DestMapFragment();
-        }
-
-        destListFragment = (DestListFragment) fragmentManager.findFragmentByTag(DestListFragment.TAG);
-        if (destListFragment == null) {
-            destListFragment = new DestListFragment();
-        }
-
-        eventListFragment = (EventListFragment) fragmentManager.findFragmentByTag(EventListFragment.TAG);
-        if (eventListFragment == null) {
-            eventListFragment = new EventListFragment();
-        }
-
-        filterFragment = (FilterFragment) fragmentManager.findFragmentByTag(FilterFragment.TAG);
-        if (filterFragment == null) {
-            filterFragment = new FilterFragment();
-        }
-
-        // Attempt to load state
-        HubState hubState;
-        if (savedInstanceState != null && savedInstanceState.containsKey(HubState.TAG)) {
-            hubState = Parcels.unwrap(savedInstanceState.getParcelable(HubState.TAG));
-        } else {
-            hubState = ImmutableHubState.builder()
-                    .currentFragment(HubState.FragmentType.DEST_MAP)
-                    .build();
-        }
-
-        EventListInteractor eventInteractor =
-                new EventListInteractor(retrofit, bus, evnService);
-        CategoryInteractor categoryInteractor =
-                new CategoryInteractor(retrofit, bus, evnService);
-
-        // Init presenter
-        hubPresenter = new HubPresenter(
-                this, hubState, bus, eventInteractor, categoryInteractor);
+        enterButton.setOnClickListener(this);
     }
 
     /**
-     * Button / Event Callbacks
+     * {@inheritDoc}
+     * @param view
      */
+    @Override
     public void onClick(View view) {
-        if (view.equals(exploreButton)) {
-            bus.post(new ViewMapEvent());
-            return;
-        }
-        if (view.equals(eventButton)) {
-            bus.post(new ViewEventEvent());
-            return;
-        }
-        if (view.equals(filterButton)) {
-            bus.post(new ViewFilterEvent());
-            return;
-        }
-
-        for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
-            if (mapEntry.getValue().equals(view)) {
-                hubPresenter.onModifyFilterEvent(
-                        new ModifyFilterEvent(ModifyFilterEvent.Type.CATEGORY, mapEntry.getKey(),
-                                ModifyFilterEvent.Action.TOGGLE));
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onBackPressed() {
-        hubPresenter.onBackPressed();
-    }
-
-    /**
-     * Shutdown
-     */
-    @Override
-    public void shutdown() {
-        this.finish();
-    }
-
-    /**
-     * Presenter Callbacks
-     */
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    public void showDestMap() {
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        // Fragment not added. Add fragment
-        if (!destMapFragment.isAdded()) {
-            transaction.add(R.id.fragment_container
-                    , destMapFragment
-                    , destMapFragment.TAG
-            );
-        }
-
-        transaction.show(destMapFragment)
-                .hide(destListFragment)
-                .hide(eventListFragment)
-                .hide(filterFragment);
-
-        if (destDetailFragment != null) {
-            transaction.hide(destDetailFragment);
-        }
-
-        transaction.commit();
-        fragmentManager.executePendingTransactions();
-    }
-
-    /**
-     * Shows the Destination List
-     */
-    @Override
-    public void showDestList() {
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        // Fragment not added. Add fragment
-        if (!destListFragment.isAdded()) {
-            transaction.add(R.id.fragment_container
-                    , destListFragment
-                    , destListFragment.TAG
-            );
-        }
-
-        transaction.show(destListFragment)
-                .hide(destMapFragment)
-                .hide(eventListFragment)
-                .hide(filterFragment)
-                .addToBackStack(null);
-
-        if (destDetailFragment != null) {
-            transaction.hide(destDetailFragment);
-        }
-
-        transaction.commitAllowingStateLoss();
-        fragmentManager.executePendingTransactions();
-    }
-
-    /**
-     * Shows the Event List
-     */
-    @Override
-    public void showEventList() {
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        // Fragment not added. Add fragment
-        if (!eventListFragment.isAdded()) {
-            transaction.add(R.id.fragment_container
-                    , eventListFragment
-                    , eventListFragment.TAG
-            );
-        }
-
-        transaction.show(eventListFragment)
-            .hide(destMapFragment)
-            .hide(destListFragment)
-            .hide(filterFragment)
-            .addToBackStack(null);
-
-        if (destDetailFragment != null) {
-            transaction.hide(destDetailFragment);
-        }
-
-        transaction.commit();
-        fragmentManager.executePendingTransactions();
-    }
-
-    /**
-     * Shows the Destination Detail Fragment
-     */
-    @Override
-    public void showDestDetail(Destination selectedDest) {
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        destDetailFragment = new DestDetailFragmentBuilder(selectedDest).build();
-
-        transaction.add(R.id.fragment_container
-                , destDetailFragment
-                , destDetailFragment.TAG
-        );
-
-        transaction.show(destDetailFragment)
-                .hide(eventListFragment)
-                .hide(destMapFragment)
-                .hide(destListFragment)
-                .hide(filterFragment)
-                .addToBackStack(null);
-
-        transaction.commit();
-
-        fragmentManager.executePendingTransactions();
-    }
-
-    /**
-     * Shows the Destination Detail Fragment
-     */
-    public void showFilterView() {
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        filterFragment = new FilterFragmentBuilder().build();
-
-        transaction.add(R.id.fragment_container
-                , filterFragment
-                , filterFragment.TAG
-        );
-
-        transaction.show(filterFragment)
-                .hide(eventListFragment)
-                .hide(destMapFragment)
-                .hide(destListFragment)
-                .addToBackStack(null);
-
-        if (destDetailFragment != null) {
-            transaction.hide(destDetailFragment);
-        }
-
-        transaction.commit();
-
-        fragmentManager.executePendingTransactions();
-    }
-
-    /**
-     * Exposed methods for the fragments
-     */
-    /**
-     * Returns the toolbar
-     * @return
-     */
-    public Toolbar getToolbar() {
-        return getToolbar();
-    }
-
-    /**
-     * Sets the Toolbar text
-     */
-    public void setToolbarTitle(String title) {
-        toolbarTitle.setText(title);
-    }
-
-    /**
-     * Sets the Toolbar text
-     */
-    public void showCategoryPicker(boolean show) {
-        if (show) {
-            if (toolbarShowing) {
-                return;
-            }
-            toolbarShowing = true;
-            filterButton.setVisibility(View.VISIBLE);
-            categoryPicker.setVisibility(View.VISIBLE);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
-            params.height = params.height + getResources().getDimensionPixelOffset(R.dimen.category_icon_size);
-            toolbar.setLayoutParams(params);
-        } else {
-            if (!toolbarShowing) {
-                return;
-            }
-            toolbarShowing = false;
-            filterButton.setVisibility(View.INVISIBLE);
-            categoryPicker.setVisibility(View.GONE);
-            // Calculate Default ActionBar height
-            TypedValue tv = new TypedValue();
-            if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-            {
-                int actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
-                params.height = actionBarHeight;
-                toolbar.setLayoutParams(params);
-            }
-        }
-    }
-
-    /**
-     * Applies the filter state to the filter buttons
-     */
-    public void applyFilterToView(Filter filter) {
-        ColorStateList darkBackground = ColorStateList.valueOf(
-                ContextCompat.getColor(this, R.color.progress_bar_background));
-        for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
-            ColorStateList resetBackground = ColorStateList.valueOf(
-                    ContextCompat.getColor(this, CategoryConstants.categoryColorMap.get(mapEntry.getKey())));
-            if (filter.categories().isEmpty()) {
-                mapEntry.getValue().setBackgroundTintList(resetBackground);
-            } else {
-                if (filter.categories().contains(mapEntry.getKey())) {
-                    mapEntry.getValue().setBackgroundTintList(resetBackground);
-                } else {
-                    mapEntry.getValue().setBackgroundTintList(darkBackground);
-                }
-            }
-        }
-    }
-
-    /**
-     * Permissions Callbacks
-     */
-    /**
-     * Displays the rationale for requesting current location
-     * @param request
-     */
-    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showRationaleForLocation(final PermissionRequest request) {
-        AlertDialog show = new AlertDialog.Builder(this)
-                .setMessage(R.string.location_rationale)
-                .setPositiveButton(R.string.btn_okay, (dialog, button) -> request.proceed())
-                .setNegativeButton(R.string.btn_deny, (dialog, button) -> request.cancel())
-                .show();
-    }
-
-    /**
-     * Called when the permissions are denied
-     */
-    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showDeniedForLocation() {
-        finish();
-    }
-
-    /**
-     * CAlled when the permissions are permanently denied
-     */
-    @OnNeverAskAgain(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showNeverAskForLocation() {
-        finish();
+        enterButton.setVisibility(View.INVISIBLE);
+        Intent intent = new Intent(this, HubActivity.class);
+        startActivity(intent);
     }
 }

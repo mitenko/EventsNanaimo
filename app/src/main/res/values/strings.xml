@@ -5,18 +5,32 @@
     <!-- Toolbar Titles -->
     <string name="dest_map_toolbar_title">EXPLORE</string>
     <string name="event_toolbar_title">EVENTS</string>
+    <string name="filter_toolbar_title">FILTER</string>
+
+    <!--Section Titles-->
+    <string name="section_category">CATEGORY</string>
+    <string name="section_cost">COST</string>
+    <string name="section_activity">ACTIVITY</string>
 
     <!-- Permissions Request -->
     <string name="location_rationale">Events Nanaimo would like to know your current location.</string>
 
     <!-- Buttons -->
+    <string name="btn_enter">ENTER</string>
     <string name="btn_okay">Okay</string>
     <string name="btn_deny">Deny</string>
     <string name="btn_search_within_bounds">Search this Area</string>
+    <string name="btn_all">All</string>
+    <string name="btn_free">FREE</string>
+    <string name="btn_one_money">$</string>
+    <string name="btn_two_money">$$</string>
+    <string name="btn_three_money">$$$</string>
 
     <!-- Errors -->
     <string name="no_location_available_error">Unable to Access Location</string>
+    <string name="no_items_to_display">No Items to Display</string>
 
-    <!-- Activities -->
+    <!--Destination Detail Titles-->
+    <string name="detail_header_location">LOCATION</string>
 
 </resources>

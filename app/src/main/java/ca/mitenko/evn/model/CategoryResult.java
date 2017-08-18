@@ -9,6 +9,7 @@ import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by mitenko on 2017-04-20.
@@ -23,6 +24,21 @@ public abstract class CategoryResult {
     @NonNull
     @SerializedName("data")
     public abstract ArrayList<Category> categories();
+
+    /**
+     * Maps the Catgory array to something more useful
+     * @return
+     */
+    @NonNull
+    @Value.Lazy
+    public HashMap<String, ArrayList<Activity>> categoryMap() {
+        HashMap<String, ArrayList<Activity>> categoryMap = new HashMap<>();
+        for(Category category : categories()) {
+            categoryMap.put(category.name(), category.activities());
+        }
+        return categoryMap;
+    }
+
 
     /**
      * Immutable Parcel Builder

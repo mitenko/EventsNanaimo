@@ -1,25 +1,37 @@
 package ca.mitenko.evn.presenter;
 
-import com.google.android.gms.maps.model.LatLngBounds;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import ca.mitenko.evn.event.CategoryResultEvent;
 import ca.mitenko.evn.event.FilterEvent;
+import ca.mitenko.evn.event.ModifyFilterEvent;
 import ca.mitenko.evn.event.MapBoundsEvent;
 import ca.mitenko.evn.event.MapClusterClickEvent;
 import ca.mitenko.evn.event.MapItemClickEvent;
 import ca.mitenko.evn.event.MapReadyEvent;
 import ca.mitenko.evn.event.SearchEvent;
 import ca.mitenko.evn.event.UpdateMapRequestEvent;
+import ca.mitenko.evn.event.UserLocationEvent;
+import ca.mitenko.evn.event.ViewFilterEvent;
+import ca.mitenko.evn.event.ViewListEvent;
 import ca.mitenko.evn.interactor.DestMapInteractor;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.search.DestSearch;
+import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.model.search.ImmutableDestSearch;
+import ca.mitenko.evn.model.search.ImmutableFilter;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.DestMapState;
+import ca.mitenko.evn.state.FilterFragState;
+import ca.mitenko.evn.state.HubState;
 import ca.mitenko.evn.state.ImmutableDestMapState;
+import ca.mitenko.evn.state.ImmutableFilterFragState;
+import ca.mitenko.evn.state.ImmutableHubState;
 import ca.mitenko.evn.ui.dest_map.DestMapView;
+
+import static ca.mitenko.evn.state.HubState.FragmentType.DEST_LIST;
+import static ca.mitenko.evn.state.HubState.FragmentType.FILTER;
 
 /**
  * Created by mitenko on 2017-04-23.
@@ -68,9 +80,9 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                 view.setDestinations(curState.search().filteredResults());
             }
 
-            if (curState.search().mapBoundsOrDefault() != null &&
-                    !curState.search().mapBoundsOrDefault().equals(prevState.search().mapBoundsOrDefault())) {
-                view.setMapBounds(curState.search().mapBoundsOrDefault());
+            if (curState.search().mapBounds() != null &&
+                    !curState.search().mapBounds().equals(prevState.search().mapBounds())) {
+                view.setMapBounds(curState.search().mapBounds());
             }
 
             if (curState.recluster()) {
@@ -104,6 +116,45 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                         !prevState.selectedItem().equals(curState.selectedItem()))){
                 view.setSelectedItem(curState.selectedItem());
             }
+
+            if (curState.userLocation() != null && prevState.userLocation() == null) {
+                view.setUserLocation(curState.userLocation());
+                if (curState.search().hasResults()) {
+                    view.setDestinations(curState.search().filteredResults());
+                }
+            }
+        }
+    }
+
+    /**
+     * Called when the user location is known
+     * @param event
+     */
+    @Subscribe(sticky = true)
+    public void onUserLocationEvent(UserLocationEvent event) {
+        if (event.getOutcome() == UserLocationEvent.Outcome.SUCCESS && event.getUserLatLng() != null
+                && !event.getUserLatLng().equals(curState.userLocation())) {
+
+            ImmutableFilter newFilter = ImmutableFilter.builder()
+                    .from(curState.search().filter())
+                    .userLocation(event.getUserLatLng())
+                    .build();
+
+            ImmutableDestSearch newSearch = ImmutableDestSearch.builder()
+                    .from(curState.search())
+                    .filter(newFilter)
+                    .build();
+
+
+            DestMapState newState = ImmutableDestMapState.builder()
+                    .from(curState)
+                    .userLocation(event.getUserLatLng())
+                    .search(newSearch)
+                    .build();
+            render(newState);
+
+            // Push out the new search
+            bus.postSticky(new SearchEvent(curState.search()));
         }
     }
 
@@ -131,20 +182,18 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                     .mapBounds(event.getLatLngBounds())
                     .build();
 
-        ImmutableDestMapState newState = ImmutableDestMapState.builder()
+        ImmutableDestMapState.Builder newStateBuilder = ImmutableDestMapState.builder()
                     .from(curState)
                     .search(newSearch)
                     .recluster(true)
-                    .build();
+                    .selectedItem(null);
 
-        /**
-         * Force a new search if destinations == null
-         */
-        if (!curState.search().hasResults()) {
+        if (event.getExecuteSearch()) {
             // Hit the API for the destinations within these bounds
             interactor.getDestinations(curState.search());
+            newStateBuilder.loadingResults(true);
         }
-        render(newState);
+        render(newStateBuilder.build());
 
         // Push out the new search
         bus.postSticky(new SearchEvent(curState.search()));
@@ -164,6 +213,7 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
         ImmutableDestMapState newState = ImmutableDestMapState.builder()
                     .from(curState)
                     .search(newSearch)
+                    .selectedItem(null)
                     .build();
 
         render(newState);
@@ -187,6 +237,7 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                 .from(curState)
                 .search(newSearch)
                 .loadingResults(true)
+                .selectedItem(null)
                 .build();
         render(newState);
 
@@ -211,8 +262,31 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                 .from(curState)
                 .loadingResults(false)
                 .search(event.getSearch())
+                .selectedItem(null)
                 .build();
         render(newState);
+    }
+
+    /**
+     * Called when the Filter as a whole has been updated
+     * @param event
+     */
+    @Subscribe(sticky = true)
+    public void onFilterEvent(FilterEvent event) {
+        if (event.getFilter().equals(curState.search().filter())) {
+            return;
+        }
+        DestMapState newState = ImmutableDestMapState.builder()
+                .from(curState)
+                .search(ImmutableDestSearch.builder()
+                    .from(curState.search())
+                    .filter(event.getFilter())
+                    .build())
+                .selectedItem(null)
+                .build();
+        render(newState);
+        // Push out the new search
+        bus.postSticky(new SearchEvent(curState.search()));
     }
 
     /**
@@ -235,19 +309,60 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
     }
 
     /**
+     * When the categories have been loaded
+     * @param event
+     */
+    @Subscribe(sticky = true)
+    public void onCategoryResultEvent(CategoryResultEvent event) {
+        DestMapState newState = ImmutableDestMapState.builder()
+                .from(curState)
+                .categoryMap(event.getCategoryResult())
+                .build();
+        render(newState);
+    }
+
+    /**
      * Called when a filtering event has occurred
      * @param event
      */
     @Subscribe
-    public void onFilterEvent(FilterEvent event) {
+    public void onModifyFilterEvent(ModifyFilterEvent event) {
         DestSearch newSearch = ImmutableDestSearch.builder()
                 .from(curState.search())
-                .filter(curState.search().filter().withFilterEvent(event))
+                .filter(curState.search().filter().modify(event, curState.categoryMap()))
                 .build();
 
         DestMapState newState = ImmutableDestMapState.builder()
                 .from(curState)
                 .search(newSearch)
+                .build();
+        render(newState);
+    }
+
+    /**
+     * When the 'filter' button is clicked
+     *
+     * @param event
+     */
+    @Subscribe
+    public void onFilterButtonEvent(ViewFilterEvent event) {
+        DestMapState newState = ImmutableDestMapState.builder()
+                .from(curState)
+                .selectedItem(null)
+                .build();
+        render(newState);
+    }
+
+    /**
+     * When a 'list' button is clicked
+     *
+     * @param event
+     */
+    @Subscribe
+    public void onListButtonEvent(ViewListEvent event) {
+        DestMapState newState = ImmutableDestMapState.builder()
+                .from(curState)
+                .selectedItem(null)
                 .build();
         render(newState);
     }

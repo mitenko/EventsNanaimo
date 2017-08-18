@@ -1,6 +1,7 @@
 package ca.mitenko.evn.ui.event_list;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,6 +47,12 @@ public class EventListFragment extends RootFragment
      */
     @BindView(R.id.list_view)
     RecyclerView recyclerView;
+
+    /**
+     * Message Showing the empty list
+     */
+    @BindView(R.id.empty_notice)
+    ConstraintLayout emptyListMessage;
 
     /**
      * Event bus
@@ -105,6 +112,7 @@ public class EventListFragment extends RootFragment
         presenter = new EventListPresenter(
                 this, ImmutableEventListState.builder().build(), bus);
         setToolbar();
+        hub.showFilterButton();
     }
 
     /**
@@ -116,6 +124,7 @@ public class EventListFragment extends RootFragment
         super.onHiddenChanged(hidden);
         if (!hidden) {
             setToolbar();
+            hub.showFilterButton();
         }
     }
 
@@ -135,5 +144,11 @@ public class EventListFragment extends RootFragment
      */
     public void setEvents(ArrayList<Event> events) {
         adapter.setEvents(events);
+        if (events.size() > 0) {
+            emptyListMessage.setVisibility(View.GONE);
+            recyclerView.scrollToPosition(0);
+        } else {
+            emptyListMessage.setVisibility(View.VISIBLE);
+        }
     }
 }

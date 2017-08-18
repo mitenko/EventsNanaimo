@@ -29,7 +29,7 @@ public class EventListPresenter extends RootPresenter<EventListView, EventListSt
     @Override
     public void renderState(EventListView view, EventListState curState, EventListState prevState) {
         if (view != null) {
-            if (!curState.events().equals(prevState.events())) {
+            if (curState.events() != null && !curState.events().equals(prevState.events())) {
                 view.setEvents(curState.events());
             }
         }

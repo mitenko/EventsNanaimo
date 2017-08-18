@@ -30,4 +30,16 @@ public class MapUtil {
         }
         return builder.build();
     }
+
+    /**
+     * Will use the destination's data to build a static map query
+     * @param destination
+     * @return
+     */
+    public static String toStaticMapURL(Destination destination) {
+        return "https://maps.googleapis.com/maps/api/staticmap?"
+            + "center=" + destination.latitude() + "," + destination.longitude()
+            + "&zoom=16&size=640x400"
+            + "&key=AIzaSyASFlFrUY2m055zls177YGZ41N2douQx2Q";
+    }
 }
