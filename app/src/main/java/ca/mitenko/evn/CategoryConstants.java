@@ -16,6 +16,7 @@ public class CategoryConstants {
     public static final String ADVENTURE = "Activity / Adventure";
     public static final String ACCOMMODATION = "Accommodation";
     public static final String LIFESTYLE = "Lifestyle";
+    public static final String BEVERAGES = "Beverages";
 
     public static HashMap<String,Integer> categoryColorMap;
     static {
@@ -29,6 +30,7 @@ public class CategoryConstants {
         categoryColorMap.put(ADVENTURE, R.color.adventure);
         categoryColorMap.put(ACCOMMODATION, R.color.accommodation);
         categoryColorMap.put(LIFESTYLE, R.color.lifestyle);
+        categoryColorMap.put(BEVERAGES, R.color.beverages);
     }
 
     public static HashMap<String,Integer> categoryIconMap;
@@ -42,5 +44,6 @@ public class CategoryConstants {
         categoryIconMap.put(ADVENTURE, R.drawable.ic_adventure);
         categoryIconMap.put(ACCOMMODATION, R.drawable.ic_accommodation);
         categoryIconMap.put(LIFESTYLE, R.drawable.ic_lifestyle);
+        categoryIconMap.put(BEVERAGES, R.drawable.ic_beverages);
     }
 }

@@ -98,7 +98,7 @@ dependencies {
 
     // Butterknife
     implementation "com.jakewharton:butterknife:${butterknife_version}"
-    kapt "com.jakewharton:butterknife-implementationr:${butterknife_version}"
+    kapt "com.jakewharton:butterknife-compiler:${butterknife_version}"
 
     // Fragment Args
     implementation "com.hannesdorfmann.fragmentargs:annotation:${fragment_args_version}"
@@ -106,7 +106,7 @@ dependencies {
     implementation "com.hannesdorfmann.fragmentargs:bundler-parceler:${fragment_args_version}"
 
     // Dagger 2
-    kapt "com.google.dagger:dagger-implementationr:${dagger_version}"
+    kapt "com.google.dagger:dagger-compiler:${dagger_version}"
     implementation "com.google.dagger:dagger:${dagger_version}"
 
     // RXJava

@@ -48,6 +48,13 @@
                     android:orientation="horizontal">
 
                     <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/beverages"
+                        style="@style/CategoryIcon"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_beverages_white"
+                        bg:backgroundTint="@color/beverages" />
+
+                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/on_the_town"
                         style="@style/CategoryIcon"
                         android:scaleType="center"
