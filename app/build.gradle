@@ -119,10 +119,10 @@ dependencies {
     kapt "org.parceler:parceler:${parceler_version}"
 
     // Immutables
-    kapt "org.immutables:value:${immutables_version}"
-    implementation "org.immutables:value:${immutables_version}"
-    kapt "org.immutables:gson:${immutables_version}"
-    implementation "org.immutables:gson:${immutables_version}"
+    kapt "org.immutables:value:2.5.5" // for annotation processor
+    provided "org.immutables:value:2.5.5:annotations" // annotation-only artifact
+    provided "org.immutables:builder:2.5.5" // there are only annotations anyway
+    provided "org.immutables:gson:2.5.5:annotations" // annotation-only artifact
 
     // Green Robot Event Bus
     implementation "org.greenrobot:eventbus:${green_robot_version}"

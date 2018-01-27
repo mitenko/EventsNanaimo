@@ -56,28 +56,4 @@ public abstract class Event {
      */
     @NonNull
     public abstract ArrayList<Integer> destinations();
-
-    /**
-     * Parceler for immutables
-     * @param id
-     * @param detail
-     * @param readableStartTime
-     * @param readableEndTime
-     * @param destinations
-     * @return
-     */
-    @ParcelFactory
-    public static Event build(int id, Detail detail, String readableStartTime,
-                        String readableEndTime, ArrayList<Integer> destinations,
-                          Long unixStartTime, Long unixEndTime) {
-        return ImmutableEvent.builder()
-                .id(id)
-                .detail(detail)
-                .readableStartTime(readableStartTime)
-                .readableEndTime(readableEndTime)
-                .destinations(destinations)
-                .unixStartTime(unixStartTime)
-                .unixEndTime(unixEndTime)
-                .build();
-    }
 }
