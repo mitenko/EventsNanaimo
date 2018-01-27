@@ -20,6 +20,9 @@ import ca.mitenko.evn.R;
 import ca.mitenko.evn.model.Event;
 import ca.mitenko.evn.network.EventsNanaimoService;
 import ca.mitenko.evn.presenter.EventListPresenter;
+import ca.mitenko.evn.state.EventDetailState;
+import ca.mitenko.evn.state.EventListState;
+import ca.mitenko.evn.state.ImmutableEventDetailState;
 import ca.mitenko.evn.state.ImmutableEventListState;
 import ca.mitenko.evn.ui.common.RootFragment;
 import ca.mitenko.evn.ui.event_list.adapter.EventListAdapter;
@@ -110,9 +113,25 @@ public class EventListFragment extends RootFragment
 
         // Init presenter
         presenter = new EventListPresenter(
-                this, ImmutableEventListState.builder().build(), bus);
+                this, (EventListState)state, bus);
         setToolbar();
         hub.showFilterButton();
+    }
+
+    /**
+     * Returns the state key for storing and restoring the state
+     * @return
+     */
+    public String getStateKey() {
+        return EventListState.TAG;
+    }
+
+    /**
+     * Returns the default state
+     * @return
+     */
+    public EventListState getDefaultState() {
+        return ImmutableEventListState.builder().build();
     }
 
     /**

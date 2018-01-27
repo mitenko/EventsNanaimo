@@ -40,6 +40,18 @@ public abstract class Event {
     public abstract String readableEndTime();
 
     /**
+     * Event Start Time
+     */
+    @NonNull
+    public abstract Long unixStartTime();
+
+    /**
+     * Event Start Time
+     */
+    @NonNull
+    public abstract Long unixEndTime();
+
+    /**
      * The List of Destinations for this Event
      */
     @NonNull
@@ -56,13 +68,16 @@ public abstract class Event {
      */
     @ParcelFactory
     public static Event build(int id, Detail detail, String readableStartTime,
-                        String readableEndTime, ArrayList<Integer> destinations) {
+                        String readableEndTime, ArrayList<Integer> destinations,
+                          Long unixStartTime, Long unixEndTime) {
         return ImmutableEvent.builder()
                 .id(id)
                 .detail(detail)
                 .readableStartTime(readableStartTime)
                 .readableEndTime(readableEndTime)
                 .destinations(destinations)
+                .unixStartTime(unixStartTime)
+                .unixEndTime(unixEndTime)
                 .build();
     }
 }

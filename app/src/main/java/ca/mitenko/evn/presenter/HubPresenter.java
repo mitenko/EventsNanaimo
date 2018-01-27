@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import ca.mitenko.evn.event.CategoryResultEvent;
 import ca.mitenko.evn.event.DestItemClickEvent;
+import ca.mitenko.evn.event.EventItemClickEvent;
 import ca.mitenko.evn.event.EventResultEvent;
 import ca.mitenko.evn.event.FilterEvent;
 import ca.mitenko.evn.event.ModifyFilterEvent;
@@ -26,6 +27,7 @@ import ca.mitenko.evn.ui.hub.HubView;
 import static ca.mitenko.evn.state.HubState.FragmentType.DEST_DETAIL;
 import static ca.mitenko.evn.state.HubState.FragmentType.DEST_LIST;
 import static ca.mitenko.evn.state.HubState.FragmentType.DEST_MAP;
+import static ca.mitenko.evn.state.HubState.FragmentType.EVENT_DETAIL;
 import static ca.mitenko.evn.state.HubState.FragmentType.EVENT_LIST;
 import static ca.mitenko.evn.state.HubState.FragmentType.FILTER;
 
@@ -86,6 +88,9 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
                     case DEST_DETAIL:
                         view.showDestDetail(curState.selectedDest());
                         break;
+                    case EVENT_DETAIL:
+                        view.showEventDetail(curState.selectedEvent());
+                        break;
                     case FILTER:
                         view.showFilterView();
                         break;
@@ -103,10 +108,21 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
             }
 
             // Request the user location
-            if (!curState.locationRequested()) {
+            if (curState.haveLocationPermission() && !curState.locationRequested()) {
                 view.getUserLocation();
             }
         }
+    }
+
+    /**
+     * Called once we have location permission
+     */
+    public void onLocationPermissionGranted(boolean havePermission) {
+        HubState newState = ImmutableHubState.builder()
+                .from(curState)
+                .haveLocationPermission(havePermission)
+                .build();
+        render(newState);
     }
 
     /**
@@ -200,6 +216,24 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
     }
 
     /**
+     * When a destination item has been clicked
+     * @param event
+     */
+    @Subscribe
+    public void onEventItemClickEvent(EventItemClickEvent event) {
+        if (curState.currentFragment() == EVENT_DETAIL) {
+            return;
+        }
+        HubState newState = ImmutableHubState.builder()
+                .from(curState)
+                .currentFragment(EVENT_DETAIL)
+                .selectedEvent(event.getEvent())
+                .fragmentStack(setFragmentStack(EVENT_DETAIL))
+                .build();
+        render(newState);
+    }
+
+    /**
      * Happens when the events have been loaded
      * @param event
      */
@@ -288,16 +322,5 @@ public class HubPresenter extends RootPresenter<HubView, HubState> {
             fragmentStack.add(curState.currentFragment());
         }
         return fragmentStack;
-    }
-
-    /**
-     * Called after we've requested the user's location
-     */
-    public void onLocationRequested() {
-        HubState newState = ImmutableHubState.builder()
-                .from(curState)
-                .locationRequested(true)
-                .build();
-        render(newState);
     }
 }

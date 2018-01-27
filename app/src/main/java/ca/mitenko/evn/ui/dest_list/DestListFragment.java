@@ -22,6 +22,9 @@ import ca.mitenko.evn.event.ViewMapEvent;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.network.EventsNanaimoService;
 import ca.mitenko.evn.presenter.DestListPresenter;
+import ca.mitenko.evn.state.DestDetailState;
+import ca.mitenko.evn.state.DestListState;
+import ca.mitenko.evn.state.ImmutableDestDetailState;
 import ca.mitenko.evn.state.ImmutableDestListState;
 import ca.mitenko.evn.ui.common.RootFragment;
 import ca.mitenko.evn.ui.dest_list.adapter.DestListAdapter;
@@ -121,10 +124,26 @@ public class DestListFragment extends RootFragment
 
         // Init presenter
         presenter = new DestListPresenter(
-                this, ImmutableDestListState.builder().build(), bus);
+                this, (DestListState)state, bus);
 
         setToolbar();
         hub.showFilterButton();
+    }
+
+    /**
+     * Returns the state key for storing and restoring the state
+     * @return
+     */
+    public String getStateKey() {
+        return DestListState.TAG;
+    }
+
+    /**
+     * Returns the default state
+     * @return
+     */
+    public DestListState getDefaultState() {
+        return ImmutableDestListState.builder().build();
     }
 
     /**

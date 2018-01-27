@@ -52,6 +52,23 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                             EventBus bus, DestMapInteractor interactor) {
         super(view, ImmutableDestMapState.builder().build(), curState, bus);
         this.interactor = interactor;
+        /**
+         * if we don't have the search results, go into a loading state
+         */
+        if (!curState.search().hasResults()) {
+            DestMapState newState = ImmutableDestMapState.builder()
+                    .from(curState)
+                    .loadingResults(true)
+                    .build();
+            /**
+             * Execute a search immediately if we have been
+             * denied the user's current location
+             */
+            if (!curState.hasUserLocationPermission()) {
+                interactor.getDestinations(curState.search());
+            }
+            render(newState);
+        }
     }
 
     /**
@@ -71,18 +88,24 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
             /**
              * Set destinations if we have them and the map just became ready
              */
-            if (curState.mapReady() && !prevState.mapReady() && curState.search().hasResults()) {
-                view.setDestinations(curState.search().filteredResults());
+            if (curState.mapReady() && !prevState.mapReady()) {
+                if (curState.search().hasResults()) {
+                    view.setDestinations(curState.search().filteredResults(false));
+                }
+                if (curState.search().hasMapBounds()) {
+                    view.setMapBounds(curState.search().mapBounds(), false);
+                }
             }
 
             if (curState.search().hasResults()
-                    && !curState.search().filteredResults().equals(prevState.search().filteredResults())) {
-                view.setDestinations(curState.search().filteredResults());
+                    && !curState.search().filteredResults(false)
+                    .equals(prevState.search().filteredResults(false))) {
+                view.setDestinations(curState.search().filteredResults(false));
             }
 
             if (curState.search().mapBounds() != null &&
                     !curState.search().mapBounds().equals(prevState.search().mapBounds())) {
-                view.setMapBounds(curState.search().mapBounds());
+                view.setMapBounds(curState.search().mapBounds(), true);
             }
 
             if (curState.recluster()) {
@@ -120,7 +143,7 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
             if (curState.userLocation() != null && prevState.userLocation() == null) {
                 view.setUserLocation(curState.userLocation());
                 if (curState.search().hasResults()) {
-                    view.setDestinations(curState.search().filteredResults());
+                    view.setDestinations(curState.search().filteredResults(false));
                 }
             }
         }
@@ -145,16 +168,20 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                     .filter(newFilter)
                     .build();
 
-
             DestMapState newState = ImmutableDestMapState.builder()
                     .from(curState)
                     .userLocation(event.getUserLatLng())
                     .search(newSearch)
                     .build();
+
             render(newState);
 
-            // Push out the new search
-            bus.postSticky(new SearchEvent(curState.search()));
+            if (curState.loadingResults()) {
+                // Hit the API for the destinations within these bounds
+                interactor.getDestinations(newSearch);
+            } else {
+                bus.postSticky(new SearchEvent(newSearch));
+            }
         }
     }
 
@@ -188,11 +215,6 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                     .recluster(true)
                     .selectedItem(null);
 
-        if (event.getExecuteSearch()) {
-            // Hit the API for the destinations within these bounds
-            interactor.getDestinations(curState.search());
-            newStateBuilder.loadingResults(true);
-        }
         render(newStateBuilder.build());
 
         // Push out the new search
@@ -244,8 +266,7 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
         // Hit the API for the destinations within these bounds
         interactor.getDestinations(newSearch);
 
-        // Push out the new search
-        bus.postSticky(new SearchEvent(curState.search()));
+        // Don't push out a SearchEvent since the interactor will push one out
     }
 
     /**
@@ -365,5 +386,15 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                 .selectedItem(null)
                 .build();
         render(newState);
+    }
+
+    /**
+     * Called when the fragment is saving its state
+     */
+    public void onSaveInstanceState() {
+        curState = ImmutableDestMapState.builder()
+                .from(curState)
+                .mapReady(false)
+                .build();
     }
 }

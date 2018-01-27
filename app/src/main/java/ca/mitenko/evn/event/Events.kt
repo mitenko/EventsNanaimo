@@ -23,6 +23,7 @@ data class UserLocationEvent(val outcome: Outcome, val userLatLng: LatLng?) {
  * Button Events
  */
 data class DestItemClickEvent(val destination: Destination)
+data class EventItemClickEvent(val event: Event)
 data class ViewEventEvent(val showEvents: Boolean = true)
 data class ViewListEvent(val showList: Boolean = true)
 data class ViewMapEvent(val showMap: Boolean = true)
@@ -49,7 +50,7 @@ data class FilterEvent(val filter: Filter)
 /**
  * Map Events
  */
-data class MapBoundsEvent(val latLngBounds: LatLngBounds, val executeSearch: Boolean = false)
+data class MapBoundsEvent(val latLngBounds: LatLngBounds)
 data class MapItemClickEvent(val destination: Destination?)
 data class MapClusterClickEvent(val clusterBounds: LatLngBounds)
 data class MapReadyEvent(val ready: Boolean = true)

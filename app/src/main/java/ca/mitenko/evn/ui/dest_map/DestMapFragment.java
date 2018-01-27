@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.rey.material.widget.ProgressView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -31,9 +32,13 @@ import ca.mitenko.evn.interactor.DestMapInteractor;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.network.EventsNanaimoService;
 import ca.mitenko.evn.presenter.DestMapPresenter;
+import ca.mitenko.evn.state.DestMapState;
+import ca.mitenko.evn.state.HubState;
 import ca.mitenko.evn.state.ImmutableDestMapState;
+import ca.mitenko.evn.state.ImmutableHubState;
 import ca.mitenko.evn.ui.common.RootFragment;
 import ca.mitenko.evn.ui.dest_map.map.DestMap;
+import ca.mitenko.evn.util.PermissionUtil;
 import retrofit2.Retrofit;
 
 /**
@@ -152,7 +157,25 @@ public class DestMapFragment extends RootFragment
 
         // Init presenter
         presenter = new DestMapPresenter(
-                this, ImmutableDestMapState.builder().build(), bus, interactor);
+                this, (DestMapState)state, bus, interactor);
+    }
+
+    /**
+     * Returns the state key for storing and restoring the state
+     * @return
+     */
+    public String getStateKey() {
+        return DestMapState.TAG;
+    }
+
+    /**
+     * Returns the default state
+     * @return
+     */
+    public DestMapState getDefaultState() {
+        return ImmutableDestMapState.builder()
+                .hasUserLocationPermission(PermissionUtil.hasFineLocationPermission(getContext()))
+                .build();
     }
 
     /**
@@ -221,8 +244,8 @@ public class DestMapFragment extends RootFragment
      * Sets the map boundaries
      * @param mapBounds
      */
-    public void setMapBounds(LatLngBounds mapBounds) {
-        destMap.setMapBounds(mapBounds);
+    public void setMapBounds(LatLngBounds mapBounds, boolean animate) {
+        destMap.setMapBounds(mapBounds, animate);
     }
 
     /**
@@ -358,6 +381,7 @@ public class DestMapFragment extends RootFragment
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        ((DestMapPresenter) presenter).onSaveInstanceState();
         if(destMap != null) {
             Bundle mapState = new Bundle();
             destMap.onMapSaveInstanceState(mapState);

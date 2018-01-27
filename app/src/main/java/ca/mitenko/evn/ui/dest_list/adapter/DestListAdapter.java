@@ -71,9 +71,6 @@ public class DestListAdapter extends RecyclerView.Adapter<DestViewHolder> {
     @Override
     public void onBindViewHolder(DestViewHolder holder, int position) {
         Destination destination = destinations.get(position);
-        holder.bind(destination);
+        holder.bind(destination, bus);
     }
-
-
-
 }

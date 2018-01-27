@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,18 +25,27 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import ca.mitenko.evn.CategoryConstants;
 import ca.mitenko.evn.EvNApplication;
+import ca.mitenko.evn.Manifest;
 import ca.mitenko.evn.R;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.presenter.DestDetailPresenter;
+import ca.mitenko.evn.state.DestDetailState;
+import ca.mitenko.evn.state.DestListState;
+import ca.mitenko.evn.state.DestMapState;
 import ca.mitenko.evn.state.ImmutableDestDetailState;
+import ca.mitenko.evn.state.ImmutableDestMapState;
 import ca.mitenko.evn.ui.common.CategoryView;
 import ca.mitenko.evn.ui.common.RootFragment;
 import ca.mitenko.evn.util.MapUtil;
+import ca.mitenko.evn.util.PermissionUtil;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by mitenko on 2017-04-22.
  */
 
+@RuntimePermissions
 @FragmentWithArgs
 public class DestDetailFragment extends RootFragment
     implements DestDetailView {
@@ -175,9 +185,7 @@ public class DestDetailFragment extends RootFragment
 
         // Init presenter
         presenter = new DestDetailPresenter(
-                this, ImmutableDestDetailState.builder().destination(destination).build(), bus);
-        setToolbar();
-        hub.showFilterButton();
+                this, (DestDetailState) state, bus);
 
         linkContainer.setOnClickListener(view -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW,
@@ -185,16 +193,56 @@ public class DestDetailFragment extends RootFragment
             startActivity(browserIntent);
         });
         phoneContainer.setOnClickListener(view -> {
-            NEEDS TO ASK FOR PERMISSION
-            Intent intent = new Intent(Intent.ACTION_CALL,
-                    Uri.parse("tel:" + destination.detail().phone()));
-            startActivity(intent);
+            DestDetailFragmentPermissionsDispatcher.makePhoneCallWithCheck(this);
         });
         locationContainer.setOnClickListener(view -> {
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                     Uri.parse("google.navigation:q=" + destination.address().toString()));
             startActivity(intent);
         });
+
+        setToolbar();
+        hub.showDoneButton();
+    }
+
+    /**
+     * Returns the state key for storing and restoring the state
+     * @return
+     */
+    public String getStateKey() {
+        return DestDetailState.TAG;
+    }
+
+    /**
+     * Returns the default state
+     * @return
+     */
+    public DestDetailState getDefaultState() {
+        return ImmutableDestDetailState.builder().destination(destination).build();
+    }
+
+    /**
+     * Makes the phone call once permissions have been granted
+     */
+    @NeedsPermission(Manifest.permission.CALL_PHONE)
+    public void makePhoneCall() {
+        Intent intent = new Intent(Intent.ACTION_CALL,
+                Uri.parse("tel:" + destination.detail().phone()));
+        startActivity(intent);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @SuppressWarnings("all")
+    public void onRequestPermissionsResult (int requestCode,
+                                            String[] permissions,
+                                            int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        DestDetailFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     /**

@@ -8,6 +8,7 @@ import ca.mitenko.evn.dagger.module.NetworkModule;
 import ca.mitenko.evn.ui.dest_detail.DestDetailFragment;
 import ca.mitenko.evn.ui.dest_list.DestListFragment;
 import ca.mitenko.evn.ui.dest_map.DestMapFragment;
+import ca.mitenko.evn.ui.event_detail.EventDetailFragment;
 import ca.mitenko.evn.ui.event_list.EventListFragment;
 import ca.mitenko.evn.ui.filter.FilterFragment;
 import ca.mitenko.evn.ui.hub.HubActivity;
@@ -28,5 +29,5 @@ public interface ApplicationComponent {
     void inject(EventListFragment fragment);
     void inject(DestDetailFragment fragment);
     void inject(FilterFragment fragment);
-
+    void inject(EventDetailFragment fragment);
 }

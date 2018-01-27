@@ -4,8 +4,10 @@ import android.Manifest;
 import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -24,7 +26,9 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -41,6 +45,7 @@ import ca.mitenko.evn.event.ViewMapEvent;
 import ca.mitenko.evn.interactor.CategoryInteractor;
 import ca.mitenko.evn.interactor.EventListInteractor;
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.model.Event;
 import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.network.EventsNanaimoService;
 import ca.mitenko.evn.presenter.HubPresenter;
@@ -50,6 +55,8 @@ import ca.mitenko.evn.ui.dest_detail.DestDetailFragment;
 import ca.mitenko.evn.ui.dest_detail.DestDetailFragmentBuilder;
 import ca.mitenko.evn.ui.dest_list.DestListFragment;
 import ca.mitenko.evn.ui.dest_map.DestMapFragment;
+import ca.mitenko.evn.ui.event_detail.EventDetailFragment;
+import ca.mitenko.evn.ui.event_detail.EventDetailFragmentBuilder;
 import ca.mitenko.evn.ui.event_list.EventListFragment;
 import ca.mitenko.evn.ui.filter.FilterFragment;
 import ca.mitenko.evn.ui.filter.FilterFragmentBuilder;
@@ -221,6 +228,11 @@ public class HubActivity extends AppCompatActivity
     /**
      * The Event List fragment
      */
+    private EventDetailFragment eventDetailFragment = null;
+
+    /**
+     * The Event List fragment
+     */
     private FilterFragment filterFragment;
 
     /**
@@ -333,10 +345,17 @@ public class HubActivity extends AppCompatActivity
      * @param grantResults
      */
     @Override
+    @SuppressWarnings("all")
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // NOTE: delegate the permission handling to generated method
         HubActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        List<Fragment> fragments = fragmentManager.getFragments();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+        }
     }
 
     /**
@@ -390,26 +409,48 @@ public class HubActivity extends AppCompatActivity
      * Presenter Callbacks
      */
     /**
-     * {@inheritDoc}
+     * Will fetch the user's location
      */
     public void getUserLocation() {
-        HubActivityPermissionsDispatcher.onLocationPermissionWithCheck(this);
+        userLocationUtil = new UserLocationUtil(this, bus);
+        userLocationUtil.getLocation();
     }
 
     /**
      * Called once we've requests location permissions
      */
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    public void onLocationPermission() {
-        userLocationUtil = new UserLocationUtil(this, bus);
-        userLocationUtil.getLocation();
+    public void getLocationPermission() {
+        // Post as runnable so hubpresenter can be assigned something
+        new Handler().post(() -> hubPresenter.onLocationPermissionGranted(true));
+        showDestMapAfterPermissions();
+    }
+
+    /**
+     * Called if the permission request is denied
+     */
+    @OnNeverAskAgain(Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
+    public void locationPermissionDenied() {
+        new Handler().post(() -> hubPresenter.onLocationPermissionGranted(false));
+        showDestMapAfterPermissions();
     }
 
     /**
      * {@inheritDoc}
      */
+    /**
+     * Don't show the dest map until we've requested location permission
+     */
     @Override
     public void showDestMap() {
+        HubActivityPermissionsDispatcher.getLocationPermissionWithCheck(this);
+    }
+
+    /**
+     * Called after we've made a permission check
+     */
+    public void showDestMapAfterPermissions() {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         // Fragment not added. Add fragment
@@ -427,6 +468,10 @@ public class HubActivity extends AppCompatActivity
 
         if (destDetailFragment != null) {
             transaction.hide(destDetailFragment);
+        }
+
+        if (eventDetailFragment != null) {
+            transaction.hide(eventDetailFragment);
         }
 
         transaction.commitAllowingStateLoss();
@@ -458,6 +503,10 @@ public class HubActivity extends AppCompatActivity
             transaction.hide(destDetailFragment);
         }
 
+        if (eventDetailFragment != null) {
+            transaction.hide(eventDetailFragment);
+        }
+
         transaction.commitAllowingStateLoss();
         fragmentManager.executePendingTransactions();
     }
@@ -487,6 +536,10 @@ public class HubActivity extends AppCompatActivity
             transaction.hide(destDetailFragment);
         }
 
+        if (eventDetailFragment != null) {
+            transaction.hide(eventDetailFragment);
+        }
+
         transaction.commit();
         fragmentManager.executePendingTransactions();
     }
@@ -511,6 +564,40 @@ public class HubActivity extends AppCompatActivity
                 .hide(destListFragment)
                 .hide(filterFragment)
                 .addToBackStack(null);
+
+        if (eventDetailFragment != null) {
+            transaction.hide(eventDetailFragment);
+        }
+
+        transaction.commit();
+
+        fragmentManager.executePendingTransactions();
+    }
+
+    /**
+     * Shows the Destination Detail Fragment
+     */
+    @Override
+    public void showEventDetail(Event selectedEvent) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        eventDetailFragment = new EventDetailFragmentBuilder(selectedEvent).build();
+
+        transaction.add(R.id.fragment_container
+                , eventDetailFragment
+                , eventDetailFragment.TAG
+        );
+
+        transaction.show(eventDetailFragment)
+                .hide(eventListFragment)
+                .hide(destMapFragment)
+                .hide(destListFragment)
+                .hide(filterFragment)
+                .addToBackStack(null);
+
+        if (destDetailFragment != null) {
+            transaction.hide(destDetailFragment);
+        }
 
         transaction.commit();
 
@@ -538,6 +625,10 @@ public class HubActivity extends AppCompatActivity
 
         if (destDetailFragment != null) {
             transaction.hide(destDetailFragment);
+        }
+
+        if (eventDetailFragment != null) {
+            transaction.hide(eventDetailFragment);
         }
 
         transaction.commit();
@@ -629,21 +720,5 @@ public class HubActivity extends AppCompatActivity
                 }
             }
         }
-    }
-
-    /**
-     * Permissions Callbacks
-     */
-    /**
-     * Displays the rationale for requesting current location
-     * @param request
-     */
-    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showRationaleForLocation(final PermissionRequest request) {
-        AlertDialog show = new AlertDialog.Builder(this)
-                .setMessage(R.string.location_rationale)
-                .setPositiveButton(R.string.btn_okay, (dialog, button) -> request.proceed())
-                .setNegativeButton(R.string.btn_deny, (dialog, button) -> request.cancel())
-                .show();
     }
 }

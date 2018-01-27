@@ -1,6 +1,7 @@
 package ca.mitenko.evn.ui.hub;
 
 import ca.mitenko.evn.model.Destination;
+import ca.mitenko.evn.model.Event;
 import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.ui.common.RootView;
 
@@ -28,6 +29,11 @@ public interface HubView extends RootView {
      * Display the Event List
      */
     void showDestDetail(Destination selectedDest);
+
+    /**
+     * Display the Event List
+     */
+    void showEventDetail(Event selectedEvent);
 
     /**
      * Shutdown the app

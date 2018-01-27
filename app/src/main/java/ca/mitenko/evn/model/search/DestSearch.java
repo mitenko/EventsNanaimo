@@ -68,6 +68,17 @@ public class DestSearch {
     }
 
     /**
+     * Returns true / false if the search
+     * has a non-default set of map bounds
+     * @return
+     */
+    @NonNull
+    @Value.Lazy
+    public boolean hasMapBounds() {
+        return mapBounds() != null;
+    }
+
+    /**
      * Returns true / false if the map bounds are
      * outside of the search bounds
      * @return
@@ -116,37 +127,40 @@ public class DestSearch {
     @NonNull
     @Value.Lazy
     @SuppressWarnings("ConstantConditions")
-    public ArrayList<Destination> filteredResults() {
+    public ArrayList<Destination> filteredResults(boolean filterByMapBounds) {
         if (!hasResults()) {
             return new ArrayList<>();
         }
 
         /**
-         * Filter first by the map bounds
+         * Sort the list by nearest to farther if user location is known
          */
-        ArrayList<Destination> mapFiltered = new ArrayList<>();
-        if (mapBounds() != null) {
-            for(Destination destination : results()) {
-                if (mapBounds().contains(destination.getPosition())) {
-                    mapFiltered.add(destination);
+        ArrayList<Destination> orderedResults = results();
+        if (filter().userLocation() != null) {
+            Location userLocation = LocationUtil.fromLatLng(filter().userLocation());
+
+            Collections.sort(orderedResults, new Comparator<Destination>() {
+                public int compare(Destination d1, Destination d2) {
+                    Location location1 = LocationUtil.fromDestination(d1);
+                    Location location2 = LocationUtil.fromDestination(d2);
+                    return Integer.signum(
+                            (int)location1.distanceTo(userLocation) - (int)location2.distanceTo(userLocation));
                 }
-            }
-        } else {
-            mapFiltered.addAll(results());
+            });
         }
 
         /**
-         * Second filter is by category and / or activity
+         * Filter by category and / or activity
          */
         if (filter().isEmpty()) {
-            return mapFiltered;
+            return orderedResults;
         }
 
         /**
          * Otherwise apply the filter
          */
         ArrayList<Destination> filteredResults = new ArrayList<>();
-        for(Destination destination : mapFiltered) {
+        for(Destination destination : orderedResults) {
             Integer destinationCost = destination.detail().cost();
             for (Activity activity : destination.detail().activities()) {
                 /**
@@ -162,22 +176,6 @@ public class DestSearch {
                     break;
                 }
             }
-        }
-
-        /**
-         * Sort the list by nearest to farther is user location is known
-         */
-        if (filter().userLocation() != null) {
-            Location userLocation = LocationUtil.fromLatLng(filter().userLocation());
-
-            Collections.sort(filteredResults, new Comparator<Destination>() {
-                public int compare(Destination d1, Destination d2) {
-                    Location location1 = LocationUtil.fromDestination(d1);
-                    Location location2 = LocationUtil.fromDestination(d2);
-                    return Integer.signum(
-                            (int)location1.distanceTo(userLocation) - (int)location2.distanceTo(userLocation));
-                }
-            });
         }
         return filteredResults;
     }

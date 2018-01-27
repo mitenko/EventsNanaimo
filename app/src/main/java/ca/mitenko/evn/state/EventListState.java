@@ -18,6 +18,10 @@ import ca.mitenko.evn.state.common.RootState;
 @Parcel(value = Parcel.Serialization.VALUE, implementations = ImmutableEventListState.class)
 @Value.Immutable
 public class EventListState extends RootState {
+    /**
+     * State Identifying Tag
+     */
+    public static final String TAG = "state.event_list";
 
     /**
      * Destinations loaded state flag

@@ -36,6 +36,7 @@ public class HubState extends RootState {
         DEST_MAP,
         DEST_LIST,
         DEST_DETAIL,
+        EVENT_DETAIL,
         EVENT_LIST,
         FILTER
     }
@@ -64,6 +65,15 @@ public class HubState extends RootState {
     }
 
     /**
+     * Events flag
+     */
+    @NonNull
+    @Value.Default
+    public boolean haveLocationPermission() {
+        return false;
+    }
+
+    /**
      * The filter
      */
     @NonNull
@@ -87,6 +97,15 @@ public class HubState extends RootState {
     @Nullable
     @Value.Default
     public Destination selectedDest() {
+        return null;
+    }
+
+    /**
+     * The selected event for viewing
+     */
+    @Nullable
+    @Value.Default
+    public Event selectedEvent() {
         return null;
     }
 
@@ -124,7 +143,7 @@ public class HubState extends RootState {
     @ParcelFactory
     public static HubState build(Destination selectedDest, Filter filter, boolean locationRequested,
                                  ArrayList<Event> events, HashMap<String, ArrayList<Activity>> categoryMap, FragmentType currentFragment,
-                                 ArrayList<FragmentType> fragmentStack) {
+                                 ArrayList<FragmentType> fragmentStack, Event selectedEvent, boolean haveLocationPermission) {
         return ImmutableHubState.builder()
                 .events(events)
                 .selectedDest(selectedDest)
@@ -133,6 +152,8 @@ public class HubState extends RootState {
                 .fragmentStack(fragmentStack)
                 .filter(filter)
                 .locationRequested(locationRequested)
+                .selectedEvent(selectedEvent)
+                .haveLocationPermission(haveLocationPermission)
                 .build();
     }
 }

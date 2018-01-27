@@ -7,13 +7,23 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ca.mitenko.evn.R;
+import ca.mitenko.evn.event.DestItemClickEvent;
+import ca.mitenko.evn.event.EventItemClickEvent;
 import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Event;
+import ca.mitenko.evn.ui.common.CategoryView;
+import ca.mitenko.evn.ui.common.PriceView;
 
 /**
  * Created by mitenko on 2017-04-30.
@@ -23,26 +33,44 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
     /**
      * the thumbnail image
      */
-    @BindView(R.id.dest_card_thumbnail)
+    @BindView(R.id.event_card_thumbnail)
     SimpleDraweeView thumbnail;
+
+    /**
+     * the short description text
+     */
+    @BindView(R.id.event_card_date)
+    TextView date;
 
     /**
      * the title text
      */
-    @BindView(R.id.dest_card_title)
+    @BindView(R.id.event_card_title)
     TextView title;
 
     /**
      * the short description text
      */
-    @BindView(R.id.dest_card_desc)
+    @BindView(R.id.event_card_desc)
     TextView shortDesc;
 
     /**
      * the short description text
      */
-    @BindView(R.id.dest_card_activities)
+    @BindView(R.id.event_card_activities)
     TextView activities;
+
+    /**
+     * the price
+     */
+    @BindView(R.id.event_card_price)
+    PriceView priceView;
+
+    /**
+     * the category
+     */
+    @BindView(R.id.event_category_view)
+    CategoryView categoryView;
 
     /**
      * Constructor
@@ -57,18 +85,27 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
      * Binds the event data to the view
      * @param event
      */
-    public void bind(Event event) {
+    public void bind(Event event, EventBus bus) {
+        this.itemView.setOnClickListener(view ->
+                bus.post(new EventItemClickEvent(event)));
+
         thumbnail.setImageURI(event.detail().imageURL());
         title.setText(event.detail().name().toUpperCase());
-        shortDesc.setText(event.detail().shortDesc());
+        shortDesc.setText(event.detail().longDesc());
+        priceView.setCost(event.detail().cost());
+        categoryView.setCategories(event.detail().activities(), false);
 
-        ArrayList<Activity> eventActivities = event.detail().activities();
-        ArrayList<String> activityNames = new ArrayList<>();
-        for (Activity activity : eventActivities) {
-            if (!activityNames.contains(activity.name())) {
-                activityNames.add(activity.name());
-            }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd");
+        String formattedDate = dateFormat.format(new Date(event.unixStartTime() * 1000)) + " to "
+                + dateFormat.format(new Date(event.unixEndTime() * 1000));
+        date.setText(formattedDate);
+
+        ArrayList<Activity> destActivities = event.detail().activities();
+        HashSet<String> activityNames = new HashSet<>();
+        for (Activity activity : destActivities) {
+            activityNames.add(activity.name());
         }
-        activities.setText(TextUtils.join(" ● ", activityNames));
+        String joinedActivites = TextUtils.join(" • ", activityNames);
+        activities.setText(joinedActivites);
     }
 }

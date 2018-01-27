@@ -32,7 +32,7 @@ public interface DestMapView extends RootView {
      * Sets the map boundaries
      * @param mapBounds
      */
-    void setMapBounds(LatLngBounds mapBounds);
+    void setMapBounds(LatLngBounds mapBounds, boolean animate);
 
     /**
      * Shows the Progress Bar

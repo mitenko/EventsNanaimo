@@ -27,6 +27,11 @@ import ca.mitenko.evn.state.common.RootState;
 @Value.Immutable
 public class FilterFragState extends RootState {
     /**
+     * State Identifying Tag
+     */
+    public static final String TAG = "state.filter";
+
+    /**
      * The Filter
      */
     @NonNull

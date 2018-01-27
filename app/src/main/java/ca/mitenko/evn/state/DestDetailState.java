@@ -16,6 +16,10 @@ import ca.mitenko.evn.state.common.RootState;
 @Parcel(value = Parcel.Serialization.VALUE, implementations = ImmutableDestDetailState.class)
 @Value.Immutable
 public class DestDetailState extends RootState {
+    /**
+     * State Identifying Tag
+     */
+    public static final String TAG = "state.dest_detail";
 
     /**
      * Destination to be rendered

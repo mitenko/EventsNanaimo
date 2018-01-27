@@ -16,4 +16,8 @@
 
     <dimen name="filter_cost_btn_width">80dp</dimen>
 
+    <dimen name="event_card_list_height">250dp</dimen>
+    <dimen name="event_card_list_img_height">275dp</dimen>
+
+
 </resources>

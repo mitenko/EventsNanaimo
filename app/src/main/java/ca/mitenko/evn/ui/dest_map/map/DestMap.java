@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -28,6 +29,7 @@ import ca.mitenko.evn.event.MapItemClickEvent;
 import ca.mitenko.evn.event.MapReadyEvent;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.util.MapUtil;
+import ca.mitenko.evn.util.PermissionUtil;
 
 /**
  * Created by mitenko on 2017-04-22.
@@ -57,11 +59,6 @@ public class DestMap extends MapView
      * Flag indicating this movement is program generated
      */
     private Boolean clusterMovement = false;
-
-    /**
-     * Flag indicating this movement is program generated
-     */
-    private Boolean executeSearchOnIdle = false;
 
     /**
      * Constructor
@@ -112,6 +109,7 @@ public class DestMap extends MapView
      * @param googleMap
      */
     @Override
+    @SuppressWarnings("all")
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
@@ -119,11 +117,8 @@ public class DestMap extends MapView
         map.getUiSettings().setMyLocationButtonEnabled(true);
         map.getUiSettings().setRotateGesturesEnabled(false);
 
-        if ( ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+        if (PermissionUtil.hasFineLocationPermission(getContext())) {
             map.setMyLocationEnabled(true);
-        } else {
-            executeSearchOnIdle = true;
         }
 
         // Register some lifecycle and camera listeners
@@ -165,9 +160,14 @@ public class DestMap extends MapView
      * Sets the map's boundaries
      * @param mapBounds
      */
-    public void setMapBounds(LatLngBounds mapBounds) {
+    public void setMapBounds(LatLngBounds mapBounds, boolean animate) {
         clusterMovement = true;
-        map.animateCamera(CameraUpdateFactory.newLatLngBounds(mapBounds, 0));
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(mapBounds, 0);
+        if (animate) {
+            map.animateCamera(cameraUpdate);
+        } else {
+            map.moveCamera(cameraUpdate);
+        }
     }
 
     /**
@@ -175,7 +175,6 @@ public class DestMap extends MapView
      * @param mapCenter
      */
     public void setMapCenter(LatLng mapCenter) {
-        executeSearchOnIdle = true;
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(mapCenter, 13));
     }
 
@@ -208,8 +207,7 @@ public class DestMap extends MapView
     public void onCameraIdle() {
         if (!clusterMovement) {
             LatLngBounds newMapBounds = map.getProjection().getVisibleRegion().latLngBounds;
-            bus.post(new MapBoundsEvent(newMapBounds, executeSearchOnIdle));
-            executeSearchOnIdle = false;
+            bus.post(new MapBoundsEvent(newMapBounds));
         } else {
             recluster();
             clusterMovement = false;

@@ -8,9 +8,7 @@ import ca.mitenko.evn.event.SearchEvent;
 import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.DestListState;
-import ca.mitenko.evn.state.DestMapState;
 import ca.mitenko.evn.state.ImmutableDestListState;
-import ca.mitenko.evn.state.ImmutableDestMapState;
 import ca.mitenko.evn.ui.dest_list.DestListView;
 
 /**
@@ -33,8 +31,9 @@ public class DestListPresenter extends RootPresenter<DestListView, DestListState
     @Override
     public void renderState(DestListView view, DestListState curState, DestListState prevState) {
         if (view != null) {
-            if (!curState.search().filteredResults().equals(prevState.search().filteredResults())) {
-                view.setDestinations(curState.search().filteredResults());
+            if (!curState.search().filteredResults(true)
+                    .equals(prevState.search().filteredResults(true))) {
+                view.setDestinations(curState.search().filteredResults(true));
             }
         }
     }

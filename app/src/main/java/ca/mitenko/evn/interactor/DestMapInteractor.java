@@ -1,6 +1,7 @@
 package ca.mitenko.evn.interactor;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -10,6 +11,7 @@ import ca.mitenko.evn.event.SearchEvent;
 import ca.mitenko.evn.model.search.DestSearch;
 import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.network.EventsNanaimoService;
+import ca.mitenko.evn.util.MapUtil;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
@@ -53,13 +55,18 @@ public class DestMapInteractor {
      * Fetch the markers for
      */
     public void getDestinations(DestSearch search) {
-        LatLng ne = search.searchBounds().northeast;
-        LatLng sw = search.searchBounds().southwest;
+        LatLngBounds extendedBounds = MapUtil.extendBounds(search.searchBounds());
+        ImmutableDestSearch extendedSearch = ImmutableDestSearch.builder()
+                .from(search)
+                .searchBounds(extendedBounds)
+                .build();
+        LatLng ne = extendedBounds.northeast;
+        LatLng sw = extendedBounds.southwest;
         evnService.getDestinations(
                 ne.latitude, ne.longitude, sw.latitude, sw.longitude)
                 .map(destinations -> {
                     DestSearch searchWithResults = ImmutableDestSearch.builder()
-                            .from(search)
+                            .from(extendedSearch)
                             .results(destinations.destinations())
                             .build();
                     return new SearchEvent(searchWithResults);

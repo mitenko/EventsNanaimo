@@ -34,6 +34,9 @@ import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Category;
 import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.presenter.FilterFragPresenter;
+import ca.mitenko.evn.state.EventListState;
+import ca.mitenko.evn.state.FilterFragState;
+import ca.mitenko.evn.state.ImmutableEventListState;
 import ca.mitenko.evn.state.ImmutableFilterFragState;
 import ca.mitenko.evn.ui.common.RootFragment;
 
@@ -221,9 +224,25 @@ public class FilterFragment extends RootFragment
 
         // Init presenter
         presenter = new FilterFragPresenter(
-                this, ImmutableFilterFragState.builder().build(), bus);
+                this, (FilterFragState)state, bus);
         setToolbar();
         hub.showDoneButton();
+    }
+
+    /**
+     * Returns the state key for storing and restoring the state
+     * @return
+     */
+    public String getStateKey() {
+        return FilterFragState.TAG;
+    }
+
+    /**
+     * Returns the default state
+     * @return
+     */
+    public FilterFragState getDefaultState() {
+        return ImmutableFilterFragState.builder().build();
     }
 
     /**

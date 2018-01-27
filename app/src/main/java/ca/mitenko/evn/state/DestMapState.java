@@ -27,11 +27,25 @@ import ca.mitenko.evn.state.common.RootState;
 @Value.Immutable
 public class DestMapState extends RootState {
     /**
+     * State Identifying Tag
+     */
+    public static final String TAG = "state.dest_map";
+
+    /**
      * Loading results flag
      */
     @Value.Default
     public boolean loadingResults() {
         return false;
+    }
+
+    /**
+     * Permission to use the user's location
+     */
+    @NonNull
+    @Value.Default
+    public boolean hasUserLocationPermission() {
+        return true;
     }
 
     /**
@@ -93,7 +107,7 @@ public class DestMapState extends RootState {
     public static DestMapState build(boolean mapReady, boolean recluster, boolean loadingResults,
                                      DestSearch search, Destination selectedItem,
                                      HashMap<String, ArrayList<Activity>> categoryMap,
-                                     LatLng userLocation) {
+                                     LatLng userLocation, boolean hasUserLocationPermission) {
         return ImmutableDestMapState.builder()
                 .loadingResults(loadingResults)
                 .recluster(recluster)
@@ -102,6 +116,7 @@ public class DestMapState extends RootState {
                 .selectedItem(selectedItem)
                 .categoryMap(categoryMap)
                 .userLocation(userLocation)
+                .hasUserLocationPermission(hasUserLocationPermission)
                 .build();
     }
 }

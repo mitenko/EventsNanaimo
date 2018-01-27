@@ -1,6 +1,7 @@
 package ca.mitenko.evn.state;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.immutables.value.Value;
 import org.parceler.Parcel;
@@ -20,6 +21,10 @@ import ca.mitenko.evn.state.common.RootState;
 @Parcel(value = Parcel.Serialization.VALUE, implementations = ImmutableDestListState.class)
 @Value.Immutable
 public class DestListState extends RootState {
+    /**
+     * State Identifying Tag
+     */
+    public static final String TAG = "state.dest_list";
 
     /**
      * Destinations loaded state flag
@@ -29,6 +34,7 @@ public class DestListState extends RootState {
     public DestSearch search() {
         return ImmutableDestSearch.builder().build();
     }
+
     /**
      * Parcel factory to allow parcelling immutables
      */
