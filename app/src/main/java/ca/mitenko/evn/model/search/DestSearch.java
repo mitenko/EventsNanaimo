@@ -160,14 +160,14 @@ public class DestSearch {
          * Otherwise apply the filter
          */
         ArrayList<Destination> filteredResults = new ArrayList<>();
-        for(Destination destination : orderedResults) {
-            Integer destinationCost = destination.detail().cost();
-            for (Activity activity : destination.detail().activities()) {
-                /**
+ /*       for(Destination destination : orderedResults) {
+            Integer destinationCost = destination.getDetail().getCost();
+            for (Activity activity : destination.getDetail().getActivities()) {
+                *//**
                  * Filter by Activity / Cost / Category
-                 */
-                if ((filter().categories().isEmpty() || filter().categories().contains(activity.category())) &&
-                        (filter().activities().isEmpty() || filter().activities().contains(activity.name())) &&
+                 *//*
+                if ((filter().categories().isEmpty() || filter().categories().contains(activity.getCategory())) &&
+                        (filter().activities().isEmpty() || filter().activities().contains(activity.getName())) &&
                         (filter().cost().isEmpty() || filter().cost().contains(destinationCost))) {
                     filteredResults.add(ImmutableDestination.builder()
                         .from(destination)
@@ -176,7 +176,7 @@ public class DestSearch {
                     break;
                 }
             }
-        }
+        }*/
         return filteredResults;
     }
 
