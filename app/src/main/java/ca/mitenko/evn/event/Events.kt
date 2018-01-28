@@ -1,10 +1,13 @@
 package ca.mitenko.evn.event
 
-import ca.mitenko.evn.model.*
-import ca.mitenko.evn.model.search.*;
+import ca.mitenko.evn.model.Activity
+import ca.mitenko.evn.model.Destination
+import ca.mitenko.evn.model.Event
+import ca.mitenko.evn.model.search.DestSearch
+import ca.mitenko.evn.model.search.Filter
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by mitenko on 2017-07-16.

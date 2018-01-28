@@ -3,24 +3,20 @@ package ca.mitenko.evn.ui.common;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import ca.mitenko.evn.CategoryConstants;
 import ca.mitenko.evn.R;
 import ca.mitenko.evn.model.Activity;
-import ca.mitenko.evn.model.Category;
 
 /**
  * Created by mitenko on 2017-07-28.
@@ -59,7 +55,7 @@ public class CategoryView extends LinearLayoutCompat {
 
         HashSet<String> categories = new HashSet<>();
         for (Activity activity : activities) {
-            categories.add(activity.category());
+            categories.add(activity.getCategory());
         }
         for(String category : categories) {
             inflater.inflate(

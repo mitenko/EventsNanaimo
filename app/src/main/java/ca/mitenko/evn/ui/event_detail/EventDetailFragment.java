@@ -1,10 +1,8 @@
 package ca.mitenko.evn.ui.event_detail;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,22 +20,15 @@ import org.greenrobot.eventbus.EventBus;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import ca.mitenko.evn.CategoryConstants;
 import ca.mitenko.evn.EvNApplication;
 import ca.mitenko.evn.Manifest;
 import ca.mitenko.evn.R;
-import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.Event;
-import ca.mitenko.evn.presenter.DestDetailPresenter;
 import ca.mitenko.evn.presenter.EventDetailPresenter;
-import ca.mitenko.evn.state.DestListState;
 import ca.mitenko.evn.state.EventDetailState;
-import ca.mitenko.evn.state.ImmutableDestDetailState;
-import ca.mitenko.evn.state.ImmutableDestListState;
 import ca.mitenko.evn.state.ImmutableEventDetailState;
 import ca.mitenko.evn.ui.common.CategoryView;
 import ca.mitenko.evn.ui.common.RootFragment;
-import ca.mitenko.evn.util.MapUtil;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -159,7 +150,7 @@ public class EventDetailFragment extends RootFragment
 
         linkContainer.setOnClickListener(view -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(event.detail().website()));
+                    Uri.parse(event.getDetail().getWebsite()));
             startActivity(browserIntent);
         });
         phoneContainer.setOnClickListener(view -> {
@@ -192,7 +183,7 @@ public class EventDetailFragment extends RootFragment
     @NeedsPermission(Manifest.permission.CALL_PHONE)
     public void makePhoneCall() {
         Intent intent = new Intent(Intent.ACTION_CALL,
-                Uri.parse("tel:" + event.detail().phone()));
+                Uri.parse("tel:" + event.getDetail().getPhone()));
         startActivity(intent);
     }
 
@@ -228,7 +219,7 @@ public class EventDetailFragment extends RootFragment
      */
     public void setToolbar() {
         if (event != null) {
-            hub.setToolbarTitle(event.detail().name());
+            hub.setToolbarTitle(event.getDetail().getName());
         }
         hub.showCategoryPicker(false);
     }
@@ -240,24 +231,24 @@ public class EventDetailFragment extends RootFragment
     public void displayEvent(Event event) {
         this.event = event;
 
-        hub.setToolbarTitle(event.detail().name());
+        hub.setToolbarTitle(event.getDetail().getName());
 
-        eventImage.setImageURI(event.detail().imageURL());
-        eventTitle.setText(event.detail().name());
-        eventDescription.setText(event.detail().longDesc());
-        categoryView.setCategories(event.detail().activities(), true);
+        eventImage.setImageURI(event.getDetail().getImageURL());
+        eventTitle.setText(event.getDetail().getName());
+        eventDescription.setText(event.getDetail().getLongDesc());
+        categoryView.setCategories(event.getDetail().getActivities(), true);
 
         // phone number
-        if (!event.detail().phone().isEmpty()) {
-            phoneDescription.setText(event.detail().phone());
+        if (!event.getDetail().getPhone().isEmpty()) {
+            phoneDescription.setText(event.getDetail().getPhone());
         } else {
             phoneIcon.setVisibility(View.INVISIBLE);
             phoneDescription.setVisibility(View.INVISIBLE);
         }
 
         // website
-        if (!event.detail().website().isEmpty()) {
-            linkDescription.setText(event.detail().website());
+        if (!event.getDetail().getWebsite().isEmpty()) {
+            linkDescription.setText(event.getDetail().getWebsite());
         } else {
             linkIcon.setVisibility(View.INVISIBLE);
             linkDescription.setVisibility(View.INVISIBLE);

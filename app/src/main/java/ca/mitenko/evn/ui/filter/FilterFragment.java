@@ -1,12 +1,10 @@
 package ca.mitenko.evn.ui.filter;
 
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +18,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -31,21 +28,18 @@ import ca.mitenko.evn.EvNApplication;
 import ca.mitenko.evn.R;
 import ca.mitenko.evn.event.ModifyFilterEvent;
 import ca.mitenko.evn.model.Activity;
-import ca.mitenko.evn.model.Category;
 import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.presenter.FilterFragPresenter;
-import ca.mitenko.evn.state.EventListState;
 import ca.mitenko.evn.state.FilterFragState;
-import ca.mitenko.evn.state.ImmutableEventListState;
 import ca.mitenko.evn.state.ImmutableFilterFragState;
 import ca.mitenko.evn.ui.common.RootFragment;
 
 import static ca.mitenko.evn.CategoryConstants.ACCOMMODATION;
 import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
 import static ca.mitenko.evn.CategoryConstants.ALL;
+import static ca.mitenko.evn.CategoryConstants.BEVERAGES;
 import static ca.mitenko.evn.CategoryConstants.FOOD;
 import static ca.mitenko.evn.CategoryConstants.LIFESTYLE;
-import static ca.mitenko.evn.CategoryConstants.ON_THE_TOWN;
 import static ca.mitenko.evn.CategoryConstants.SERVICE;
 import static ca.mitenko.evn.CategoryConstants.SHOPPING;
 import static ca.mitenko.evn.CategoryConstants.SIGHT_SEEING;
@@ -77,8 +71,8 @@ public class FilterFragment extends RootFragment
     /**
      * The on the town Text button
      */
-    @BindView(R.id.on_the_town)
-    LinearLayout onTheTownButton;
+    @BindView(R.id.beverages)
+    LinearLayout beverages;
 
     /**
      * The foodText Text button
@@ -189,7 +183,7 @@ public class FilterFragment extends RootFragment
 
         categoryButtonMap = new HashMap<>();
         categoryButtonMap.put(ALL, selectAllButton);
-        categoryButtonMap.put(ON_THE_TOWN, onTheTownButton);
+        categoryButtonMap.put(BEVERAGES, beverages);
         categoryButtonMap.put(FOOD, foodButton);
         categoryButtonMap.put(SHOPPING, shoppingButton);
         categoryButtonMap.put(SIGHT_SEEING, sightSeeingButton);
@@ -317,16 +311,16 @@ public class FilterFragment extends RootFragment
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         for (Map.Entry<String, ArrayList<Activity>> mapEntry : categoryMap.entrySet()) {
             for(Activity activity : mapEntry.getValue()) {
-                if (!activityButtonMap.containsKey(activity.name())) {
+                if (!activityButtonMap.containsKey(activity.getName())) {
                     inflater.inflate(
                             R.layout.item_activity_button, activityContainer, true);
                     TextView button = (TextView)
                             activityContainer.getChildAt(activityContainer.getChildCount()-1);
-                    button.setText(activity.name());
+                    button.setText(activity.getName());
                     button.setOnClickListener(this);
                     button.setSelected(true);
                     button.setTextColor(selText);
-                    activityButtonMap.put(activity.name(), button);
+                    activityButtonMap.put(activity.getName(), button);
                 }
             }
         }

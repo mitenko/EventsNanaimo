@@ -32,7 +32,7 @@ public class EvNApplication extends Application {
 
         // Init Crashlytics
         Crashlytics crashlytics = new Crashlytics.Builder().build();
-        Fabric.with(this, crashlytics);
+//        Fabric.with(this, crashlytics);
 
         Fresco.initialize(this);
         if (BuildConfig.DEBUG) {

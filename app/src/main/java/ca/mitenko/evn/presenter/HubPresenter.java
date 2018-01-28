@@ -20,7 +20,7 @@ import ca.mitenko.evn.interactor.EventListInteractor;
 import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.HubState;
-import ca.mitenko.evn.state.HubState.*;
+import ca.mitenko.evn.state.HubState.FragmentType;
 import ca.mitenko.evn.state.ImmutableHubState;
 import ca.mitenko.evn.ui.hub.HubView;
 

@@ -1,8 +1,8 @@
 package ca.mitenko.evn.network;
 
-import ca.mitenko.evn.model.ImmutableCategoryResult;
-import ca.mitenko.evn.model.ImmutableDestinationResult;
-import ca.mitenko.evn.model.ImmutableEventResult;
+import ca.mitenko.evn.model.CategoryResult;
+import ca.mitenko.evn.model.DestinationResult;
+import ca.mitenko.evn.model.EventResult;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -21,7 +21,7 @@ public interface EventsNanaimoService {
      * @return
      */
     @GET("getDestinations")
-    Observable<ImmutableDestinationResult> getDestinations(
+    Observable<DestinationResult> getDestinations(
             @Query("northeast_latitude") double ne_lat
             , @Query("northeast_longitude") double ne_lng
             , @Query("southwest_latitude") double se_lat
@@ -33,12 +33,12 @@ public interface EventsNanaimoService {
      * @return
      */
     @GET("getEvents")
-    Observable<ImmutableEventResult> getEvents();
+    Observable<EventResult> getEvents();
 
     /**
      * Returns the categories
      * @return
      */
     @GET("getCategoryData")
-    Observable<ImmutableCategoryResult> getCategories();
+    Observable<CategoryResult> getCategories();
 }

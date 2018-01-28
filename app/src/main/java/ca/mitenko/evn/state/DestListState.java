@@ -1,15 +1,11 @@
 package ca.mitenko.evn.state;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.immutables.value.Value;
 import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
 
-import java.util.ArrayList;
-
-import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.search.DestSearch;
 import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.state.common.RootState;

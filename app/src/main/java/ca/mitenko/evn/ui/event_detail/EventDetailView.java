@@ -1,6 +1,5 @@
 package ca.mitenko.evn.ui.event_detail;
 
-import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.Event;
 import ca.mitenko.evn.ui.common.RootView;
 

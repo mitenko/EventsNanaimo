@@ -3,11 +3,8 @@ package ca.mitenko.evn.presenter;
 import org.greenrobot.eventbus.EventBus;
 
 import ca.mitenko.evn.presenter.common.RootPresenter;
-import ca.mitenko.evn.state.DestDetailState;
 import ca.mitenko.evn.state.EventDetailState;
-import ca.mitenko.evn.state.ImmutableDestDetailState;
 import ca.mitenko.evn.state.ImmutableEventDetailState;
-import ca.mitenko.evn.ui.dest_detail.DestDetailView;
 import ca.mitenko.evn.ui.event_detail.EventDetailView;
 
 /**

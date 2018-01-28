@@ -15,7 +15,6 @@ import java.util.HashSet;
 
 import ca.mitenko.evn.event.ModifyFilterEvent;
 import ca.mitenko.evn.model.Activity;
-import ca.mitenko.evn.model.Category;
 
 /**
  * Created by mitenko on 2017-07-30.
@@ -108,7 +107,7 @@ public class Filter {
                 for(String categoryName : categories) {
                     ArrayList<Activity> catActivities = categoryMap.get(categoryName);
                     for(Activity activity : catActivities) {
-                        activities.add(activity.name());
+                        activities.add(activity.getName());
                     }
                 }
 

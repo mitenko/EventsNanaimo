@@ -73,10 +73,10 @@ public class DestCardView extends CardView {
      * @param destination
      */
     public void bind(Destination destination) {
-        thumbnail.setImageURI(destination.detail().thumbURL());
-        title.setText(destination.detail().name());
-        desc.setText(destination.detail().longDesc());
-        priceView.setCost(destination.detail().cost());
+        thumbnail.setImageURI(destination.getDetail().getThumbURL());
+        title.setText(destination.getDetail().getName());
+        desc.setText(destination.getDetail().getLongDesc());
+        priceView.setCost(destination.getDetail().getCost());
     }
 
     /**

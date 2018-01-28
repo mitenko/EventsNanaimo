@@ -67,7 +67,7 @@ public class DestMapInteractor {
                 .map(destinations -> {
                     DestSearch searchWithResults = ImmutableDestSearch.builder()
                             .from(extendedSearch)
-                            .results(destinations.destinations())
+                            .results(destinations.getDestinations())
                             .build();
                     return new SearchEvent(searchWithResults);
                 })

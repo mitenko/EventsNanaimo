@@ -11,11 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ca.mitenko.evn.model.Activity;
-import ca.mitenko.evn.model.Category;
-import ca.mitenko.evn.model.Destination;
-import ca.mitenko.evn.model.search.DestSearch;
 import ca.mitenko.evn.model.search.Filter;
-import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.model.search.ImmutableFilter;
 import ca.mitenko.evn.state.common.RootState;
 

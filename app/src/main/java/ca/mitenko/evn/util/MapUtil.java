@@ -96,7 +96,7 @@ public class MapUtil {
      */
     public static String toStaticMapURL(Destination destination) {
         return "https://maps.googleapis.com/maps/api/staticmap?"
-            + "center=" + destination.latitude() + "," + destination.longitude()
+            + "center=" + destination.getLatitude() + "," + destination.getLongitude()
             + "&zoom=16&size=640x400"
             + "&key=AIzaSyASFlFrUY2m055zls177YGZ41N2douQx2Q";
     }

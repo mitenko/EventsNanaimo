@@ -5,7 +5,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 
 import ca.mitenko.evn.event.EventResultEvent;
-import ca.mitenko.evn.model.ImmutableEventResult;
+import ca.mitenko.evn.model.EventResult;
 import ca.mitenko.evn.network.EventsNanaimoService;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.HttpException;
@@ -60,8 +60,8 @@ public class EventListInteractor {
      * Returns the Subscriber for the Destinations
      * @return
      */
-    public Subscriber<ImmutableEventResult> getEventSubscriber() {
-        return new Subscriber<ImmutableEventResult>() {
+    public Subscriber<EventResult> getEventSubscriber() {
+        return new Subscriber<EventResult>() {
             @Override
             public void onCompleted() {}
 
@@ -75,8 +75,8 @@ public class EventListInteractor {
             }
 
             @Override
-            public void onNext(ImmutableEventResult events) {
-                bus.postSticky(new EventResultEvent(events.events()));
+            public void onNext(EventResult events) {
+                bus.postSticky(new EventResultEvent(events.getEvents()));
             }
         };
 

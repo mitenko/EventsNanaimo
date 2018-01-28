@@ -1,12 +1,16 @@
 package ca.mitenko.evn.model.search;
 
 import android.location.Location;
-import android.location.LocationManager;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.View;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
+import org.greenrobot.eventbus.EventBus;
 import org.immutables.value.Value;
 import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
@@ -14,12 +18,17 @@ import org.parceler.ParcelFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 
 import javax.annotation.Nullable;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import ca.mitenko.evn.event.DestItemClickEvent;
 import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Destination;
-import ca.mitenko.evn.model.ImmutableDestination;
+import ca.mitenko.evn.ui.common.CategoryView;
+import ca.mitenko.evn.ui.common.PriceView;
 import ca.mitenko.evn.util.LocationUtil;
 
 /**
@@ -38,7 +47,6 @@ public class DestSearch {
      * The search bounds. Default is roughly nanaimo
      * @return
      */
-    @NonNull
     @Value.Default
     public LatLngBounds searchBounds() {
         return DEFAULT_BOUNDS;
@@ -160,12 +168,12 @@ public class DestSearch {
          * Otherwise apply the filter
          */
         ArrayList<Destination> filteredResults = new ArrayList<>();
- /*       for(Destination destination : orderedResults) {
+        for(Destination destination : orderedResults) {
             Integer destinationCost = destination.getDetail().getCost();
             for (Activity activity : destination.getDetail().getActivities()) {
-                *//**
+                /**
                  * Filter by Activity / Cost / Category
-                 *//*
+                 */
                 if ((filter().categories().isEmpty() || filter().categories().contains(activity.getCategory())) &&
                         (filter().activities().isEmpty() || filter().activities().contains(activity.getName())) &&
                         (filter().cost().isEmpty() || filter().cost().contains(destinationCost))) {
@@ -176,7 +184,7 @@ public class DestSearch {
                     break;
                 }
             }
-        }*/
+        }
         return filteredResults;
     }
 

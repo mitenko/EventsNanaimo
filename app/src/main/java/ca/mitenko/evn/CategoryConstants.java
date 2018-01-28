@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 public class CategoryConstants {
     public static final String ALL = "All";
-    public static final String ON_THE_TOWN = "On The Town";
     public static final String FOOD = "Food";
     public static final String SHOPPING = "Shopping";
     public static final String SIGHT_SEEING = "Sight Seeing";
@@ -22,7 +21,7 @@ public class CategoryConstants {
     static {
         categoryColorMap = new HashMap<>();
         categoryColorMap.put(ALL, R.color.colorAccent);
-        categoryColorMap.put(ON_THE_TOWN, R.color.onTheTown);
+        categoryColorMap.put(BEVERAGES, R.color.beverages);
         categoryColorMap.put(FOOD, R.color.food);
         categoryColorMap.put(SHOPPING, R.color.shopping);
         categoryColorMap.put(SIGHT_SEEING, R.color.sightSeeing);
@@ -36,7 +35,6 @@ public class CategoryConstants {
     public static HashMap<String,Integer> categoryIconMap;
     static {
         categoryIconMap = new HashMap<>();
-        categoryIconMap.put(ON_THE_TOWN, R.drawable.ic_on_the_town);
         categoryIconMap.put(FOOD, R.drawable.ic_food);
         categoryIconMap.put(SHOPPING, R.drawable.ic_shopping);
         categoryIconMap.put(SIGHT_SEEING, R.drawable.ic_sight_seeing);

@@ -1,26 +1,15 @@
 package ca.mitenko.evn.presenter;
 
-import android.content.res.ColorStateList;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.Map;
-
-import ca.mitenko.evn.CategoryConstants;
-import ca.mitenko.evn.R;
 import ca.mitenko.evn.event.CategoryResultEvent;
 import ca.mitenko.evn.event.FilterEvent;
 import ca.mitenko.evn.event.ModifyFilterEvent;
-import ca.mitenko.evn.event.SearchEvent;
 import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.FilterFragState;
-import ca.mitenko.evn.state.HubState;
 import ca.mitenko.evn.state.ImmutableFilterFragState;
-import ca.mitenko.evn.state.ImmutableHubState;
 import ca.mitenko.evn.ui.filter.FilterView;
 
 /**

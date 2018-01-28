@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
@@ -26,7 +25,6 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,16 +62,14 @@ import ca.mitenko.evn.util.UserLocationUtil;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import retrofit2.Retrofit;
 
 import static ca.mitenko.evn.CategoryConstants.ACCOMMODATION;
 import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
+import static ca.mitenko.evn.CategoryConstants.BEVERAGES;
 import static ca.mitenko.evn.CategoryConstants.FOOD;
 import static ca.mitenko.evn.CategoryConstants.LIFESTYLE;
-import static ca.mitenko.evn.CategoryConstants.ON_THE_TOWN;
 import static ca.mitenko.evn.CategoryConstants.SERVICE;
 import static ca.mitenko.evn.CategoryConstants.SHOPPING;
 import static ca.mitenko.evn.CategoryConstants.SIGHT_SEEING;
@@ -132,8 +128,8 @@ public class HubActivity extends AppCompatActivity
     /**
      * The on the town filter button
      */
-    @BindView(R.id.on_the_town)
-    FloatingActionButton onTheTownFilter;
+    @BindView(R.id.beverages)
+    FloatingActionButton beveragesFilter;
 
     /**
      * The foodFilter filter button
@@ -281,7 +277,7 @@ public class HubActivity extends AppCompatActivity
         doneButton.setOnClickListener(this);
 
         categoryButtonMap = new HashMap<>();
-        categoryButtonMap.put(ON_THE_TOWN, onTheTownFilter);
+        categoryButtonMap.put(BEVERAGES, beveragesFilter);
         categoryButtonMap.put(FOOD, foodFilter);
         categoryButtonMap.put(SHOPPING, shoppingFilter);
         categoryButtonMap.put(SIGHT_SEEING, sightSeeingFilter);

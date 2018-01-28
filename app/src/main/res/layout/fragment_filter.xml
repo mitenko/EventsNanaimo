@@ -78,34 +78,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/on_the_town"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical">
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@id/fab"
-                style="@style/FilterIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:scaleType="center"
-                android:src="@drawable/ic_on_the_town_white"
-                bg:backgroundTint="@color/onTheTown" />
-
-            <TextView
-                android:id="@id/text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="All" />
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/food"
             android:layout_width="0dp"
             android:layout_weight="1"

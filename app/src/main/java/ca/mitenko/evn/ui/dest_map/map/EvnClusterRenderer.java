@@ -17,9 +17,9 @@ import ca.mitenko.evn.util.BitmapUtil;
 
 import static ca.mitenko.evn.CategoryConstants.ACCOMMODATION;
 import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
+import static ca.mitenko.evn.CategoryConstants.BEVERAGES;
 import static ca.mitenko.evn.CategoryConstants.FOOD;
 import static ca.mitenko.evn.CategoryConstants.LIFESTYLE;
-import static ca.mitenko.evn.CategoryConstants.ON_THE_TOWN;
 import static ca.mitenko.evn.CategoryConstants.SERVICE;
 import static ca.mitenko.evn.CategoryConstants.SHOPPING;
 import static ca.mitenko.evn.CategoryConstants.SIGHT_SEEING;
@@ -43,7 +43,7 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
     /**
      * Category Icons
      */
-    private Bitmap onTheTown;
+    private Bitmap beverages;
     private Bitmap food;
     private Bitmap shopping;
     private Bitmap sightSeeing;
@@ -64,7 +64,7 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
         super(context, map, clusterManager);
 
         // Load Markers
-        onTheTown = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_on_the_town);
+        beverages = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_beverages);
         food = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_food);
         shopping = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_shopping);
         sightSeeing = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_sight_seeing);
@@ -75,7 +75,7 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
 
         // Build the map
         catIconMap = new HashMap<>();
-        catIconMap.put(ON_THE_TOWN, onTheTown);
+        catIconMap.put(BEVERAGES, beverages);
         catIconMap.put(FOOD, food);
         catIconMap.put(SHOPPING, shopping);
         catIconMap.put(SIGHT_SEEING, sightSeeing);
@@ -94,7 +94,7 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
     protected void onBeforeClusterItemRendered(Destination destination,
                                                MarkerOptions markerOptions) {
         // Set-up and inits
-        Bitmap destIcon = catIconMap.get(destination.displayIcon());
+        Bitmap destIcon = catIconMap.get(destination.getDisplayIcon());
 
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(destIcon));
         markerOptions.anchor(CENTER_ANCHOR, CENTER_ANCHOR);

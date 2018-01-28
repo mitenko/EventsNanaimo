@@ -55,13 +55,6 @@
                         bg:backgroundTint="@color/beverages" />
 
                     <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/on_the_town"
-                        style="@style/CategoryIcon"
-                        android:scaleType="center"
-                        android:src="@drawable/ic_on_the_town_white"
-                        bg:backgroundTint="@color/onTheTown" />
-
-                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/food"
                         style="@style/CategoryIcon"
                         android:scaleType="center"

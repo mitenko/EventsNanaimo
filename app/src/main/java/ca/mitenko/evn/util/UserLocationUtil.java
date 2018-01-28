@@ -18,7 +18,6 @@ import com.google.android.gms.maps.model.LatLng;
 import org.greenrobot.eventbus.EventBus;
 
 import ca.mitenko.evn.Manifest;
-import ca.mitenko.evn.R;
 import ca.mitenko.evn.event.UserLocationEvent;
 import ca.mitenko.evn.event.UserLocationEvent.Outcome;
 

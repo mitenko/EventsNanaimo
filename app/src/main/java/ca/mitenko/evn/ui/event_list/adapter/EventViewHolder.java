@@ -9,7 +9,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,7 +17,6 @@ import java.util.HashSet;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ca.mitenko.evn.R;
-import ca.mitenko.evn.event.DestItemClickEvent;
 import ca.mitenko.evn.event.EventItemClickEvent;
 import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Event;
@@ -89,21 +87,21 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
         this.itemView.setOnClickListener(view ->
                 bus.post(new EventItemClickEvent(event)));
 
-        thumbnail.setImageURI(event.detail().imageURL());
-        title.setText(event.detail().name().toUpperCase());
-        shortDesc.setText(event.detail().longDesc());
-        priceView.setCost(event.detail().cost());
-        categoryView.setCategories(event.detail().activities(), false);
+        thumbnail.setImageURI(event.getDetail().getImageURL()   );
+        title.setText(event.getDetail().getName().toUpperCase());
+        shortDesc.setText(event.getDetail().getLongDesc());
+        priceView.setCost(event.getDetail().getCost());
+        categoryView.setCategories(event.getDetail().getActivities(), false);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd");
-        String formattedDate = dateFormat.format(new Date(event.unixStartTime() * 1000)) + " to "
-                + dateFormat.format(new Date(event.unixEndTime() * 1000));
+        String formattedDate = dateFormat.format(new Date(event.getUnixStartTime() * 1000)) + " to "
+                + dateFormat.format(new Date(event.getUnixEndTime() * 1000));
         date.setText(formattedDate);
 
-        ArrayList<Activity> destActivities = event.detail().activities();
+        ArrayList<Activity> destActivities = event.getDetail().getActivities();
         HashSet<String> activityNames = new HashSet<>();
         for (Activity activity : destActivities) {
-            activityNames.add(activity.name());
+            activityNames.add(activity.getName());
         }
         String joinedActivites = TextUtils.join(" • ", activityNames);
         activities.setText(joinedActivites);

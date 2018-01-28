@@ -2,6 +2,7 @@ package ca.mitenko.evn.dagger.module;
 
 import android.app.Application;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -9,7 +10,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Singleton;
 
-import ca.mitenko.evn.model.GsonAdaptersModel;
 import dagger.Module;
 import dagger.Provides;
 
@@ -60,7 +60,7 @@ public class ApplicationModule {
     @Singleton
     Gson providesGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapterFactory(new GsonAdaptersModel());
+        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
         return gsonBuilder.create();
     }
 }

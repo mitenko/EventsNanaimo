@@ -1,9 +1,10 @@
 package ca.mitenko.evn.model
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by mitenko on 2018-01-27.
@@ -11,6 +12,7 @@ import java.util.HashMap
 
 @Parcelize
 data class CategoryResult(
+        @SerializedName("data")
         val categories: @RawValue ArrayList<Category>
 ): Parcelable {
     /**
@@ -28,10 +30,12 @@ data class CategoryResult(
 
 @Parcelize
 data class DestinationResult(
+        @SerializedName("data")
         val destinations: @RawValue ArrayList<Destination>
 ): Parcelable
 
 @Parcelize
 data class EventResult(
+        @SerializedName("data")
         val events: @RawValue ArrayList<Event>
 ): Parcelable

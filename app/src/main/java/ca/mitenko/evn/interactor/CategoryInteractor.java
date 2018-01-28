@@ -5,7 +5,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 
 import ca.mitenko.evn.event.CategoryResultEvent;
-import ca.mitenko.evn.model.ImmutableCategoryResult;
+import ca.mitenko.evn.model.CategoryResult;
 import ca.mitenko.evn.network.EventsNanaimoService;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.HttpException;
@@ -60,8 +60,8 @@ public class CategoryInteractor {
      * Returns the Subscriber for the Destinations
      * @return
      */
-    public Subscriber<ImmutableCategoryResult> getCategorySubscriber() {
-        return new Subscriber<ImmutableCategoryResult>() {
+    public Subscriber<CategoryResult> getCategorySubscriber() {
+        return new Subscriber<CategoryResult>() {
             @Override
             public void onCompleted() {}
 
@@ -75,7 +75,7 @@ public class CategoryInteractor {
             }
 
             @Override
-            public void onNext(ImmutableCategoryResult categoryResult) {
+            public void onNext(CategoryResult categoryResult) {
                 bus.postSticky(new CategoryResultEvent(categoryResult.categoryMap()));
             }
         };

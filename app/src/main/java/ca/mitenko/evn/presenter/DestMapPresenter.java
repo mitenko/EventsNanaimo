@@ -5,11 +5,11 @@ import org.greenrobot.eventbus.Subscribe;
 
 import ca.mitenko.evn.event.CategoryResultEvent;
 import ca.mitenko.evn.event.FilterEvent;
-import ca.mitenko.evn.event.ModifyFilterEvent;
 import ca.mitenko.evn.event.MapBoundsEvent;
 import ca.mitenko.evn.event.MapClusterClickEvent;
 import ca.mitenko.evn.event.MapItemClickEvent;
 import ca.mitenko.evn.event.MapReadyEvent;
+import ca.mitenko.evn.event.ModifyFilterEvent;
 import ca.mitenko.evn.event.SearchEvent;
 import ca.mitenko.evn.event.UpdateMapRequestEvent;
 import ca.mitenko.evn.event.UserLocationEvent;
@@ -18,20 +18,12 @@ import ca.mitenko.evn.event.ViewListEvent;
 import ca.mitenko.evn.interactor.DestMapInteractor;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.search.DestSearch;
-import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.model.search.ImmutableFilter;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.DestMapState;
-import ca.mitenko.evn.state.FilterFragState;
-import ca.mitenko.evn.state.HubState;
 import ca.mitenko.evn.state.ImmutableDestMapState;
-import ca.mitenko.evn.state.ImmutableFilterFragState;
-import ca.mitenko.evn.state.ImmutableHubState;
 import ca.mitenko.evn.ui.dest_map.DestMapView;
-
-import static ca.mitenko.evn.state.HubState.FragmentType.DEST_LIST;
-import static ca.mitenko.evn.state.HubState.FragmentType.FILTER;
 
 /**
  * Created by mitenko on 2017-04-23.
