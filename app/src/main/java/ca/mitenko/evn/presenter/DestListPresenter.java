@@ -59,7 +59,7 @@ public class DestListPresenter extends RootPresenter<DestListView, DestListState
      */
     @Subscribe(sticky = true)
     public void onFilterEvent(FilterEvent event) {
-        if (event.getFilter().equals(curState.search().filter())) {
+        if (event.getFilter().equals(curState.search().getFilter())) {
             return;
         }
         DestListState newState = ImmutableDestListState.builder()
