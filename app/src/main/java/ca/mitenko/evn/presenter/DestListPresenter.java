@@ -5,7 +5,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import ca.mitenko.evn.event.FilterEvent;
 import ca.mitenko.evn.event.SearchEvent;
-import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.DestListState;
 import ca.mitenko.evn.state.ImmutableDestListState;

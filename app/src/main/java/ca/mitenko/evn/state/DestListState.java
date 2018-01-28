@@ -7,7 +7,6 @@ import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
 
 import ca.mitenko.evn.model.search.DestSearch;
-import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.state.common.RootState;
 
 /**
@@ -28,7 +27,7 @@ public class DestListState extends RootState {
     @NonNull
     @Value.Default
     public DestSearch search() {
-        return ImmutableDestSearch.builder().build();
+        return new DestSearch();
     }
 
     /**

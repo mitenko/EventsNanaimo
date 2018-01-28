@@ -15,7 +15,6 @@ import java.util.HashMap;
 import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.search.DestSearch;
-import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.state.common.RootState;
 
 /**
@@ -62,7 +61,7 @@ public class DestMapState extends RootState {
     @NonNull
     @Value.Default
     public DestSearch search() {
-        return ImmutableDestSearch.builder().build();
+        return new DestSearch();
     }
 
     /**

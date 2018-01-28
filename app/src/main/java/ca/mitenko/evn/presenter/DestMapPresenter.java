@@ -18,7 +18,6 @@ import ca.mitenko.evn.event.ViewListEvent;
 import ca.mitenko.evn.interactor.DestMapInteractor;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.search.DestSearch;
-import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.model.search.ImmutableFilter;
 import ca.mitenko.evn.presenter.common.RootPresenter;
 import ca.mitenko.evn.state.DestMapState;
@@ -85,7 +84,7 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                     view.setDestinations(curState.search().filteredResults(false));
                 }
                 if (curState.search().hasMapBounds()) {
-                    view.setMapBounds(curState.search().mapBounds(), false);
+                    view.setMapBounds(curState.search().getMapBounds(), false);
                 }
             }
 
@@ -95,9 +94,9 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                 view.setDestinations(curState.search().filteredResults(false));
             }
 
-            if (curState.search().mapBounds() != null &&
-                    !curState.search().mapBounds().equals(prevState.search().mapBounds())) {
-                view.setMapBounds(curState.search().mapBounds(), true);
+            if (curState.search().getMapBounds() != null &&
+                    !curState.search().getMapBounds().equals(prevState.search().getMapBounds())) {
+                view.setMapBounds(curState.search().getMapBounds(), true);
             }
 
             if (curState.recluster()) {
@@ -151,7 +150,7 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
                 && !event.getUserLatLng().equals(curState.userLocation())) {
 
             ImmutableFilter newFilter = ImmutableFilter.builder()
-                    .from(curState.search().filter())
+                    .from(curState.search().getFilter())
                     .userLocation(event.getUserLatLng())
                     .build();
 
@@ -286,7 +285,7 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
      */
     @Subscribe(sticky = true)
     public void onFilterEvent(FilterEvent event) {
-        if (event.getFilter().equals(curState.search().filter())) {
+        if (event.getFilter().equals(curState.search().getFilter())) {
             return;
         }
         DestMapState newState = ImmutableDestMapState.builder()
@@ -342,7 +341,7 @@ public class DestMapPresenter extends RootPresenter<DestMapView, DestMapState> {
     public void onModifyFilterEvent(ModifyFilterEvent event) {
         DestSearch newSearch = ImmutableDestSearch.builder()
                 .from(curState.search())
-                .filter(curState.search().filter().modify(event, curState.categoryMap()))
+                .filter(curState.search().getFilter().modify(event, curState.categoryMap()))
                 .build();
 
         DestMapState newState = ImmutableDestMapState.builder()

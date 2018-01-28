@@ -9,7 +9,6 @@ import java.io.IOException;
 
 import ca.mitenko.evn.event.SearchEvent;
 import ca.mitenko.evn.model.search.DestSearch;
-import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.network.EventsNanaimoService;
 import ca.mitenko.evn.util.MapUtil;
 import retrofit2.Retrofit;
@@ -56,7 +55,7 @@ public class DestMapInteractor {
      */
     public void getDestinations(DestSearch search) {
         LatLngBounds extendedBounds = MapUtil.extendBounds(search.searchBounds());
-        ImmutableDestSearch extendedSearch = ImmutableDestSearch.builder()
+        DestSearch extendedSearch = ImmutableDestSearch.builder()
                 .from(search)
                 .searchBounds(extendedBounds)
                 .build();
