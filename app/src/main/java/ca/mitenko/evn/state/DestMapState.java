@@ -30,6 +30,15 @@ public class DestMapState extends RootState {
     public static final String TAG = "state.dest_map";
 
     /**
+     * Thrown Error
+     */
+    @Nullable
+    @Value.Default
+    public Throwable error() {
+        return null;
+    }
+
+    /**
      * Loading results flag
      */
     @Value.Default

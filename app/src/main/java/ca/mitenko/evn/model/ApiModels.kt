@@ -1,6 +1,7 @@
 package ca.mitenko.evn.model
 
 import android.os.Parcelable
+import ca.mitenko.evn.CategoryConstants.UNKNOWN
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 import kotlinx.android.parcel.Parcelize
@@ -14,7 +15,7 @@ import kotlinx.android.parcel.RawValue
 data class Activity(
         val id: Int,
         val name: String,
-        val category: String
+        val category: String? = UNKNOWN
 ): Parcelable
 
 @Parcelize

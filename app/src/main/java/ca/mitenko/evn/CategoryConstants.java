@@ -8,14 +8,14 @@ import java.util.HashMap;
 
 public class CategoryConstants {
     public static final String ALL = "All";
+    public static final String BEVERAGES = "Beverages";
     public static final String FOOD = "Food";
     public static final String SHOPPING = "Shopping";
-    public static final String SIGHT_SEEING = "Sight Seeing";
     public static final String SERVICE = "Service";
-    public static final String ADVENTURE = "Activity / Adventure";
+    public static final String OUTDOOR_ACTIVITY = "Outdoor Activities";
+    public static final String INDOOR_ACTIVITY = "Indoor Activities";
     public static final String ACCOMMODATION = "Accommodation";
-    public static final String LIFESTYLE = "Lifestyle";
-    public static final String BEVERAGES = "Beverages";
+    public static final String UNKNOWN = "unknown";
 
     public static HashMap<String,Integer> categoryColorMap;
     static {
@@ -24,24 +24,23 @@ public class CategoryConstants {
         categoryColorMap.put(BEVERAGES, R.color.beverages);
         categoryColorMap.put(FOOD, R.color.food);
         categoryColorMap.put(SHOPPING, R.color.shopping);
-        categoryColorMap.put(SIGHT_SEEING, R.color.sightSeeing);
         categoryColorMap.put(SERVICE, R.color.service);
-        categoryColorMap.put(ADVENTURE, R.color.adventure);
+        categoryColorMap.put(OUTDOOR_ACTIVITY, R.color.outdoor_activity);
+        categoryColorMap.put(INDOOR_ACTIVITY, R.color.indoor_activity);
         categoryColorMap.put(ACCOMMODATION, R.color.accommodation);
-        categoryColorMap.put(LIFESTYLE, R.color.lifestyle);
-        categoryColorMap.put(BEVERAGES, R.color.beverages);
+        categoryColorMap.put(UNKNOWN, R.color.unknown);
     }
 
     public static HashMap<String,Integer> categoryIconMap;
     static {
         categoryIconMap = new HashMap<>();
+        categoryIconMap.put(BEVERAGES, R.drawable.ic_beverages);
         categoryIconMap.put(FOOD, R.drawable.ic_food);
         categoryIconMap.put(SHOPPING, R.drawable.ic_shopping);
-        categoryIconMap.put(SIGHT_SEEING, R.drawable.ic_sight_seeing);
         categoryIconMap.put(SERVICE, R.drawable.ic_service);
-        categoryIconMap.put(ADVENTURE, R.drawable.ic_adventure);
+        categoryIconMap.put(OUTDOOR_ACTIVITY, R.drawable.ic_outdoor_activity);
+        categoryIconMap.put(INDOOR_ACTIVITY, R.drawable.ic_indoor_activity);
         categoryIconMap.put(ACCOMMODATION, R.drawable.ic_accommodation);
-        categoryIconMap.put(LIFESTYLE, R.drawable.ic_lifestyle);
-        categoryIconMap.put(BEVERAGES, R.drawable.ic_beverages);
+        categoryIconMap.put(UNKNOWN, R.drawable.ic_lifestyle);
     }
 }

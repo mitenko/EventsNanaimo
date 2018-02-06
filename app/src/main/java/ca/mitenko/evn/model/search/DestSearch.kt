@@ -86,7 +86,7 @@ data class DestSearch(
          * Otherwise apply the filter
          */
         val filteredResults = ArrayList<Destination>()
-        for (destination in orderedResults!!) {
+        for (destination in orderedResults) {
             val destinationCost = destination.detail.cost
             for ((_, name, category) in destination.detail.activities) {
                 /**
@@ -96,7 +96,7 @@ data class DestSearch(
                         (filter.activities().isEmpty() || filter.activities().contains(name)) &&
                         (filter.cost().isEmpty() || filter.cost().contains(destinationCost))) {
                     filteredResults.add(
-                            destination.copy(displayIcon = category))
+                            destination.copy(displayIcon = category ?: "unknown"))
                     break
                 }
             }
@@ -105,7 +105,7 @@ data class DestSearch(
     }
 
     companion object {
-        private val DEFAULT_BOUNDS = LatLngBounds(
+        val DEFAULT_BOUNDS = LatLngBounds(
                 LatLng(49.15938572687397, -123.9760036021471),
                 LatLng(49.20606374369103, -123.91420517116785))
     }

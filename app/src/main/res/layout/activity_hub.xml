@@ -69,13 +69,6 @@
                         bg:backgroundTint="@color/shopping" />
 
                     <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/sight_seeing"
-                        style="@style/CategoryIcon"
-                        android:scaleType="center"
-                        android:src="@drawable/ic_sight_seeing_white"
-                        bg:backgroundTint="@color/sightSeeing" />
-
-                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/service"
                         style="@style/CategoryIcon"
                         android:scaleType="center"
@@ -83,11 +76,18 @@
                         bg:backgroundTint="@color/service" />
 
                     <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/adventure"
+                        android:id="@+id/outdoor_activity"
                         style="@style/CategoryIcon"
                         android:scaleType="center"
-                        android:src="@drawable/ic_adventure_white"
-                        bg:backgroundTint="@color/adventure" />
+                        android:src="@drawable/ic_outdoor_activity_white"
+                        bg:backgroundTint="@color/outdoor_activity" />
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/indoor_activity"
+                        style="@style/CategoryIcon"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_indoor_activity_white"
+                        bg:backgroundTint="@color/indoor_activity" />
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/accomodation"
@@ -95,13 +95,6 @@
                         android:scaleType="center"
                         android:src="@drawable/ic_accommodation_white"
                         bg:backgroundTint="@color/accommodation" />
-
-                    <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/lifestyle"
-                        style="@style/CategoryIcon"
-                        android:scaleType="center"
-                        android:src="@drawable/ic_lifestyle_white"
-                        bg:backgroundTint="@color/lifestyle" />
 
                 </LinearLayout>
             </HorizontalScrollView>

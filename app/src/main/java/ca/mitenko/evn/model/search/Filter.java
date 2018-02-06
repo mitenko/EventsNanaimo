@@ -106,8 +106,10 @@ public class Filter {
                 activities.clear();
                 for(String categoryName : categories) {
                     ArrayList<Activity> catActivities = categoryMap.get(categoryName);
-                    for(Activity activity : catActivities) {
-                        activities.add(activity.getName());
+                    if (catActivities != null && !catActivities.isEmpty()) {
+                        for (Activity activity : catActivities) {
+                            activities.add(activity.getName());
+                        }
                     }
                 }
 

@@ -1,5 +1,6 @@
 package ca.mitenko.evn.interactor
 
+import ca.mitenko.evn.event.ErrorEvent
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 
@@ -53,10 +54,7 @@ class DestMapInteractor
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
-                if (e is HttpException) {
-                } else if (e is IOException) {
-                } else {
-                }
+                bus.post(ErrorEvent(e))
             }
 
             override fun onNext(event: SearchEvent) {

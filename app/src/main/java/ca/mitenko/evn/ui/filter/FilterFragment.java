@@ -35,14 +35,13 @@ import ca.mitenko.evn.state.ImmutableFilterFragState;
 import ca.mitenko.evn.ui.common.RootFragment;
 
 import static ca.mitenko.evn.CategoryConstants.ACCOMMODATION;
-import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
 import static ca.mitenko.evn.CategoryConstants.ALL;
 import static ca.mitenko.evn.CategoryConstants.BEVERAGES;
 import static ca.mitenko.evn.CategoryConstants.FOOD;
-import static ca.mitenko.evn.CategoryConstants.LIFESTYLE;
+import static ca.mitenko.evn.CategoryConstants.INDOOR_ACTIVITY;
+import static ca.mitenko.evn.CategoryConstants.OUTDOOR_ACTIVITY;
 import static ca.mitenko.evn.CategoryConstants.SERVICE;
 import static ca.mitenko.evn.CategoryConstants.SHOPPING;
-import static ca.mitenko.evn.CategoryConstants.SIGHT_SEEING;
 
 /**
  * Created by mitenko on 2017-04-22.
@@ -87,12 +86,6 @@ public class FilterFragment extends RootFragment
     LinearLayout shoppingButton;
 
     /**
-     * The sight seeing Text button
-     */
-    @BindView(R.id.sight_seeing)
-    LinearLayout sightSeeingButton;
-
-    /**
      * The shopping Text button
      */
     @BindView(R.id.service)
@@ -101,20 +94,20 @@ public class FilterFragment extends RootFragment
     /**
      * The shopping Text button
      */
-    @BindView(R.id.adventure)
-    LinearLayout adventureButton;
+    @BindView(R.id.outdoor_activity)
+    LinearLayout outdoorActivityButton;
+
+    /**
+     * The shopping Text button
+     */
+    @BindView(R.id.indoor_activity)
+    LinearLayout indoorActivityButton;
 
     /**
      * The shopping Text button
      */
     @BindView(R.id.accommodation)
     LinearLayout accomodationButton;
-
-    /**
-     * The shopping Text button
-     */
-    @BindView(R.id.lifestyle)
-    LinearLayout lifestyleButton;
 
     /**
      * Maps the categories to each button
@@ -186,11 +179,10 @@ public class FilterFragment extends RootFragment
         categoryButtonMap.put(BEVERAGES, beverages);
         categoryButtonMap.put(FOOD, foodButton);
         categoryButtonMap.put(SHOPPING, shoppingButton);
-        categoryButtonMap.put(SIGHT_SEEING, sightSeeingButton);
         categoryButtonMap.put(SERVICE, serviceButton);
-        categoryButtonMap.put(ADVENTURE, adventureButton);
+        categoryButtonMap.put(OUTDOOR_ACTIVITY, outdoorActivityButton);
+        categoryButtonMap.put(INDOOR_ACTIVITY, indoorActivityButton);
         categoryButtonMap.put(ACCOMMODATION, accomodationButton);
-        categoryButtonMap.put(LIFESTYLE, lifestyleButton);
         for (Map.Entry<String, LinearLayout> mapEntry : categoryButtonMap.entrySet()) {
             TextView textView = (TextView) mapEntry.getValue().findViewById(R.id.text);
             textView.setText(mapEntry.getKey());

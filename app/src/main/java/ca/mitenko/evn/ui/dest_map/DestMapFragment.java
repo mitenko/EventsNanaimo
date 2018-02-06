@@ -1,9 +1,12 @@
 package ca.mitenko.evn.ui.dest_map;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.transition.TransitionManager;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -210,6 +213,20 @@ public class DestMapFragment extends RootFragment
     /**
      * Presenter / View Callbacks
      */
+    /**
+     * {@inheritDoc}
+     */
+    public void showError(String message) {
+        if (!message.isEmpty()) {
+            Snackbar snack = Snackbar
+                    .make(mapContainer, message, Snackbar.LENGTH_LONG);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(Color.WHITE);
+            snack.show();
+        }
+    }
+
     /**
      * {@inheritDoc}
      */

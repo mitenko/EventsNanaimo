@@ -66,13 +66,12 @@ import permissions.dispatcher.RuntimePermissions;
 import retrofit2.Retrofit;
 
 import static ca.mitenko.evn.CategoryConstants.ACCOMMODATION;
-import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
 import static ca.mitenko.evn.CategoryConstants.BEVERAGES;
 import static ca.mitenko.evn.CategoryConstants.FOOD;
-import static ca.mitenko.evn.CategoryConstants.LIFESTYLE;
+import static ca.mitenko.evn.CategoryConstants.INDOOR_ACTIVITY;
+import static ca.mitenko.evn.CategoryConstants.OUTDOOR_ACTIVITY;
 import static ca.mitenko.evn.CategoryConstants.SERVICE;
 import static ca.mitenko.evn.CategoryConstants.SHOPPING;
-import static ca.mitenko.evn.CategoryConstants.SIGHT_SEEING;
 
 @RuntimePermissions
 public class HubActivity extends AppCompatActivity
@@ -144,12 +143,6 @@ public class HubActivity extends AppCompatActivity
     FloatingActionButton shoppingFilter;
 
     /**
-     * The sight seeing filter button
-     */
-    @BindView(R.id.sight_seeing)
-    FloatingActionButton sightSeeingFilter;
-
-    /**
      * The shopping filter button
      */
     @BindView(R.id.service)
@@ -158,20 +151,20 @@ public class HubActivity extends AppCompatActivity
     /**
      * The shopping filter button
      */
-    @BindView(R.id.adventure)
-    FloatingActionButton adventureFilter;
+    @BindView(R.id.outdoor_activity)
+    FloatingActionButton outdoorActivityFilter;
+
+    /**
+     * The shopping filter button
+     */
+    @BindView(R.id.indoor_activity)
+    FloatingActionButton indoorActivityFilter;
 
     /**
      * The shopping filter button
      */
     @BindView(R.id.accomodation)
     FloatingActionButton accomodationFilter;
-
-    /**
-     * The shopping filter button
-     */
-    @BindView(R.id.lifestyle)
-    FloatingActionButton lifestyleFilter;
 
     /**
      * Maps the categories to each button
@@ -280,11 +273,10 @@ public class HubActivity extends AppCompatActivity
         categoryButtonMap.put(BEVERAGES, beveragesFilter);
         categoryButtonMap.put(FOOD, foodFilter);
         categoryButtonMap.put(SHOPPING, shoppingFilter);
-        categoryButtonMap.put(SIGHT_SEEING, sightSeeingFilter);
         categoryButtonMap.put(SERVICE, serviceFilter);
-        categoryButtonMap.put(ADVENTURE, adventureFilter);
+        categoryButtonMap.put(OUTDOOR_ACTIVITY, outdoorActivityFilter);
+        categoryButtonMap.put(INDOOR_ACTIVITY, indoorActivityFilter);
         categoryButtonMap.put(ACCOMMODATION, accomodationFilter);
-        categoryButtonMap.put(LIFESTYLE, lifestyleFilter);
         for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
             mapEntry.getValue().setOnClickListener(this);
         }

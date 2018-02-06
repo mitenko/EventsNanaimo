@@ -139,33 +139,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/sight_seeing"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:orientation="vertical">
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@id/fab"
-                style="@style/FilterIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:scaleType="center"
-                android:src="@drawable/ic_sight_seeing_white"
-                bg:backgroundTint="@color/sightSeeing" />
-
-            <TextView
-                android:id="@id/text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="All" />
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/service"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -191,15 +164,9 @@
                 android:gravity="center"
                 android:text="All" />
         </LinearLayout>
-        </android.support.v7.widget.LinearLayoutCompat>
-
-        <android.support.v7.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/FilterIconRow">
 
         <LinearLayout
-            android:id="@+id/adventure"
+            android:id="@+id/outdoor_activity"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -215,8 +182,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:scaleType="center"
-                android:src="@drawable/ic_adventure_white"
-                bg:backgroundTint="@color/adventure" />
+                android:src="@drawable/ic_outdoor_activity_white"
+                bg:backgroundTint="@color/outdoor_activity" />
 
             <TextView
                 android:id="@id/text"
@@ -226,6 +193,41 @@
                 android:lines="1"
                 android:text="All" />
         </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/FilterIconRow">
+
+            <LinearLayout
+                android:id="@+id/indoor_activity"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@id/fab"
+                    style="@style/FilterIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_indoor_activity_white"
+                    bg:backgroundTint="@color/indoor_activity" />
+
+                <TextView
+                    android:id="@id/text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:text="All" />
+            </LinearLayout>
 
         <LinearLayout
             android:id="@+id/accommodation"
@@ -245,33 +247,6 @@
                 android:scaleType="center"
                 android:src="@drawable/ic_accommodation_white"
                 bg:backgroundTint="@color/accommodation" />
-
-            <TextView
-                android:id="@id/text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="All" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/lifestyle"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:orientation="vertical">
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@id/fab"
-                style="@style/FilterIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:scaleType="center"
-                android:src="@drawable/ic_lifestyle_white"
-                bg:backgroundTint="@color/lifestyle" />
 
             <TextView
                 android:id="@id/text"
