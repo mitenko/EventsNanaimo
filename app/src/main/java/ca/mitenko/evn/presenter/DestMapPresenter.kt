@@ -1,18 +1,14 @@
 package ca.mitenko.evn.presenter
 
 import ca.mitenko.evn.event.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-
 import ca.mitenko.evn.interactor.DestMapInteractor
-import ca.mitenko.evn.model.Destination
-import ca.mitenko.evn.model.search.DestSearch
 import ca.mitenko.evn.model.search.DestSearch.Companion.DEFAULT_BOUNDS
-import ca.mitenko.evn.model.search.ImmutableFilter
 import ca.mitenko.evn.presenter.common.RootPresenter
 import ca.mitenko.evn.state.DestMapState
 import ca.mitenko.evn.state.ImmutableDestMapState
 import ca.mitenko.evn.ui.dest_map.DestMapView
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import timber.log.Timber
 
 /**
@@ -142,11 +138,7 @@ class DestMapPresenter
         if (event.outcome === UserLocationEvent.Outcome.SUCCESS && event.userLatLng != null
                 && event.userLatLng != curState.userLocation()) {
 
-            val newFilter = ImmutableFilter.builder()
-                    .from(curState.search().filter)
-                    .userLocation(event.userLatLng)
-                    .build()
-
+            val newFilter = curState.search().filter.copy(userLocation = event.userLatLng)
             val newSearch = curState.search().copy(filter = newFilter)
 
             val newState = ImmutableDestMapState.builder()

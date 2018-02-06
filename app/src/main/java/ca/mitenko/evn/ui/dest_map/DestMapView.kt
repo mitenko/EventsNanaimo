@@ -1,13 +1,11 @@
 package ca.mitenko.evn.ui.dest_map
 
 
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-
-import java.util.ArrayList
-
 import ca.mitenko.evn.model.Destination
 import ca.mitenko.evn.ui.common.RootView
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import java.util.*
 
 /**
  * Created by mitenko on 2017-04-23.

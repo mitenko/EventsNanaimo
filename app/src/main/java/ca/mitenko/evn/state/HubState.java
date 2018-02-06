@@ -14,7 +14,6 @@ import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.Event;
 import ca.mitenko.evn.model.search.Filter;
-import ca.mitenko.evn.model.search.ImmutableFilter;
 import ca.mitenko.evn.state.common.RootState;
 
 /**
@@ -73,7 +72,7 @@ public class HubState extends RootState {
     @NonNull
     @Value.Default
     public Filter filter() {
-        return ImmutableFilter.builder().build();
+        return new Filter();
     }
 
     /**

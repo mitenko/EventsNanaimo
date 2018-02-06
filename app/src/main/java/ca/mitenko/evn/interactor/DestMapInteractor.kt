@@ -1,19 +1,12 @@
 package ca.mitenko.evn.interactor
 
 import ca.mitenko.evn.event.ErrorEvent
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-
-import org.greenrobot.eventbus.EventBus
-
-import java.io.IOException
-
 import ca.mitenko.evn.event.SearchEvent
 import ca.mitenko.evn.model.search.DestSearch
 import ca.mitenko.evn.network.EventsNanaimoService
 import ca.mitenko.evn.util.MapUtil
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.HttpException
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers

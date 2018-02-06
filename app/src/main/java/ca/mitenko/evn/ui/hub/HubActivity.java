@@ -698,10 +698,10 @@ public class HubActivity extends AppCompatActivity
         for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
             ColorStateList resetBackground = ColorStateList.valueOf(
                     ContextCompat.getColor(this, CategoryConstants.categoryColorMap.get(mapEntry.getKey())));
-            if (filter.categories().isEmpty()) {
+            if (filter.getCategories().isEmpty()) {
                 mapEntry.getValue().setBackgroundTintList(resetBackground);
             } else {
-                if (filter.categories().contains(mapEntry.getKey())) {
+                if (filter.getCategories().contains(mapEntry.getKey())) {
                     mapEntry.getValue().setBackgroundTintList(resetBackground);
                 } else {
                     mapEntry.getValue().setBackgroundTintList(darkBackground);

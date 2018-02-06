@@ -334,10 +334,10 @@ public class FilterFragment extends RootFragment
             FloatingActionButton fab =
                     (FloatingActionButton) mapEntry.getValue().findViewById(R.id.fab);
 
-            if (filter.categories().isEmpty()) {
+            if (filter.getCategories().isEmpty()) {
                 fab.setBackgroundTintList(resetBackground);
             } else {
-                if (filter.categories().contains(mapEntry.getKey())) {
+                if (filter.getCategories().contains(mapEntry.getKey())) {
                     fab.setBackgroundTintList(resetBackground);
                 } else {
                     fab.setBackgroundTintList(darkBackground);
@@ -353,11 +353,11 @@ public class FilterFragment extends RootFragment
         Integer selText = ContextCompat.getColor(getContext(), R.color.white);
         Integer normText = ContextCompat.getColor(getContext(), R.color.appGreen);
         for (Map.Entry<Integer, TextView> mapEntry : costButtonMap.entrySet()) {
-            if (filter.cost().isEmpty()) {
+            if (filter.getCost().isEmpty()) {
                 mapEntry.getValue().setBackground(normBg);
                 mapEntry.getValue().setTextColor(normText);
             } else {
-                if (filter.cost().contains(mapEntry.getKey())) {
+                if (filter.getCost().contains(mapEntry.getKey())) {
                     mapEntry.getValue().setBackground(selBg);
                     mapEntry.getValue().setTextColor(selText);
                 } else {
@@ -374,11 +374,11 @@ public class FilterFragment extends RootFragment
         selText = ContextCompat.getColor(getContext(), R.color.black);
         for (Map.Entry<String, TextView> mapEntry : activityButtonMap.entrySet()) {
 
-            if (filter.activities().isEmpty()) {
+            if (filter.getActivities().isEmpty()) {
                 mapEntry.getValue().setSelected(true);
                 mapEntry.getValue().setTextColor(normText);
             } else {
-                if (filter.activities().contains(mapEntry.getKey())) {
+                if (filter.getActivities().contains(mapEntry.getKey())) {
                     mapEntry.getValue().setSelected(true);
                     mapEntry.getValue().setTextColor(selText);
                 } else {

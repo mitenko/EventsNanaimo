@@ -6,7 +6,6 @@ import ca.mitenko.evn.util.LocationUtil
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 import org.immutables.value.Value
 import java.util.*
 
@@ -18,7 +17,7 @@ import java.util.*
 data class DestSearch(
         val searchBounds: LatLngBounds = DEFAULT_BOUNDS,
         val mapBounds: LatLngBounds? = null,
-        val filter: @RawValue Filter = ImmutableFilter.builder().build(),
+        val filter: Filter = Filter(),
         val results: ArrayList<Destination>? = null
 
 ): Parcelable {
@@ -64,8 +63,8 @@ data class DestSearch(
          * Sort the list by nearest to farther if user location is known
          */
         val orderedResults = results ?: ArrayList()
-        if (filter.userLocation() != null) {
-            val userLocation = LocationUtil.fromLatLng(filter.userLocation())
+        if (filter.userLocation != null) {
+            val userLocation = LocationUtil.fromLatLng(filter.userLocation)
 
             Collections.sort(orderedResults!!) { d1, d2 ->
                 val location1 = LocationUtil.fromDestination(d1)
@@ -92,9 +91,9 @@ data class DestSearch(
                 /**
                  * Filter by Activity / Cost / Category
                  */
-                if ((filter.categories().isEmpty() || filter.categories().contains(category)) &&
-                        (filter.activities().isEmpty() || filter.activities().contains(name)) &&
-                        (filter.cost().isEmpty() || filter.cost().contains(destinationCost))) {
+                if ((filter.categories.isEmpty() || filter.categories.contains(category)) &&
+                        (filter.activities.isEmpty() || filter.activities.contains(name)) &&
+                        (filter.cost.isEmpty() || filter.cost.contains(destinationCost))) {
                     filteredResults.add(
                             destination.copy(displayIcon = category ?: "unknown"))
                     break

@@ -101,10 +101,9 @@ public class DestMapState extends RootState {
     /**
      * The set of category data
      */
-    @Nullable
     @Value.Default
     public HashMap<String, ArrayList<Activity>> categoryMap() {
-        return null;
+        return new HashMap();
     }
 
     /**

@@ -1,14 +1,13 @@
 package ca.mitenko.evn.presenter
 
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-
 import ca.mitenko.evn.event.FilterEvent
 import ca.mitenko.evn.event.SearchEvent
 import ca.mitenko.evn.presenter.common.RootPresenter
 import ca.mitenko.evn.state.DestListState
 import ca.mitenko.evn.state.ImmutableDestListState
 import ca.mitenko.evn.ui.dest_list.DestListView
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 /**
  * Created by mitenko on 2017-04-23.
