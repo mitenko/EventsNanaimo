@@ -65,12 +65,6 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
     PriceView priceView;
 
     /**
-     * the category
-     */
-    @BindView(R.id.event_category_view)
-    CategoryView categoryView;
-
-    /**
      * Constructor
      * @param view
      */
@@ -91,7 +85,6 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
         title.setText(event.getDetail().getName().toUpperCase());
         shortDesc.setText(event.getDetail().getLongDesc());
         priceView.setCost(event.getDetail().getCost());
-        categoryView.setCategories(event.getDetail().getActivities(), false);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd");
         String formattedDate = dateFormat.format(new Date(event.getUnixStartTime() * 1000)) + " to "

@@ -92,8 +92,7 @@ data class DestSearch(
                  * Filter by Activity / Cost / Category
                  */
                 if ((filter.categories.isEmpty() || filter.categories.contains(category)) &&
-                        (filter.activities.isEmpty() || filter.activities.contains(name)) &&
-                        (filter.cost.isEmpty() || filter.cost.contains(destinationCost))) {
+                        (filter.activities.isEmpty() || filter.activities.contains(name))) {
                     filteredResults.add(
                             destination.copy(displayIcon = category ?: "unknown"))
                     break

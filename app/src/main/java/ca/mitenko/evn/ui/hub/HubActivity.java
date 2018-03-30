@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -97,26 +98,26 @@ public class HubActivity extends AppCompatActivity
     /**
      * The destinations page nav button
      */
-    @BindView(R.id.explore_button)
-    ImageView exploreButton;
+    @BindView(R.id.explore_container)
+    LinearLayout exploreContainer;
 
     /**
      * The destinations page nav button
      */
-    @BindView(R.id.event_button)
-    ImageView eventButton;
+    @BindView(R.id.event_container)
+    LinearLayout eventContainer;
 
     /**
      * The destinations page nav button
      */
-    @BindView(R.id.filter_button)
-    ImageView filterButton;
+    @BindView(R.id.filter_container)
+    LinearLayout filterContainer;
 
     /**
      * The done nav button
      */
-    @BindView(R.id.done_button)
-    ImageView doneButton;
+    @BindView(R.id.done_container)
+    LinearLayout doneContainer;
 
     /**
      * The destinations page nav button
@@ -264,10 +265,10 @@ public class HubActivity extends AppCompatActivity
         }
 
         // Init buttons
-        exploreButton.setOnClickListener(this);
-        eventButton.setOnClickListener(this);
-        filterButton.setOnClickListener(this);
-        doneButton.setOnClickListener(this);
+        exploreContainer.setOnClickListener(this);
+        eventContainer.setOnClickListener(this);
+        filterContainer.setOnClickListener(this);
+        doneContainer.setOnClickListener(this);
 
         categoryButtonMap = new HashMap<>();
         categoryButtonMap.put(BEVERAGES, beveragesFilter);
@@ -350,19 +351,19 @@ public class HubActivity extends AppCompatActivity
      * Button / Event Callbacks
      */
     public void onClick(View view) {
-        if (view.equals(exploreButton)) {
+        if (view.equals(exploreContainer)) {
             bus.post(new ViewMapEvent());
             return;
         }
-        if (view.equals(eventButton)) {
+        if (view.equals(eventContainer)) {
             bus.post(new ViewEventEvent());
             return;
         }
-        if (view.equals(filterButton)) {
+        if (view.equals(filterContainer)) {
             bus.post(new ViewFilterEvent());
             return;
         }
-        if (view.equals(doneButton)) {
+        if (view.equals(doneContainer)) {
             onBackPressed();
             return;
         }
@@ -677,16 +678,16 @@ public class HubActivity extends AppCompatActivity
      * Displays the 'Done' button
      */
     public void showDoneButton() {
-        doneButton.setVisibility(View.VISIBLE);
-        filterButton.setVisibility(View.GONE);
+        doneContainer.setVisibility(View.VISIBLE);
+        filterContainer.setVisibility(View.GONE);
     }
 
     /**
      * Displays the 'Filter' button
      */
     public void showFilterButton() {
-        doneButton.setVisibility(View.GONE);
-        filterButton.setVisibility(View.VISIBLE);
+        doneContainer.setVisibility(View.GONE);
+        filterContainer.setVisibility(View.VISIBLE);
     }
 
     /**

@@ -4,6 +4,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
+import ca.mitenko.evn.event.ErrorEvent;
 import ca.mitenko.evn.event.EventResultEvent;
 import ca.mitenko.evn.model.EventResult;
 import ca.mitenko.evn.network.EventsNanaimoService;
@@ -67,11 +68,7 @@ public class EventListInteractor {
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof HttpException) {
-                } else if (e instanceof IOException) {
-                } else {
-                    //@TODO Unexpected exception
-                }
+                bus.post(new ErrorEvent(e));
             }
 
             @Override

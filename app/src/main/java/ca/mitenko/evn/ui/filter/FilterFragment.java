@@ -17,6 +17,7 @@ import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,35 +116,6 @@ public class FilterFragment extends RootFragment
     private HashMap<String, LinearLayout> categoryButtonMap;
 
     /**
-     * The Free Button
-     */
-    @BindView(R.id.btn_free_cost)
-    TextView freeCostButton;
-
-    /**
-     * The $ Button
-     */
-    @BindView(R.id.btn_one_cost)
-    TextView oneCostButton;
-
-    /**
-     * The $$ Button
-     */
-    @BindView(R.id.btn_two_cost)
-    TextView twoCostButton;
-
-    /**
-     * The $$$ Button
-     */
-    @BindView(R.id.btn_three_cost)
-    TextView threeCostButton;
-
-    /**
-     * Maps the categories to each button
-     */
-    private HashMap<Integer, TextView> costButtonMap;
-
-    /**
      * The Actitivy Container
      */
     @BindView(R.id.activity_container)
@@ -184,17 +156,11 @@ public class FilterFragment extends RootFragment
         categoryButtonMap.put(INDOOR_ACTIVITY, indoorActivityButton);
         categoryButtonMap.put(ACCOMMODATION, accomodationButton);
         for (Map.Entry<String, LinearLayout> mapEntry : categoryButtonMap.entrySet()) {
-            TextView textView = (TextView) mapEntry.getValue().findViewById(R.id.text);
-            textView.setText(mapEntry.getKey());
-            mapEntry.getValue().setOnClickListener(this);
-        }
-
-        costButtonMap = new HashMap<>();
-        costButtonMap.put(getContext().getResources().getInteger(R.integer.cost_free), freeCostButton);
-        costButtonMap.put(getContext().getResources().getInteger(R.integer.cost_one), oneCostButton);
-        costButtonMap.put(getContext().getResources().getInteger(R.integer.cost_two), twoCostButton);
-        costButtonMap.put(getContext().getResources().getInteger(R.integer.cost_three), threeCostButton);
-        for (Map.Entry<Integer, TextView> mapEntry : costButtonMap.entrySet()) {
+            // Keep the Modified Accomodation Value (Stay)
+            if (mapEntry.getKey() != ACCOMMODATION) {
+                TextView textView = (TextView) mapEntry.getValue().findViewById(R.id.text);
+                textView.setText(mapEntry.getKey());
+            }
             mapEntry.getValue().setOnClickListener(this);
         }
 
@@ -272,16 +238,6 @@ public class FilterFragment extends RootFragment
         }
 
         /**
-         * Check the Cost Buttons
-         */
-        for (Map.Entry<Integer, TextView> mapEntry : costButtonMap.entrySet()) {
-            if (mapEntry.getValue().equals(view)) {
-                bus.post(new ModifyFilterEvent(ModifyFilterEvent.Type.COST, mapEntry.getKey().toString(),
-                        ModifyFilterEvent.Action.TOGGLE));
-            }
-        }
-
-        /**
          * Check the Activity Buttons
          */
         for (Map.Entry<String, TextView> mapEntry : activityButtonMap.entrySet()) {
@@ -301,20 +257,26 @@ public class FilterFragment extends RootFragment
         Integer selText = ContextCompat.getColor(getContext(), R.color.black);
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
+        ArrayList<String> sortedActivities = new ArrayList<>();
         for (Map.Entry<String, ArrayList<Activity>> mapEntry : categoryMap.entrySet()) {
             for(Activity activity : mapEntry.getValue()) {
-                if (!activityButtonMap.containsKey(activity.getName())) {
-                    inflater.inflate(
-                            R.layout.item_activity_button, activityContainer, true);
-                    TextView button = (TextView)
-                            activityContainer.getChildAt(activityContainer.getChildCount()-1);
-                    button.setText(activity.getName());
-                    button.setOnClickListener(this);
-                    button.setSelected(true);
-                    button.setTextColor(selText);
-                    activityButtonMap.put(activity.getName(), button);
+                if (!sortedActivities.contains(activity.getName())) {
+                    sortedActivities.add(activity.getName());
                 }
             }
+        }
+        Collections.sort(sortedActivities);
+
+        for(String activityName : sortedActivities) {
+            inflater.inflate(
+                    R.layout.item_activity_button, activityContainer, true);
+            TextView button = (TextView)
+                    activityContainer.getChildAt(activityContainer.getChildCount()-1);
+            button.setText(activityName);
+            button.setOnClickListener(this);
+            button.setSelected(true);
+            button.setTextColor(selText);
+            activityButtonMap.put(activityName, button);
         }
     }
 
@@ -346,32 +308,10 @@ public class FilterFragment extends RootFragment
         }
 
         /**
-         * Cost Buttons
-         */
-        Drawable normBg = ContextCompat.getDrawable(getContext(), R.drawable.cost_button);
-        Drawable selBg = ContextCompat.getDrawable(getContext(), R.drawable.cost_button_selected);
-        Integer selText = ContextCompat.getColor(getContext(), R.color.white);
-        Integer normText = ContextCompat.getColor(getContext(), R.color.appGreen);
-        for (Map.Entry<Integer, TextView> mapEntry : costButtonMap.entrySet()) {
-            if (filter.getCost().isEmpty()) {
-                mapEntry.getValue().setBackground(normBg);
-                mapEntry.getValue().setTextColor(normText);
-            } else {
-                if (filter.getCost().contains(mapEntry.getKey())) {
-                    mapEntry.getValue().setBackground(selBg);
-                    mapEntry.getValue().setTextColor(selText);
-                } else {
-                    mapEntry.getValue().setBackground(normBg);
-                    mapEntry.getValue().setTextColor(normText);
-                }
-            }
-        }
-
-        /**
          * Activity Buttons
          */
-        normText = ContextCompat.getColor(getContext(), R.color.secondaryText);
-        selText = ContextCompat.getColor(getContext(), R.color.black);
+        Integer normText = ContextCompat.getColor(getContext(), R.color.secondaryText);
+        Integer selText = ContextCompat.getColor(getContext(), R.color.black);
         for (Map.Entry<String, TextView> mapEntry : activityButtonMap.entrySet()) {
 
             if (filter.getActivities().isEmpty()) {

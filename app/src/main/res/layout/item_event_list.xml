@@ -88,37 +88,7 @@
             android:textColor="@color/primaryText"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_card_desc"
-            app:layout_constraintEnd_toStartOf="@+id/event_card_price" />
-
-        <ca.mitenko.evn.ui.common.PriceView
-            android:id="@+id/event_card_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-
-            android:layout_marginEnd="8dp"
-            android:fontFamily="sans-serif-black"
-            android:gravity="center"
-            android:minWidth="@dimen/price_width"
-            android:paddingBottom="2dp"
-            android:paddingEnd="6dp"
-            android:paddingStart="6dp"
-
-            android:paddingTop="2dp"
-            android:text="Cost"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <ca.mitenko.evn.ui.common.CategoryView
-            android:id="@+id/event_category_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/event_card_desc" />
 
     </android.support.constraint.ConstraintLayout>
 

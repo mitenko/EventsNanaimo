@@ -51,12 +51,6 @@ public class DestViewHolder extends RecyclerView.ViewHolder {
     TextView activities;
 
     /**
-     * the price
-     */
-    @BindView(R.id.dest_card_price)
-    PriceView priceView;
-
-    /**
      * the category
      */
     @BindView(R.id.dest_category_view)
@@ -82,7 +76,6 @@ public class DestViewHolder extends RecyclerView.ViewHolder {
         thumbnail.setImageURI(destination.getDetail().getImageURL());
         title.setText(destination.getDetail().getName().toUpperCase());
         shortDesc.setText(destination.getDetail().getLongDesc());
-        priceView.setCost(destination.getDetail().getCost());
         categoryView.setCategories(destination.getDetail().getActivities(), false);
 
         ArrayList<Activity> destActivities = destination.getDetail().getActivities();

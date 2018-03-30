@@ -1,5 +1,6 @@
 package ca.mitenko.evn.ui.event_detail;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -64,10 +65,10 @@ public class EventDetailFragment extends RootFragment
     TextView eventDescription;
 
     /**
-     * the category
+     * The phone Container
      */
-    @BindView(R.id.event_category_view)
-    CategoryView categoryView;
+    @BindView(R.id.phone_container)
+    LinearLayout phoneContainer;
 
     /**
      * The phone / Address
@@ -80,6 +81,12 @@ public class EventDetailFragment extends RootFragment
      */
     @BindView(R.id.phone_desc)
     TextView phoneDescription;
+
+    /**
+     * The link Container
+     */
+    @BindView(R.id.link_container)
+    LinearLayout linkContainer;
 
     /**
      * The link / Address
@@ -96,14 +103,20 @@ public class EventDetailFragment extends RootFragment
     /**
      * The link Container
      */
-    @BindView(R.id.link_container)
-    LinearLayout linkContainer;
+    @BindView(R.id.email_container)
+    LinearLayout emailContainer;
 
     /**
-     * The phone Container
+     * The link / Address
      */
-    @BindView(R.id.phone_container)
-    LinearLayout phoneContainer;
+    @BindView(R.id.email_icon)
+    ImageView emailIcon;
+
+    /**
+     * The link / Address
+     */
+    @BindView(R.id.email_desc)
+    TextView emailDescription;
 
     /**
      * Event bus
@@ -153,8 +166,15 @@ public class EventDetailFragment extends RootFragment
                     Uri.parse(event.getDetail().getWebsite()));
             startActivity(browserIntent);
         });
+
         phoneContainer.setOnClickListener(view -> {
             EventDetailFragmentPermissionsDispatcher.makePhoneCallWithCheck(this);
+        });
+
+        emailContainer.setOnClickListener(view -> {
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+            emailIntent.setData(Uri.parse("mailto:" + event.getDetail().getEmail()));
+            startActivity(emailIntent);
         });
 
         setToolbar();
@@ -236,22 +256,26 @@ public class EventDetailFragment extends RootFragment
         eventImage.setImageURI(event.getDetail().getImageURL());
         eventTitle.setText(event.getDetail().getName());
         eventDescription.setText(event.getDetail().getLongDesc());
-        categoryView.setCategories(event.getDetail().getActivities(), true);
 
         // phone number
         if (!event.getDetail().getPhone().isEmpty()) {
             phoneDescription.setText(event.getDetail().getPhone());
         } else {
-            phoneIcon.setVisibility(View.INVISIBLE);
-            phoneDescription.setVisibility(View.INVISIBLE);
+            phoneContainer.setVisibility(View.GONE);
         }
 
         // website
         if (!event.getDetail().getWebsite().isEmpty()) {
             linkDescription.setText(event.getDetail().getWebsite());
         } else {
-            linkIcon.setVisibility(View.INVISIBLE);
-            linkDescription.setVisibility(View.INVISIBLE);
+            linkContainer.setVisibility(View.GONE);
+        }
+
+        // email
+        if (!event.getDetail().getEmail().isEmpty()) {
+            emailDescription.setText(event.getDetail().getEmail());
+        } else {
+            emailContainer.setVisibility(View.GONE);
         }
     }
 }

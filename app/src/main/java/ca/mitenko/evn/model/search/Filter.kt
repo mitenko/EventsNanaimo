@@ -17,7 +17,6 @@ import kotlin.collections.ArrayList
 data class Filter(
         val categories: ArrayList<String> = ArrayList(),
         val activities: HashSet<String> = HashSet(),
-        val cost: ArrayList<Int> = ArrayList(),
         val userLocation: LatLng? = null
 ): Parcelable {
 
@@ -27,8 +26,7 @@ data class Filter(
      */
     open val isEmpty: Boolean
         @Value.Lazy
-        get() = (activities.isEmpty() && categories.isEmpty()
-                && cost.isEmpty() && userLocation == null)
+        get() = (activities.isEmpty() && categories.isEmpty() && userLocation == null)
     /**
      * Modifies the current filter based on the filter event
      * @param event
@@ -39,11 +37,9 @@ data class Filter(
          * Deep copy the current activities and categories
          */
         val categories = ArrayList<String>()
-        categories.addAll(categories)
+        categories.addAll(this.categories)
         val activities = HashSet<String>()
-        activities.addAll(activities)
-        val costs = ArrayList<Int>()
-        costs.addAll(cost)
+        activities.addAll(this.activities)
 
         val type = event.type
 
@@ -76,13 +72,6 @@ data class Filter(
                 } else {
                     activities.add(event.value)
                 }
-            } else if (type === ModifyFilterEvent.Type.COST) {
-                val eventCost = Integer.parseInt(event.value)
-                if (costs.contains(eventCost)) {
-                    costs.remove(eventCost)
-                } else {
-                    costs.add(eventCost)
-                }
             }
         }
 
@@ -91,6 +80,6 @@ data class Filter(
             activities.clear()
         }
 
-        return this.copy(categories = categories, activities = activities, cost = costs)
+        return this.copy(categories = categories, activities = activities)
     }
 }

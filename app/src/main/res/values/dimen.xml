@@ -19,5 +19,8 @@
     <dimen name="event_card_list_height">250dp</dimen>
     <dimen name="event_card_list_img_height">275dp</dimen>
 
+    <dimen name="tab_button_size">50dp</dimen>
+    <dimen name="button_margin_overlap">-12dp</dimen>
+
 
 </resources>
