@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.immutables.value.Value;
 import org.parceler.Parcel;
@@ -16,7 +15,6 @@ import java.util.HashMap;
 import ca.mitenko.evn.model.Activity;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.search.DestSearch;
-import ca.mitenko.evn.model.search.ImmutableDestSearch;
 import ca.mitenko.evn.state.common.RootState;
 
 /**
@@ -30,6 +28,15 @@ public class DestMapState extends RootState {
      * State Identifying Tag
      */
     public static final String TAG = "state.dest_map";
+
+    /**
+     * Thrown Error
+     */
+    @Nullable
+    @Value.Default
+    public Throwable error() {
+        return null;
+    }
 
     /**
      * Loading results flag
@@ -63,7 +70,7 @@ public class DestMapState extends RootState {
     @NonNull
     @Value.Default
     public DestSearch search() {
-        return ImmutableDestSearch.builder().build();
+        return new DestSearch();
     }
 
     /**
@@ -94,10 +101,9 @@ public class DestMapState extends RootState {
     /**
      * The set of category data
      */
-    @Nullable
     @Value.Default
     public HashMap<String, ArrayList<Activity>> categoryMap() {
-        return null;
+        return new HashMap();
     }
 
     /**

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,14 +29,10 @@ import ca.mitenko.evn.R;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.presenter.DestDetailPresenter;
 import ca.mitenko.evn.state.DestDetailState;
-import ca.mitenko.evn.state.DestListState;
-import ca.mitenko.evn.state.DestMapState;
 import ca.mitenko.evn.state.ImmutableDestDetailState;
-import ca.mitenko.evn.state.ImmutableDestMapState;
 import ca.mitenko.evn.ui.common.CategoryView;
 import ca.mitenko.evn.ui.common.RootFragment;
 import ca.mitenko.evn.util.MapUtil;
-import ca.mitenko.evn.util.PermissionUtil;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -189,7 +184,7 @@ public class DestDetailFragment extends RootFragment
 
         linkContainer.setOnClickListener(view -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(destination.detail().website()));
+                    Uri.parse(destination.getDetail().getWebsite()));
             startActivity(browserIntent);
         });
         phoneContainer.setOnClickListener(view -> {
@@ -197,7 +192,7 @@ public class DestDetailFragment extends RootFragment
         });
         locationContainer.setOnClickListener(view -> {
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                    Uri.parse("google.navigation:q=" + destination.address().toString()));
+                    Uri.parse("google.navigation:q=" + destination.getAddress().toString()));
             startActivity(intent);
         });
 
@@ -227,7 +222,7 @@ public class DestDetailFragment extends RootFragment
     @NeedsPermission(Manifest.permission.CALL_PHONE)
     public void makePhoneCall() {
         Intent intent = new Intent(Intent.ACTION_CALL,
-                Uri.parse("tel:" + destination.detail().phone()));
+                Uri.parse("tel:" + destination.getDetail().getPhone()));
         startActivity(intent);
     }
 
@@ -263,7 +258,7 @@ public class DestDetailFragment extends RootFragment
      */
     public void setToolbar() {
         if (destination != null) {
-            hub.setToolbarTitle(destination.detail().name());
+            hub.setToolbarTitle(destination.getDetail().getName());
         }
         hub.showCategoryPicker(false);
     }
@@ -275,31 +270,31 @@ public class DestDetailFragment extends RootFragment
     public void displayDest(Destination dest) {
         this.destination = dest;
 
-        hub.setToolbarTitle(destination.detail().name());
+        hub.setToolbarTitle(destination.getDetail().getName());
 
-        destImage.setImageURI(dest.detail().imageURL());
-        destTitle.setText(dest.detail().name());
-        destDescription.setText(dest.detail().longDesc());
-        categoryView.setCategories(destination.detail().activities(), true);
-        locationDescription.setText(destination.address().toString());
+        destImage.setImageURI(dest.getDetail().getImageURL());
+        destTitle.setText(dest.getDetail().getName());
+        destDescription.setText(dest.getDetail().getLongDesc());
+        categoryView.setCategories(destination.getDetail().getActivities(), true);
+        locationDescription.setText(destination.getAddress().toString());
 
         // the map
         mapImage.setImageURI(MapUtil.toStaticMapURL(dest));
         Drawable icon = ContextCompat.getDrawable(getContext(),
-                CategoryConstants.categoryIconMap.get(dest.displayIcon()));
+                CategoryConstants.categoryIconMap.get(dest.getDisplayIcon()));
         categoryIcon.setImageDrawable(icon);
 
         // phone number
-        if (!dest.detail().phone().isEmpty()) {
-            phoneDescription.setText(dest.detail().phone());
+        if (!dest.getDetail().getPhone().isEmpty()) {
+            phoneDescription.setText(dest.getDetail().getPhone());
         } else {
             phoneIcon.setVisibility(View.INVISIBLE);
             phoneDescription.setVisibility(View.INVISIBLE);
         }
 
         // website
-        if (!dest.detail().website().isEmpty()) {
-            linkDescription.setText(dest.detail().website());
+        if (!dest.getDetail().getWebsite().isEmpty()) {
+            linkDescription.setText(dest.getDetail().getWebsite());
         } else {
             linkIcon.setVisibility(View.INVISIBLE);
             linkDescription.setVisibility(View.INVISIBLE);

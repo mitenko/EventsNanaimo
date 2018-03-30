@@ -1,6 +1,5 @@
 package ca.mitenko.evn.ui.dest_list.adapter;
 
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -52,12 +51,6 @@ public class DestViewHolder extends RecyclerView.ViewHolder {
     TextView activities;
 
     /**
-     * the price
-     */
-    @BindView(R.id.dest_card_price)
-    PriceView priceView;
-
-    /**
      * the category
      */
     @BindView(R.id.dest_category_view)
@@ -78,18 +71,17 @@ public class DestViewHolder extends RecyclerView.ViewHolder {
      */
     public void bind(Destination destination, EventBus bus) {
         this.itemView.setOnClickListener(view ->
-            bus.post(new DestItemClickEvent(destination)));
+                bus.post(new DestItemClickEvent(destination)));
 
-        thumbnail.setImageURI(destination.detail().imageURL());
-        title.setText(destination.detail().name().toUpperCase());
-        shortDesc.setText(destination.detail().longDesc());
-        priceView.setCost(destination.detail().cost());
-        categoryView.setCategories(destination.detail().activities(), false);
+        thumbnail.setImageURI(destination.getDetail().getImageURL());
+        title.setText(destination.getDetail().getName().toUpperCase());
+        shortDesc.setText(destination.getDetail().getLongDesc());
+        categoryView.setCategories(destination.getDetail().getActivities(), false);
 
-        ArrayList<Activity> destActivities = destination.detail().activities();
+        ArrayList<Activity> destActivities = destination.getDetail().getActivities();
         HashSet<String> activityNames = new HashSet<>();
         for (Activity activity : destActivities) {
-            activityNames.add(activity.name());
+            activityNames.add(activity.getName());
         }
         String joinedActivites = TextUtils.join(" • ", activityNames);
         activities.setText(joinedActivites);

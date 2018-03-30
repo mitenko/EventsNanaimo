@@ -30,8 +30,8 @@ public class LocationUtil {
      */
     public static Location fromDestination(Destination destination) {
         Location location = new Location(LocationManager.GPS_PROVIDER);
-        location.setLatitude(destination.latitude());
-        location.setLongitude(destination.longitude());
+        location.setLatitude(destination.getLatitude());
+        location.setLongitude(destination.getLongitude());
         return location;
     }
 }

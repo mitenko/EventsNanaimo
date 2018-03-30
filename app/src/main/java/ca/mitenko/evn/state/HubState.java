@@ -3,8 +3,6 @@ package ca.mitenko.evn.state;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import org.immutables.value.Value;
 import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
@@ -13,19 +11,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ca.mitenko.evn.model.Activity;
-import ca.mitenko.evn.model.Category;
 import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.Event;
-import ca.mitenko.evn.model.search.DestSearch;
 import ca.mitenko.evn.model.search.Filter;
-import ca.mitenko.evn.model.search.ImmutableDestSearch;
-import ca.mitenko.evn.model.search.ImmutableFilter;
 import ca.mitenko.evn.state.common.RootState;
 
 /**
  * Created by mitenko on 2017-04-23.
  */
-
 @Parcel(value = Parcel.Serialization.VALUE, implementations = ImmutableHubState.class)
 @Value.Immutable
 public class HubState extends RootState {
@@ -79,7 +72,7 @@ public class HubState extends RootState {
     @NonNull
     @Value.Default
     public Filter filter() {
-        return ImmutableFilter.builder().build();
+        return new Filter();
     }
 
     /**

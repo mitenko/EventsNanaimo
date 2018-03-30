@@ -16,13 +16,13 @@ import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.util.BitmapUtil;
 
 import static ca.mitenko.evn.CategoryConstants.ACCOMMODATION;
-import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
+import static ca.mitenko.evn.CategoryConstants.BEVERAGES;
 import static ca.mitenko.evn.CategoryConstants.FOOD;
-import static ca.mitenko.evn.CategoryConstants.LIFESTYLE;
-import static ca.mitenko.evn.CategoryConstants.ON_THE_TOWN;
+import static ca.mitenko.evn.CategoryConstants.INDOOR_ACTIVITY;
+import static ca.mitenko.evn.CategoryConstants.OUTDOOR_ACTIVITY;
 import static ca.mitenko.evn.CategoryConstants.SERVICE;
 import static ca.mitenko.evn.CategoryConstants.SHOPPING;
-import static ca.mitenko.evn.CategoryConstants.SIGHT_SEEING;
+import static ca.mitenko.evn.CategoryConstants.UNKNOWN;
 
 /**
  * Created by mitenko on 2017-04-27.
@@ -43,14 +43,14 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
     /**
      * Category Icons
      */
-    private Bitmap onTheTown;
+    private Bitmap beverages;
     private Bitmap food;
     private Bitmap shopping;
-    private Bitmap sightSeeing;
     private Bitmap service;
-    private Bitmap adventure;
+    private Bitmap outdoor_activity;
+    private Bitmap indoor_activity;
     private Bitmap accomodation;
-    private Bitmap lifestyle;
+    private Bitmap unknown;
 
     /**
      * Category -> Icon map
@@ -64,25 +64,25 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
         super(context, map, clusterManager);
 
         // Load Markers
-        onTheTown = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_on_the_town);
+        beverages = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_beverages);
         food = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_food);
         shopping = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_shopping);
-        sightSeeing = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_sight_seeing);
         service = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_service);
-        adventure = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_adventure);
+        outdoor_activity = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_outdoor_activity);
+        indoor_activity = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_indoor_activity);
         accomodation = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_accommodation);
-        lifestyle = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_lifestyle);
+        unknown = BitmapUtil.getBitmapFromVectorDrawable(context, R.drawable.ic_lifestyle);
 
         // Build the map
         catIconMap = new HashMap<>();
-        catIconMap.put(ON_THE_TOWN, onTheTown);
+        catIconMap.put(BEVERAGES, beverages);
         catIconMap.put(FOOD, food);
         catIconMap.put(SHOPPING, shopping);
-        catIconMap.put(SIGHT_SEEING, sightSeeing);
         catIconMap.put(SERVICE, service);
-        catIconMap.put(ADVENTURE, adventure);
+        catIconMap.put(OUTDOOR_ACTIVITY, outdoor_activity);
+        catIconMap.put(INDOOR_ACTIVITY, indoor_activity);
         catIconMap.put(ACCOMMODATION, accomodation);
-        catIconMap.put(LIFESTYLE, lifestyle);
+        catIconMap.put(UNKNOWN, unknown);
     }
 
     /**
@@ -94,7 +94,10 @@ public class EvnClusterRenderer extends DefaultClusterRenderer<Destination> {
     protected void onBeforeClusterItemRendered(Destination destination,
                                                MarkerOptions markerOptions) {
         // Set-up and inits
-        Bitmap destIcon = catIconMap.get(destination.displayIcon());
+        Bitmap destIcon = catIconMap.get(destination.getDisplayIcon());
+        if (destIcon == null) {
+            destIcon = unknown;
+        }
 
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(destIcon));
         markerOptions.anchor(CENTER_ANCHOR, CENTER_ANCHOR);

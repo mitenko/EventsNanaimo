@@ -1,12 +1,10 @@
 package ca.mitenko.evn.ui.filter;
 
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +17,8 @@ import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -31,24 +29,20 @@ import ca.mitenko.evn.EvNApplication;
 import ca.mitenko.evn.R;
 import ca.mitenko.evn.event.ModifyFilterEvent;
 import ca.mitenko.evn.model.Activity;
-import ca.mitenko.evn.model.Category;
 import ca.mitenko.evn.model.search.Filter;
 import ca.mitenko.evn.presenter.FilterFragPresenter;
-import ca.mitenko.evn.state.EventListState;
 import ca.mitenko.evn.state.FilterFragState;
-import ca.mitenko.evn.state.ImmutableEventListState;
 import ca.mitenko.evn.state.ImmutableFilterFragState;
 import ca.mitenko.evn.ui.common.RootFragment;
 
 import static ca.mitenko.evn.CategoryConstants.ACCOMMODATION;
-import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
 import static ca.mitenko.evn.CategoryConstants.ALL;
+import static ca.mitenko.evn.CategoryConstants.BEVERAGES;
 import static ca.mitenko.evn.CategoryConstants.FOOD;
-import static ca.mitenko.evn.CategoryConstants.LIFESTYLE;
-import static ca.mitenko.evn.CategoryConstants.ON_THE_TOWN;
+import static ca.mitenko.evn.CategoryConstants.INDOOR_ACTIVITY;
+import static ca.mitenko.evn.CategoryConstants.OUTDOOR_ACTIVITY;
 import static ca.mitenko.evn.CategoryConstants.SERVICE;
 import static ca.mitenko.evn.CategoryConstants.SHOPPING;
-import static ca.mitenko.evn.CategoryConstants.SIGHT_SEEING;
 
 /**
  * Created by mitenko on 2017-04-22.
@@ -77,8 +71,8 @@ public class FilterFragment extends RootFragment
     /**
      * The on the town Text button
      */
-    @BindView(R.id.on_the_town)
-    LinearLayout onTheTownButton;
+    @BindView(R.id.beverages)
+    LinearLayout beverages;
 
     /**
      * The foodText Text button
@@ -93,12 +87,6 @@ public class FilterFragment extends RootFragment
     LinearLayout shoppingButton;
 
     /**
-     * The sight seeing Text button
-     */
-    @BindView(R.id.sight_seeing)
-    LinearLayout sightSeeingButton;
-
-    /**
      * The shopping Text button
      */
     @BindView(R.id.service)
@@ -107,8 +95,14 @@ public class FilterFragment extends RootFragment
     /**
      * The shopping Text button
      */
-    @BindView(R.id.adventure)
-    LinearLayout adventureButton;
+    @BindView(R.id.outdoor_activity)
+    LinearLayout outdoorActivityButton;
+
+    /**
+     * The shopping Text button
+     */
+    @BindView(R.id.indoor_activity)
+    LinearLayout indoorActivityButton;
 
     /**
      * The shopping Text button
@@ -117,44 +111,9 @@ public class FilterFragment extends RootFragment
     LinearLayout accomodationButton;
 
     /**
-     * The shopping Text button
-     */
-    @BindView(R.id.lifestyle)
-    LinearLayout lifestyleButton;
-
-    /**
      * Maps the categories to each button
      */
     private HashMap<String, LinearLayout> categoryButtonMap;
-
-    /**
-     * The Free Button
-     */
-    @BindView(R.id.btn_free_cost)
-    TextView freeCostButton;
-
-    /**
-     * The $ Button
-     */
-    @BindView(R.id.btn_one_cost)
-    TextView oneCostButton;
-
-    /**
-     * The $$ Button
-     */
-    @BindView(R.id.btn_two_cost)
-    TextView twoCostButton;
-
-    /**
-     * The $$$ Button
-     */
-    @BindView(R.id.btn_three_cost)
-    TextView threeCostButton;
-
-    /**
-     * Maps the categories to each button
-     */
-    private HashMap<Integer, TextView> costButtonMap;
 
     /**
      * The Actitivy Container
@@ -189,26 +148,19 @@ public class FilterFragment extends RootFragment
 
         categoryButtonMap = new HashMap<>();
         categoryButtonMap.put(ALL, selectAllButton);
-        categoryButtonMap.put(ON_THE_TOWN, onTheTownButton);
+        categoryButtonMap.put(BEVERAGES, beverages);
         categoryButtonMap.put(FOOD, foodButton);
         categoryButtonMap.put(SHOPPING, shoppingButton);
-        categoryButtonMap.put(SIGHT_SEEING, sightSeeingButton);
         categoryButtonMap.put(SERVICE, serviceButton);
-        categoryButtonMap.put(ADVENTURE, adventureButton);
+        categoryButtonMap.put(OUTDOOR_ACTIVITY, outdoorActivityButton);
+        categoryButtonMap.put(INDOOR_ACTIVITY, indoorActivityButton);
         categoryButtonMap.put(ACCOMMODATION, accomodationButton);
-        categoryButtonMap.put(LIFESTYLE, lifestyleButton);
         for (Map.Entry<String, LinearLayout> mapEntry : categoryButtonMap.entrySet()) {
-            TextView textView = (TextView) mapEntry.getValue().findViewById(R.id.text);
-            textView.setText(mapEntry.getKey());
-            mapEntry.getValue().setOnClickListener(this);
-        }
-
-        costButtonMap = new HashMap<>();
-        costButtonMap.put(getContext().getResources().getInteger(R.integer.cost_free), freeCostButton);
-        costButtonMap.put(getContext().getResources().getInteger(R.integer.cost_one), oneCostButton);
-        costButtonMap.put(getContext().getResources().getInteger(R.integer.cost_two), twoCostButton);
-        costButtonMap.put(getContext().getResources().getInteger(R.integer.cost_three), threeCostButton);
-        for (Map.Entry<Integer, TextView> mapEntry : costButtonMap.entrySet()) {
+            // Keep the Modified Accomodation Value (Stay)
+            if (mapEntry.getKey() != ACCOMMODATION) {
+                TextView textView = (TextView) mapEntry.getValue().findViewById(R.id.text);
+                textView.setText(mapEntry.getKey());
+            }
             mapEntry.getValue().setOnClickListener(this);
         }
 
@@ -286,16 +238,6 @@ public class FilterFragment extends RootFragment
         }
 
         /**
-         * Check the Cost Buttons
-         */
-        for (Map.Entry<Integer, TextView> mapEntry : costButtonMap.entrySet()) {
-            if (mapEntry.getValue().equals(view)) {
-                bus.post(new ModifyFilterEvent(ModifyFilterEvent.Type.COST, mapEntry.getKey().toString(),
-                        ModifyFilterEvent.Action.TOGGLE));
-            }
-        }
-
-        /**
          * Check the Activity Buttons
          */
         for (Map.Entry<String, TextView> mapEntry : activityButtonMap.entrySet()) {
@@ -315,20 +257,26 @@ public class FilterFragment extends RootFragment
         Integer selText = ContextCompat.getColor(getContext(), R.color.black);
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
+        ArrayList<String> sortedActivities = new ArrayList<>();
         for (Map.Entry<String, ArrayList<Activity>> mapEntry : categoryMap.entrySet()) {
             for(Activity activity : mapEntry.getValue()) {
-                if (!activityButtonMap.containsKey(activity.name())) {
-                    inflater.inflate(
-                            R.layout.item_activity_button, activityContainer, true);
-                    TextView button = (TextView)
-                            activityContainer.getChildAt(activityContainer.getChildCount()-1);
-                    button.setText(activity.name());
-                    button.setOnClickListener(this);
-                    button.setSelected(true);
-                    button.setTextColor(selText);
-                    activityButtonMap.put(activity.name(), button);
+                if (!sortedActivities.contains(activity.getName())) {
+                    sortedActivities.add(activity.getName());
                 }
             }
+        }
+        Collections.sort(sortedActivities);
+
+        for(String activityName : sortedActivities) {
+            inflater.inflate(
+                    R.layout.item_activity_button, activityContainer, true);
+            TextView button = (TextView)
+                    activityContainer.getChildAt(activityContainer.getChildCount()-1);
+            button.setText(activityName);
+            button.setOnClickListener(this);
+            button.setSelected(true);
+            button.setTextColor(selText);
+            activityButtonMap.put(activityName, button);
         }
     }
 
@@ -348,10 +296,10 @@ public class FilterFragment extends RootFragment
             FloatingActionButton fab =
                     (FloatingActionButton) mapEntry.getValue().findViewById(R.id.fab);
 
-            if (filter.categories().isEmpty()) {
+            if (filter.getCategories().isEmpty()) {
                 fab.setBackgroundTintList(resetBackground);
             } else {
-                if (filter.categories().contains(mapEntry.getKey())) {
+                if (filter.getCategories().contains(mapEntry.getKey())) {
                     fab.setBackgroundTintList(resetBackground);
                 } else {
                     fab.setBackgroundTintList(darkBackground);
@@ -360,39 +308,17 @@ public class FilterFragment extends RootFragment
         }
 
         /**
-         * Cost Buttons
-         */
-        Drawable normBg = ContextCompat.getDrawable(getContext(), R.drawable.cost_button);
-        Drawable selBg = ContextCompat.getDrawable(getContext(), R.drawable.cost_button_selected);
-        Integer selText = ContextCompat.getColor(getContext(), R.color.white);
-        Integer normText = ContextCompat.getColor(getContext(), R.color.appGreen);
-        for (Map.Entry<Integer, TextView> mapEntry : costButtonMap.entrySet()) {
-            if (filter.cost().isEmpty()) {
-                mapEntry.getValue().setBackground(normBg);
-                mapEntry.getValue().setTextColor(normText);
-            } else {
-                if (filter.cost().contains(mapEntry.getKey())) {
-                    mapEntry.getValue().setBackground(selBg);
-                    mapEntry.getValue().setTextColor(selText);
-                } else {
-                    mapEntry.getValue().setBackground(normBg);
-                    mapEntry.getValue().setTextColor(normText);
-                }
-            }
-        }
-
-        /**
          * Activity Buttons
          */
-        normText = ContextCompat.getColor(getContext(), R.color.secondaryText);
-        selText = ContextCompat.getColor(getContext(), R.color.black);
+        Integer normText = ContextCompat.getColor(getContext(), R.color.secondaryText);
+        Integer selText = ContextCompat.getColor(getContext(), R.color.black);
         for (Map.Entry<String, TextView> mapEntry : activityButtonMap.entrySet()) {
 
-            if (filter.activities().isEmpty()) {
+            if (filter.getActivities().isEmpty()) {
                 mapEntry.getValue().setSelected(true);
                 mapEntry.getValue().setTextColor(normText);
             } else {
-                if (filter.activities().contains(mapEntry.getKey())) {
+                if (filter.getActivities().contains(mapEntry.getKey())) {
                     mapEntry.getValue().setSelected(true);
                     mapEntry.getValue().setTextColor(selText);
                 } else {

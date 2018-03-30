@@ -22,6 +22,14 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="ButtonText">
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:layout_marginTop">@dimen/button_margin_overlap</item>
+    </style>
+
     <style name="Tabbar">
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:background">@color/colorPrimary</item>
@@ -30,6 +38,7 @@
     <style name="TabButton">
         <item name="android:padding">10dp</item>
         <item name="android:tint">@color/secondaryText</item>
+        <item name="android:layout_marginTop">@dimen/button_margin_overlap</item>
     </style>
 
     <style name="CategoryIcon">

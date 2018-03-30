@@ -9,7 +9,6 @@ import com.facebook.stetho.Stetho;
 import ca.mitenko.evn.dagger.ApplicationComponent;
 import ca.mitenko.evn.dagger.DaggerApplicationComponent;
 import ca.mitenko.evn.dagger.module.ApplicationModule;
-import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by mitenko on 2017-04-22.
@@ -32,7 +31,7 @@ public class EvNApplication extends Application {
 
         // Init Crashlytics
         Crashlytics crashlytics = new Crashlytics.Builder().build();
-        Fabric.with(this, crashlytics);
+//        Fabric.with(this, crashlytics);
 
         Fresco.initialize(this);
         if (BuildConfig.DEBUG) {

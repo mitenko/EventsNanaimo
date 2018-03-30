@@ -1,9 +1,10 @@
 package ca.mitenko.evn.ui.dest_map;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.rey.material.widget.ProgressView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -33,9 +33,7 @@ import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.network.EventsNanaimoService;
 import ca.mitenko.evn.presenter.DestMapPresenter;
 import ca.mitenko.evn.state.DestMapState;
-import ca.mitenko.evn.state.HubState;
 import ca.mitenko.evn.state.ImmutableDestMapState;
-import ca.mitenko.evn.state.ImmutableHubState;
 import ca.mitenko.evn.ui.common.RootFragment;
 import ca.mitenko.evn.ui.dest_map.map.DestMap;
 import ca.mitenko.evn.util.PermissionUtil;
@@ -214,6 +212,20 @@ public class DestMapFragment extends RootFragment
     /**
      * Presenter / View Callbacks
      */
+    /**
+     * {@inheritDoc}
+     */
+    public void showError(String message) {
+        if (!message.isEmpty()) {
+            Snackbar snack = Snackbar
+                    .make(mapContainer, message, Snackbar.LENGTH_LONG);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(Color.WHITE);
+            snack.show();
+        }
+    }
+
     /**
      * {@inheritDoc}
      */

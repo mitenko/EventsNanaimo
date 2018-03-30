@@ -15,15 +15,14 @@
     <color name="white">#FFFFFF</color>
     <color name="appGreen">#92bd3e</color>
 
-    <color name="onTheTown">#d41c56</color>
-    <color name="food">#0d73bb</color>
-    <color name="shopping">#ee3533</color>
-    <color name="sightSeeing">#0bbbbb</color>
-    <color name="service">#f6891f</color>
-    <color name="adventure">#92bd3e</color>
+    <color name="beverages">#d41c56</color>
+    <color name="food">#0D73BB</color>
+    <color name="shopping">#EE3533</color>
+    <color name="service">#F6891F</color>
+    <color name="outdoor_activity">#92BD3E</color>
+    <color name="indoor_activity">#528095</color>
     <color name="accommodation">#7356a4</color>
-    <color name="lifestyle">#f6be1d</color>
-    <color name="beverages">#D61C57</color>
+    <color name="unknown">#f6be1d</color>
 
     <color name="splashButtonText">#d1d1d7</color>
     <color name="splashButtonBg">#91929d</color>

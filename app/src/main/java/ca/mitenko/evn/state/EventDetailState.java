@@ -6,7 +6,6 @@ import org.immutables.value.Value;
 import org.parceler.Parcel;
 import org.parceler.ParcelFactory;
 
-import ca.mitenko.evn.model.Destination;
 import ca.mitenko.evn.model.Event;
 import ca.mitenko.evn.state.common.RootState;
 

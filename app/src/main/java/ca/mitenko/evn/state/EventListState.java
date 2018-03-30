@@ -24,6 +24,15 @@ public class EventListState extends RootState {
     public static final String TAG = "state.event_list";
 
     /**
+     * Thrown Error
+     */
+    @Nullable
+    @Value.Default
+    public Throwable error() {
+        return null;
+    }
+
+    /**
      * Destinations loaded state flag
      */
     @Nullable

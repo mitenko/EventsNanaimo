@@ -1,12 +1,15 @@
 package ca.mitenko.evn.ui.event_list;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -20,9 +23,7 @@ import ca.mitenko.evn.R;
 import ca.mitenko.evn.model.Event;
 import ca.mitenko.evn.network.EventsNanaimoService;
 import ca.mitenko.evn.presenter.EventListPresenter;
-import ca.mitenko.evn.state.EventDetailState;
 import ca.mitenko.evn.state.EventListState;
-import ca.mitenko.evn.state.ImmutableEventDetailState;
 import ca.mitenko.evn.state.ImmutableEventListState;
 import ca.mitenko.evn.ui.common.RootFragment;
 import ca.mitenko.evn.ui.event_list.adapter.EventListAdapter;
@@ -168,6 +169,19 @@ public class EventListFragment extends RootFragment
             recyclerView.scrollToPosition(0);
         } else {
             emptyListMessage.setVisibility(View.VISIBLE);
+        }
+    }
+    /**
+     * {@inheritDoc}
+     */
+    public void showError(String message) {
+        if (!message.isEmpty()) {
+            Snackbar snack = Snackbar
+                    .make(listContainer, message, Snackbar.LENGTH_LONG);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(Color.WHITE);
+            snack.show();
         }
     }
 }

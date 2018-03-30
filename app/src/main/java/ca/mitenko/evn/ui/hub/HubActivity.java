@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
@@ -20,13 +19,13 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,19 +63,16 @@ import ca.mitenko.evn.util.UserLocationUtil;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import retrofit2.Retrofit;
 
 import static ca.mitenko.evn.CategoryConstants.ACCOMMODATION;
-import static ca.mitenko.evn.CategoryConstants.ADVENTURE;
+import static ca.mitenko.evn.CategoryConstants.BEVERAGES;
 import static ca.mitenko.evn.CategoryConstants.FOOD;
-import static ca.mitenko.evn.CategoryConstants.LIFESTYLE;
-import static ca.mitenko.evn.CategoryConstants.ON_THE_TOWN;
+import static ca.mitenko.evn.CategoryConstants.INDOOR_ACTIVITY;
+import static ca.mitenko.evn.CategoryConstants.OUTDOOR_ACTIVITY;
 import static ca.mitenko.evn.CategoryConstants.SERVICE;
 import static ca.mitenko.evn.CategoryConstants.SHOPPING;
-import static ca.mitenko.evn.CategoryConstants.SIGHT_SEEING;
 
 @RuntimePermissions
 public class HubActivity extends AppCompatActivity
@@ -102,26 +98,26 @@ public class HubActivity extends AppCompatActivity
     /**
      * The destinations page nav button
      */
-    @BindView(R.id.explore_button)
-    ImageView exploreButton;
+    @BindView(R.id.explore_container)
+    LinearLayout exploreContainer;
 
     /**
      * The destinations page nav button
      */
-    @BindView(R.id.event_button)
-    ImageView eventButton;
+    @BindView(R.id.event_container)
+    LinearLayout eventContainer;
 
     /**
      * The destinations page nav button
      */
-    @BindView(R.id.filter_button)
-    ImageView filterButton;
+    @BindView(R.id.filter_container)
+    LinearLayout filterContainer;
 
     /**
      * The done nav button
      */
-    @BindView(R.id.done_button)
-    ImageView doneButton;
+    @BindView(R.id.done_container)
+    LinearLayout doneContainer;
 
     /**
      * The destinations page nav button
@@ -132,8 +128,8 @@ public class HubActivity extends AppCompatActivity
     /**
      * The on the town filter button
      */
-    @BindView(R.id.on_the_town)
-    FloatingActionButton onTheTownFilter;
+    @BindView(R.id.beverages)
+    FloatingActionButton beveragesFilter;
 
     /**
      * The foodFilter filter button
@@ -148,12 +144,6 @@ public class HubActivity extends AppCompatActivity
     FloatingActionButton shoppingFilter;
 
     /**
-     * The sight seeing filter button
-     */
-    @BindView(R.id.sight_seeing)
-    FloatingActionButton sightSeeingFilter;
-
-    /**
      * The shopping filter button
      */
     @BindView(R.id.service)
@@ -162,20 +152,20 @@ public class HubActivity extends AppCompatActivity
     /**
      * The shopping filter button
      */
-    @BindView(R.id.adventure)
-    FloatingActionButton adventureFilter;
+    @BindView(R.id.outdoor_activity)
+    FloatingActionButton outdoorActivityFilter;
+
+    /**
+     * The shopping filter button
+     */
+    @BindView(R.id.indoor_activity)
+    FloatingActionButton indoorActivityFilter;
 
     /**
      * The shopping filter button
      */
     @BindView(R.id.accomodation)
     FloatingActionButton accomodationFilter;
-
-    /**
-     * The shopping filter button
-     */
-    @BindView(R.id.lifestyle)
-    FloatingActionButton lifestyleFilter;
 
     /**
      * Maps the categories to each button
@@ -275,20 +265,19 @@ public class HubActivity extends AppCompatActivity
         }
 
         // Init buttons
-        exploreButton.setOnClickListener(this);
-        eventButton.setOnClickListener(this);
-        filterButton.setOnClickListener(this);
-        doneButton.setOnClickListener(this);
+        exploreContainer.setOnClickListener(this);
+        eventContainer.setOnClickListener(this);
+        filterContainer.setOnClickListener(this);
+        doneContainer.setOnClickListener(this);
 
         categoryButtonMap = new HashMap<>();
-        categoryButtonMap.put(ON_THE_TOWN, onTheTownFilter);
+        categoryButtonMap.put(BEVERAGES, beveragesFilter);
         categoryButtonMap.put(FOOD, foodFilter);
         categoryButtonMap.put(SHOPPING, shoppingFilter);
-        categoryButtonMap.put(SIGHT_SEEING, sightSeeingFilter);
         categoryButtonMap.put(SERVICE, serviceFilter);
-        categoryButtonMap.put(ADVENTURE, adventureFilter);
+        categoryButtonMap.put(OUTDOOR_ACTIVITY, outdoorActivityFilter);
+        categoryButtonMap.put(INDOOR_ACTIVITY, indoorActivityFilter);
         categoryButtonMap.put(ACCOMMODATION, accomodationFilter);
-        categoryButtonMap.put(LIFESTYLE, lifestyleFilter);
         for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
             mapEntry.getValue().setOnClickListener(this);
         }
@@ -362,19 +351,19 @@ public class HubActivity extends AppCompatActivity
      * Button / Event Callbacks
      */
     public void onClick(View view) {
-        if (view.equals(exploreButton)) {
+        if (view.equals(exploreContainer)) {
             bus.post(new ViewMapEvent());
             return;
         }
-        if (view.equals(eventButton)) {
+        if (view.equals(eventContainer)) {
             bus.post(new ViewEventEvent());
             return;
         }
-        if (view.equals(filterButton)) {
+        if (view.equals(filterContainer)) {
             bus.post(new ViewFilterEvent());
             return;
         }
-        if (view.equals(doneButton)) {
+        if (view.equals(doneContainer)) {
             onBackPressed();
             return;
         }
@@ -689,16 +678,16 @@ public class HubActivity extends AppCompatActivity
      * Displays the 'Done' button
      */
     public void showDoneButton() {
-        doneButton.setVisibility(View.VISIBLE);
-        filterButton.setVisibility(View.GONE);
+        doneContainer.setVisibility(View.VISIBLE);
+        filterContainer.setVisibility(View.GONE);
     }
 
     /**
      * Displays the 'Filter' button
      */
     public void showFilterButton() {
-        doneButton.setVisibility(View.GONE);
-        filterButton.setVisibility(View.VISIBLE);
+        doneContainer.setVisibility(View.GONE);
+        filterContainer.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -710,10 +699,10 @@ public class HubActivity extends AppCompatActivity
         for (Map.Entry<String, FloatingActionButton> mapEntry : categoryButtonMap.entrySet()) {
             ColorStateList resetBackground = ColorStateList.valueOf(
                     ContextCompat.getColor(this, CategoryConstants.categoryColorMap.get(mapEntry.getKey())));
-            if (filter.categories().isEmpty()) {
+            if (filter.getCategories().isEmpty()) {
                 mapEntry.getValue().setBackgroundTintList(resetBackground);
             } else {
-                if (filter.categories().contains(mapEntry.getKey())) {
+                if (filter.getCategories().contains(mapEntry.getKey())) {
                     mapEntry.getValue().setBackgroundTintList(resetBackground);
                 } else {
                     mapEntry.getValue().setBackgroundTintList(darkBackground);
