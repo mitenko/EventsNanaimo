@@ -6,6 +6,8 @@
     <color name="primaryText">#000000</color>
     <color name="secondaryText">#424242</color>
     <color name="accentText">#FFFFFF</color>
+    <color name="accentNavigation">#0D73BB</color>
+    <color name="deselectNavigation">#000000</color>
 
     <color name="default_fragment_background">@color/colorPrimary</color>
     <color name="progress_bar_background">#99000000</color>

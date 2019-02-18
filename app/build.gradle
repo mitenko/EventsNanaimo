@@ -30,12 +30,11 @@ androidExtensions {
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "ca.mitenko.evn"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 3
+        versionCode 5
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true

@@ -2,6 +2,7 @@ package ca.mitenko.evn.ui.hub;
 
 import android.Manifest;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -101,11 +102,23 @@ public class HubActivity extends AppCompatActivity
     @BindView(R.id.explore_container)
     LinearLayout exploreContainer;
 
+    @BindView(R.id.explore_button)
+    ImageView exploreButton;
+
+    @BindView(R.id.explore_text)
+    TextView exploreText;
+
     /**
      * The destinations page nav button
      */
     @BindView(R.id.event_container)
     LinearLayout eventContainer;
+
+    @BindView(R.id.event_button)
+    ImageView eventButton;
+
+    @BindView(R.id.event_text)
+    TextView eventText;
 
     /**
      * The destinations page nav button
@@ -113,11 +126,23 @@ public class HubActivity extends AppCompatActivity
     @BindView(R.id.filter_container)
     LinearLayout filterContainer;
 
+    @BindView(R.id.filter_button)
+    ImageView filterButton;
+
+    @BindView(R.id.filter_text)
+    TextView filterText;
+
     /**
      * The done nav button
      */
     @BindView(R.id.done_container)
     LinearLayout doneContainer;
+
+    @BindView(R.id.done_button)
+    ImageView doneButton;
+
+    @BindView(R.id.done_text)
+    TextView doneText;
 
     /**
      * The destinations page nav button
@@ -324,6 +349,8 @@ public class HubActivity extends AppCompatActivity
         // Init presenter
         hubPresenter = new HubPresenter(
                 this, hubState, bus, eventInteractor, categoryInteractor);
+
+        highlightExploreButton();
     }
 
     /**
@@ -440,6 +467,7 @@ public class HubActivity extends AppCompatActivity
      * Called after we've made a permission check
      */
     public void showDestMapAfterPermissions() {
+        highlightExploreButton();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         // Fragment not added. Add fragment
@@ -472,6 +500,7 @@ public class HubActivity extends AppCompatActivity
      */
     @Override
     public void showDestList() {
+        highlightExploreButton();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         // Fragment not added. Add fragment
@@ -505,6 +534,7 @@ public class HubActivity extends AppCompatActivity
      */
     @Override
     public void showEventList() {
+        highlightEventsButton();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         // Fragment not added. Add fragment
@@ -538,6 +568,7 @@ public class HubActivity extends AppCompatActivity
      */
     @Override
     public void showDestDetail(Destination selectedDest) {
+        highlightExploreButton();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         destDetailFragment = new DestDetailFragmentBuilder(selectedDest).build();
@@ -568,6 +599,7 @@ public class HubActivity extends AppCompatActivity
      */
     @Override
     public void showEventDetail(Event selectedEvent) {
+        highlightEventsButton();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         eventDetailFragment = new EventDetailFragmentBuilder(selectedEvent).build();
@@ -688,6 +720,36 @@ public class HubActivity extends AppCompatActivity
     public void showFilterButton() {
         doneContainer.setVisibility(View.GONE);
         filterContainer.setVisibility(View.VISIBLE);
+    }
+
+    public void highlightEventsButton() {
+        resetButtonColors();
+        Integer highlightColour =
+                ContextCompat.getColor(getApplicationContext(), R.color.accentNavigation);
+        eventButton.setColorFilter(highlightColour);
+        eventText.setTextColor(highlightColour);
+    }
+
+    public void highlightExploreButton() {
+        resetButtonColors();
+        Integer highlightColour =
+                ContextCompat.getColor(getApplicationContext(), R.color.accentNavigation);
+        exploreButton.setColorFilter(highlightColour);
+        exploreText.setTextColor(highlightColour);
+    }
+
+    public void resetButtonColors() {
+        Integer deselectColour =
+                ContextCompat.getColor(getApplicationContext(), R.color.deselectNavigation);
+
+        exploreButton.setColorFilter(deselectColour);
+        exploreText.setTextColor(deselectColour);
+        eventButton.setColorFilter(deselectColour);
+        eventText.setTextColor(deselectColour);
+        filterButton.setColorFilter(deselectColour);
+        filterText.setTextColor(deselectColour);
+        doneButton.setColorFilter(deselectColour);
+        doneText.setTextColor(deselectColour);
     }
 
     /**

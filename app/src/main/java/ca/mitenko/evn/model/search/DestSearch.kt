@@ -2,11 +2,13 @@ package ca.mitenko.evn.model.search
 
 import android.os.Parcelable
 import ca.mitenko.evn.model.Destination
+import ca.mitenko.evn.util.LatLngUtil
 import ca.mitenko.evn.util.LocationUtil
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import kotlinx.android.parcel.Parcelize
 import org.immutables.value.Value
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -62,16 +64,26 @@ data class DestSearch(
         /**
          * Sort the list by nearest to farther if user location is known
          */
-        val orderedResults = results ?: ArrayList()
+        var orderedResults = results ?: ArrayList()
         if (filter.userLocation != null) {
             val userLocation = LocationUtil.fromLatLng(filter.userLocation)
 
-            Collections.sort(orderedResults!!) { d1, d2 ->
+            orderedResults.sortWith(Comparator { d1, d2 ->
                 val location1 = LocationUtil.fromDestination(d1)
                 val location2 = LocationUtil.fromDestination(d2)
                 Integer.signum(
                         location1.distanceTo(userLocation).toInt() - location2.distanceTo(userLocation).toInt())
-            }
+            })
+        }
+
+        /**
+         * Filter by Map Bounds
+         */
+        if (filterByMapBounds) {
+            val bounds = mapBoundsOrDefault()
+            orderedResults = orderedResults.filter {
+                dest -> bounds.contains(LatLngUtil.fromDestination(dest))
+            } as ArrayList<Destination>
         }
 
         /**

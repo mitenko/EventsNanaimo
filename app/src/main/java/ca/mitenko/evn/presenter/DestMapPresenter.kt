@@ -81,8 +81,6 @@ class DestMapPresenter
                 }
             }
 
-            Timber.e(curState.search().filteredResults(false).toString())
-            Timber.e(prevState.search().filteredResults(false).toString())
             if (curState.search().hasResults() &&
                     curState.search().filteredResults(false) != prevState.search().filteredResults(false)) {
                 view.setDestinations(curState.search().filteredResults(false))
@@ -104,10 +102,12 @@ class DestMapPresenter
              * Show the update button if the search results bounds
              * are out of sync with the current map bounds
              */
-            if (curState.search().mapOutsideSearch()) {
-                view.showUpdateButton()
-            } else {
-                view.hideUpdateButton()
+            if (curState.search() != prevState.search()) {
+                if (curState.search().mapOutsideSearch()) {
+                    view.showUpdateButton()
+                } else {
+                    view.hideUpdateButton()
+                }
             }
 
             if (curState.loadingResults()) {

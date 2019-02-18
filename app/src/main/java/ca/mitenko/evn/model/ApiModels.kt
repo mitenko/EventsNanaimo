@@ -59,7 +59,7 @@ data class Destination(
         @SerializedName("address")
         val address: Address,
         @SerializedName("displayIcon")
-        val displayIcon: String,
+        val displayIcon: String = UNKNOWN,
         @SerializedName("detail")
         val detail: Detail
 ): Parcelable, ClusterItem {

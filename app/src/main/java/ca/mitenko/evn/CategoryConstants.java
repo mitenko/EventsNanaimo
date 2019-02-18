@@ -11,7 +11,7 @@ public class CategoryConstants {
     public static final String BEVERAGES = "Beverages";
     public static final String FOOD = "Food";
     public static final String SHOPPING = "Shopping";
-    public static final String SERVICE = "Service";
+    public static final String SERVICE = "Services";
     public static final String OUTDOOR_ACTIVITY = "Outdoor Activities";
     public static final String INDOOR_ACTIVITY = "Indoor Activities";
     public static final String ACCOMMODATION = "Accommodation";
